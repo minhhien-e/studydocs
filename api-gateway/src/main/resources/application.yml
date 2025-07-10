@@ -7,14 +7,21 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: user-service
-          uri: lb://user-service
-          predicates:
-            - Path=/users/**
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+#        - id: user-service
+#          uri: lb://user-service
+#          predicates:
+#            - Path=/users/**
+
+#        - id: mock-test
+#          uri: http://httpbin.org
+#          predicates:
+#            - Path=/mock
+
+
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
 
 logging:
   level:
