@@ -25,7 +25,7 @@ public class SecurityConfiguration {
 
                     //ALLOW ACTUATOR ENDPOINTS
                     exchanges.pathMatchers("").permitAll()
-                            .pathMatchers("").permitAll()
+//                            .pathMatchers("").permitAll()
                             .anyExchange().authenticated();
                 });
 
