@@ -60,6 +60,14 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.3.0</version>
         </dependency>
+
+        <!-- Bcrypt -->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>bcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
         <!-- TestContainers -->
         <dependency>
             <groupId>org.testcontainers</groupId>

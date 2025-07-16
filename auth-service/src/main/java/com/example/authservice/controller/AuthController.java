@@ -24,7 +24,8 @@ public class AuthController {
     @Operation(summary = "Đăng ký tài khoản mới")
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+        UserResponse userResponse = authService.registerLocal(request);
+        return ResponseEntity.ok(userResponse);
     }
 
     @Operation(summary = "Đăng nhập")

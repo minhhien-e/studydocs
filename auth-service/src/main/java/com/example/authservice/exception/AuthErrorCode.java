@@ -31,6 +31,10 @@ public enum AuthErrorCode {
     PASSWORD_MISMATCH("AUTH043", "Mật khẩu xác nhận không khớp"),
     USERNAME_EXISTS("AUTH044", "Tên người dùng đã tồn tại"),
     REGISTRATION_FAILED("AUTH045", "Đăng ký tài khoản thất bại"),
+    USERNAME_INVALID_FORMAT("AUTH046", "Định dạng tên người dùng không hợp lệ"),
+    USERNAME_TOO_LONG("AUTH047", "Tên người dùng quá dài"),
+    USERNAME_TOO_SHORT("AUTH048", "Tên người dùng quá ngắn"),
+    USERNAME_INVALID_CHARACTERS("AUTH049", "Tên người dùng chứa ký tự không hợp lệ"),
     
     // Nhóm lỗi xác thực email (060-079)
     EMAIL_VERIFICATION_EXPIRED("AUTH060", "Mã xác thực email đã hết hạn"),

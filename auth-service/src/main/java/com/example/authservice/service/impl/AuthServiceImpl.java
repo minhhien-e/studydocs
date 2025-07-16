@@ -27,23 +27,37 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
     // TODO: Thêm JwtTokenProvider
-    // private final JwtTokenProvider tokenProvider;
+    // private final JwtTokenProvider tokenProvider;e
 
     @Override
     @Transactional
-    public UserResponse register(RegisterRequest request) {
+    public UserResponse registerLocal(RegisterRequest request) {
         log.debug("Bắt đầu đăng ký user mới với email: {}", request.getEmail());
 
-        // Validate email format
+        // 1. Validate email format
         if (!isValidEmail(request.getEmail())) {
             log.warn("Email không hợp lệ: {}", request.getEmail());
             throw new ValidationException(
                     AuthErrorCode.INVALID_EMAIL_FORMAT,
                     "Email không đúng định dạng");
         }
-
-        // Kiểm tra email đã tồn tại
+         // 2. Validate password
+        if (!isValidPassword(request.getPassword())) {
+            log.warn("Password không đủ mạnh cho email: {}", request.getEmail());
+            throw new ValidationException(
+                    AuthErrorCode.WEAK_PASSWORD,
+                    "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt");
+        }
+        // 3. Kiểm tra password matching
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            log.warn("Password không khớp cho email: {}", request.getEmail());
+            throw new ValidationException(
+                    AuthErrorCode.PASSWORD_MISMATCH,
+                    "Mật khẩu xác nhận không khớp");
+        }
+        // 4. Kiểm tra email đã tồn tại
         if (isEmailExists(request.getEmail())) {
             log.warn("Email đã tồn tại: {}", request.getEmail());
             throw new ValidationException(
@@ -51,22 +65,16 @@ public class AuthServiceImpl implements AuthService {
                     "Email đã được sử dụng");
         }
 
-        // Validate password
-        if (!isValidPassword(request.getPassword())) {
-            log.warn("Password không đủ mạnh cho email: {}", request.getEmail());
+ 
+        // 5. Kiểm tra username đã tồn tại
+        if (isUserNameExists(request.getUserName())) {
+            log.warn("Username đã tồn tại: {}", request.getUserName());
             throw new ValidationException(
-                    AuthErrorCode.WEAK_PASSWORD,
-                    "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt");
+                    AuthErrorCode.USERNAME_EXISTS,
+                    "Username đã được sử dụng");
         }
-
-        // Kiểm tra password matching
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            log.warn("Password không khớp cho email: {}", request.getEmail());
-            throw new ValidationException(
-                    AuthErrorCode.PASSWORD_MISMATCH,
-                    "Mật khẩu xác nhận không khớp");
-        }
-
+       
+     
         try {
             // Tạo user mới
             User user = new User();
@@ -94,107 +102,119 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    @Override
-    public TokenResponse login(LoginRequest request) {
-        log.debug("Xử lý đăng nhập cho email: {}", request.getEmail());
+    // @Override
+    // public TokenResponse login(LoginRequest request) {
+    //     log.debug("Xử lý đăng nhập cho email: {}", request.getEmail());
 
-        // Tìm user theo email
-        User user = userRepository.findByEmail(request.getEmail());
-        if (user == null) {
-            log.warn("Không tìm thấy user với email: {}", request.getEmail());
-            throw new AuthenticationException(
-                    AuthErrorCode.INVALID_CREDENTIALS,
-                    "Email hoặc mật khẩu không chính xác");
-        }
+    //     // Tìm user theo email
+    //     User user = userRepository.findByEmail(request.getEmail());
+    //     if (user == null) {
+    //         log.warn("Không tìm thấy user với email: {}", request.getEmail());
+    //         throw new AuthenticationException(
+    //                 AuthErrorCode.INVALID_CREDENTIALS,
+    //                 "Email hoặc mật khẩu không chính xác");
+    //     }
 
-        // Kiểm tra password
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            log.warn("Mật khẩu không chính xác cho email: {}", request.getEmail());
-            throw new AuthenticationException(
-                    AuthErrorCode.INVALID_CREDENTIALS,
-                    "Email hoặc mật khẩu không chính xác");
-        }
+    //     // Kiểm tra password
+    //     if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+    //         log.warn("Mật khẩu không chính xác cho email: {}", request.getEmail());
+    //         throw new AuthenticationException(
+    //                 AuthErrorCode.INVALID_CREDENTIALS,
+    //                 "Email hoặc mật khẩu không chính xác");
+    //     }
 
-        // Kiểm tra trạng thái tài khoản
-        if (user.getStatus() != User.UserStatus.ACTIVE) {
-            log.warn("Tài khoản không active: {}", request.getEmail());
-            throw new AuthenticationException(
-                    AuthErrorCode.ACCOUNT_LOCKED,
-                    "Tài khoản đã bị khóa hoặc chưa kích hoạt");
-        }
+    //     // Kiểm tra trạng thái tài khoản
+    //     if (user.getStatus() != User.UserStatus.ACTIVE) {
+    //         log.warn("Tài khoản không active: {}", request.getEmail());
+    //         throw new AuthenticationException(
+    //                 AuthErrorCode.ACCOUNT_LOCKED,
+    //                 "Tài khoản đã bị khóa hoặc chưa kích hoạt");
+    //     }
 
-        // Tạo và trả về token
-        return createTokenResponse(user, request.isRememberMe());
-    }
+    //     // Tạo và trả về token
+    //     return createTokenResponse(user, request.isRememberMe());
+    // }
 
-    @Override
-    public TokenResponse socialLogin(SocialLoginRequest request) {
-        log.debug("Xử lý đăng nhập social với provider: {}", request.getProvider());
+    // @Override
+    // public TokenResponse socialLogin(SocialLoginRequest request) {
+    //     log.debug("Xử lý đăng nhập social với provider: {}", request.getProvider());
 
-        // TODO: Implement social login
-        throw new UnsupportedOperationException("Social login chưa được hỗ trợ");
-    }
+    //     // TODO: Implement social login
+    //     throw new UnsupportedOperationException("Social login chưa được hỗ trợ");
+    // }
 
-    @Override
-    public TokenResponse refreshToken(String refreshToken) {
-        log.debug("Xử lý refresh token");
+    // @Override
+    // public TokenResponse refreshToken(String refreshToken) {
+    //     log.debug("Xử lý refresh token");
 
-        // TODO: Implement refresh token
-        throw new UnsupportedOperationException("Refresh token chưa được hỗ trợ");
-    }
+    //     // TODO: Implement refresh token
+    //     throw new UnsupportedOperationException("Refresh token chưa được hỗ trợ");
+    // }
 
-    @Override
-    public boolean verifyEmail(String token) {
-        log.debug("Xử lý xác thực email với token: {}", token);
+    // @Override
+    // public boolean verifyEmail(String token) {
+    //     log.debug("Xử lý xác thực email với token: {}", token);
 
-        // TODO: Implement email verification
-        return false;
-    }
+    //     // TODO: Implement email verification
+    //     return false;
+    // }
 
     @Override
     public boolean isEmailExists(String email) {
         return userRepository.existsByEmail(email);
     }
 
-    @Override
-    public void logout(String token) {
-        log.debug("Xử lý đăng xuất");
+    // @Override
+    // public void logout(String token) {
+    //     log.debug("Xử lý đăng xuất");
 
-        // TODO: Implement logout - invalidate token
-        SecurityContextHolder.clearContext();
-    }
+    //     // TODO: Implement logout - invalidate token
+    //     SecurityContextHolder.clearContext();
+    // }
 
-    @Override
-    public UserResponse getCurrentUser() {
-        log.debug("Lấy thông tin user hiện tại");
+    // @Override
+    // public UserResponse getCurrentUser() {
+    //     log.debug("Lấy thông tin user hiện tại");
 
-        // TODO: Implement get current user
-        throw new UnsupportedOperationException("Chức năng chưa được hỗ trợ");
-    }
+    //     // TODO: Implement get current user
+    //     throw new UnsupportedOperationException("Chức năng chưa được hỗ trợ");
+    // }
 
     // Helper methods
     private boolean isValidEmail(String email) {
-        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
-        return email != null && email.matches(emailRegex);
+        if (email == null || email.isEmpty() || email.length() > 255) {
+            return false;
+        }
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        return email.matches(emailRegex);
     }
 
     private boolean isValidPassword(String password) {
+        if (password == null || password.isEmpty() || password.length() < 8 
+        || password.length() > 500) {
+            return false;
+        }
         String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
-        return password != null && password.matches(passwordRegex);
+        return password.matches(passwordRegex);
+    }
+
+    private boolean isUserNameExists(String userName) {
+        return userRepository.existsByUserName(userName);
     }
 
     private void sendVerificationEmail(User user) {
         // TODO: Implement email sending logic
         log.info("Gửi email xác thực cho user: {}", user.getEmail());
+        //gọi api khác để xác thực email
     }
 
-    private TokenResponse createTokenResponse(User user, boolean rememberMe) {
-        // TODO: Implement JWT token generation
-        return TokenResponse.builder()
-                .tokenType("Bearer")
-                .expiresIn(rememberMe ? 604800 : 3600) // 7 days : 1 hour
-                .build();
-    }
+    // private TokenResponse createTokenResponse(User user, boolean rememberMe) {
+    //     // TODO: Implement JWT token generation
+    //     return TokenResponse.builder()
+    //             .tokenType("Bearer")
+    //             .expiresIn(rememberMe ? 604800 : 3600) // 7 days : 1 hour
+    //             .build();
+    // }
 
     private UserResponse convertToUserResponse(User user) {
         return UserResponse.builder()

@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SocialLoginRequest {
     
-    @NotBlank(message = "Access token không được để trống")
-    private String accessToken;
+    @NotBlank(message = "Authorization token không được để trống")
+    private String AuthorizationToken;
 
     @NotNull(message = "Provider không được để trống")
     private User.AuthProvider provider;

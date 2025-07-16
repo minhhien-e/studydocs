@@ -22,6 +22,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
 
     /**
+     * Kiểm tra username đã tồn tại chưa
+     * @param username Username cần kiểm tra
+     * @return true nếu username đã tồn tại
+     */
+    boolean existsByUserName(String username);
+
+    /**
      * Tìm user theo providerId và provider
      * @param providerId ID từ OAuth provider
      * @param provider Loại provider (GOOGLE, FACEBOOK, etc.)
