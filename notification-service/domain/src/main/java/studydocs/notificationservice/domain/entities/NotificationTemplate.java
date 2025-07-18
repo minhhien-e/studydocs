@@ -33,6 +33,7 @@ public class NotificationTemplate {
         this.subjectTemplate = subjectTemplate;
         this.bodyTemplate = bodyTemplate;
         this.description = description;
+        this.createdAt=LocalDateTime.now();
     }
 
     public NotificationTemplate(UUID id, String name, String channel,

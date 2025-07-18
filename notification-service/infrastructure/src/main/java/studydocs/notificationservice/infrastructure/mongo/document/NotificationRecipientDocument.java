@@ -9,12 +9,12 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.UUID;
 
-@Document
+@Document(collection = "notification_recipient")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecipientDocument {
+public class NotificationRecipientDocument {
     @MongoId
     private UUID id;
     private UUID recipientId;

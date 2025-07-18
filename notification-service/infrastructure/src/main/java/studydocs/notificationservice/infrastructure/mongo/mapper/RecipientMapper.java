@@ -1,10 +1,10 @@
 package studydocs.notificationservice.infrastructure.mongo.mapper;
 
 import studydocs.notificationservice.domain.entities.NotificationRecipient;
-import studydocs.notificationservice.infrastructure.mongo.document.RecipientDocument;
+import studydocs.notificationservice.infrastructure.mongo.document.NotificationRecipientDocument;
 
 public final class RecipientMapper {
-    public static NotificationRecipient toDomain(RecipientDocument document) {
+    public static NotificationRecipient toDomain(NotificationRecipientDocument document) {
         return new NotificationRecipient(document.getId(),
                 document.getRecipientId(),
                 document.getNotificationId(),
@@ -13,8 +13,8 @@ public final class RecipientMapper {
         );
     }
 
-    public static RecipientDocument toDocument(NotificationRecipient recipient) {
-        return RecipientDocument.builder()
+    public static NotificationRecipientDocument toDocument(NotificationRecipient recipient) {
+        return NotificationRecipientDocument.builder()
                 .id(recipient.getId())
                 .recipientId(recipient.getRecipientId())
                 .notificationId(recipient.getNotificationId())

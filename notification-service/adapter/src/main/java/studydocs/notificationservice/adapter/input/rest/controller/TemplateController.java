@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ import studydocs.notificationservice.shared.api.ApiResponse;
 public class TemplateController {
     private final AddTemplateUseCase addTemplateUseCase;
 
+    @PostMapping
     public ResponseEntity<?> addTemplate(@Valid @RequestBody AddTemplateRequest request) {
         var inputModel = request.toInputModel();
         addTemplateUseCase.execute(inputModel);
