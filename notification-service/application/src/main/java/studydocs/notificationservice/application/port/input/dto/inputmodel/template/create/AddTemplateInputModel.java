@@ -1,4 +1,4 @@
-package studydocs.notificationservice.application.port.input.inputmodel.template.add;
+package studydocs.notificationservice.application.port.input.dto.inputmodel.template.create;
 
 import studydocs.notificationservice.domain.entities.NotificationTemplate;
 

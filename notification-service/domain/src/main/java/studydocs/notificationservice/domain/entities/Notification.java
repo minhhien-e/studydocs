@@ -2,6 +2,7 @@ package studydocs.notificationservice.domain.entities;
 
 
 import studydocs.notificationservice.shared.enums.NotificationChannel;
+import studydocs.notificationservice.shared.enums.NotificationType;
 import studydocs.notificationservice.shared.exception.concrete.notification.business.NotificationCreatedAtInFutureException;
 import studydocs.notificationservice.shared.exception.concrete.notification.validation.*;
 import studydocs.notificationservice.shared.exception.concrete.notification.validation.InvalidNotificationChanelException;
@@ -15,23 +16,26 @@ public class Notification {
     private UUID templateId;
     private UUID senderId;
     private NotificationChannel chanel;
+    private NotificationType type;
     private Map<String, Object> templateData;
     private LocalDateTime createAt;
 
-    public Notification(UUID id, UUID senderId, UUID templateId, String chanel, Map<String, Object> templateData, LocalDateTime createAt) {
-        validateForLoad(id, templateId, senderId, chanel, templateData, createAt);
+    public Notification(UUID id, UUID senderId, UUID templateId, String chanel, String type, Map<String, Object> templateData, LocalDateTime createAt) {
+        validateForLoad(id, templateId, senderId, chanel, type, templateData, createAt);
         this.id = id;
         this.senderId = senderId;
         this.templateId = templateId;
         this.chanel = NotificationChannel.valueOf(chanel);
+        this.type = NotificationType.valueOf(type);
         this.templateData = templateData;
         this.createAt = createAt;
     }
 
-    public Notification(UUID templateId, UUID senderId, String chanel, Map<String, Object> templateData) {
-        validateForCreate(templateId, senderId, chanel, templateData);
+    public Notification(UUID templateId, UUID senderId, String chanel, String type, Map<String, Object> templateData) {
+        validateForCreate(templateId, senderId, chanel, type, templateData);
         this.id = UUID.randomUUID();
         this.chanel = NotificationChannel.valueOf(chanel);
+        this.type = NotificationType.valueOf(type);
         this.templateData = templateData;
         this.templateId = templateId;
     }
@@ -42,6 +46,10 @@ public class Notification {
 
     public UUID getId() {
         return id;
+    }
+
+    public NotificationType getType() {
+        return type;
     }
 
     public UUID getTemplateId() {
@@ -60,17 +68,17 @@ public class Notification {
         return createAt;
     }
 
-    private void validateForLoad(UUID id, UUID templateId, UUID senderId, String chanel, Map<String, Object> templateData, LocalDateTime createAt) {
+    private void validateForLoad(UUID id, UUID templateId, UUID senderId, String chanel, String type, Map<String, Object> templateData, LocalDateTime createAt) {
         if (id == null)
             throw new MissingIdInNotificationException();
         if (createAt == null)
             throw new MissingCreateAtInNotificationException();
         if (LocalDateUtils.isFutureDate(createAt))
             throw new NotificationCreatedAtInFutureException(createAt);
-        validateForCreate(templateId, senderId, chanel, templateData);
+        validateForCreate(templateId, senderId, chanel, type, templateData);
     }
 
-    private void validateForCreate(UUID templateId, UUID senderId, String chanel, Map<String, Object> templateData) {
+    private void validateForCreate(UUID templateId, UUID senderId, String chanel, String type, Map<String, Object> templateData) {
         if (templateId == null)
             throw new MissingTemplateIdInNotificationException();
         if (chanel == null || chanel.isBlank())
@@ -79,6 +87,14 @@ public class Notification {
             NotificationChannel.valueOf(chanel);
         } catch (IllegalArgumentException ex) {
             throw new InvalidNotificationChanelException(chanel);
+        }
+        if (type == null || type.isBlank()) {
+            throw new MissingTypeInNotificationException();
+        }
+        try {
+            NotificationType.valueOf(type);
+        } catch (IllegalArgumentException ex) {
+            throw new InvalidNotificationTypeException(type);
         }
         if (templateData == null ||
                 templateData.isEmpty() ||
