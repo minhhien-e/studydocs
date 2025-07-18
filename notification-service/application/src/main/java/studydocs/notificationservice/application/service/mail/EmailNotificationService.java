@@ -1,4 +1,4 @@
-package studydocs.notificationservice.application.service;
+package studydocs.notificationservice.application.service.mail;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;

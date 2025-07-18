@@ -1,4 +1,4 @@
-package studydocs.notificationservice.adapter.input.mail;
+package studydocs.notificationservice.adapter.input.rabbit.mail;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
