@@ -1,0 +1,36 @@
+spring:
+  config:
+    name: notification-service
+  mail:
+    host: smtp.gmail.com
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            enabled: true
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    port: ${RABBIT_PORT}
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
+    virtual-host: ${RABBIT_VIRTUAL_HOST}
+    ssl:
+      enabled: true
+  data:
+    mongodb:
+      uri: mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}/${MONGO_DB}
+rabbitmq:
+  exchange: exchange.notification
+  queue:
+    - email:
+        name: queue.notification.email
+        routing-key:
+          - notification.email.send
