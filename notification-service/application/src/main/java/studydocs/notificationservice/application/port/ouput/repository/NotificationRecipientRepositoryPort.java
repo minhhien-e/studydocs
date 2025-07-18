@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface NotificationRecipientRepositoryPort {
     SliceOutput<NotificationRecipient> findByRecipientId(UUID recipientId, LocalDateTime createdAt, int pageNumber, int limit);
+    void save(NotificationRecipient notificationRecipient);
 }

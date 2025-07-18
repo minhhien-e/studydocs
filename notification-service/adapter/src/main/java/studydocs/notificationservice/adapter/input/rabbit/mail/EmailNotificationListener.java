@@ -9,10 +9,9 @@ import studydocs.notificationservice.domain.event.SendMailEvent;
 @Component
 @RequiredArgsConstructor
 public class EmailNotificationListener {
-    private final static String QUEUE_NAME = "queue.notification.email";
     private final SendEmailNotificationUseCase sendEmailNotificationUseCase;
 
-    @RabbitListener(queues = QUEUE_NAME)
+    @RabbitListener(queues = "queue.notification.email")
     public void receive(SendMailEvent event) {
         sendEmailNotificationUseCase.send(event);
     }

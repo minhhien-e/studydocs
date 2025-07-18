@@ -38,6 +38,7 @@ public class Notification {
         this.type = NotificationType.valueOf(type);
         this.templateData = templateData;
         this.templateId = templateId;
+        this.createAt = LocalDateTime.now();
     }
 
     public UUID getSenderId() {

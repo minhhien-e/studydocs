@@ -36,3 +36,7 @@ rabbitmq:
         name: queue.notification.email
         routing-key:
           - notification.email.send
+    - push:
+        name: queue.notification.push.document.upload
+        routing-key:
+          - notification.push.upload.document

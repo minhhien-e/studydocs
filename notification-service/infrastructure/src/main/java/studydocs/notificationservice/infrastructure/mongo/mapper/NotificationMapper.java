@@ -18,11 +18,13 @@ public final class NotificationMapper {
 
     public static NotificationDocument toDocument(Notification notification) {
         return NotificationDocument.builder()
+                .id(notification.getId())
                 .templateId(notification.getTemplateId())
                 .chanel(notification.getChanel().name())
                 .senderId(notification.getSenderId())
                 .templateData(notification.getTemplateData())
                 .type(notification.getType().name())
+                .createdAt(notification.getCreateAt())
                 .build();
     }
 }

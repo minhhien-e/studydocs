@@ -53,4 +53,9 @@ public class NotificationRecipientRepository implements NotificationRecipientRep
         boolean hasNext = recipientDomain.size() > limit;
         return new SliceOutput<>(recipientDomain, hasNext);
     }
+
+    @Override
+    public void save(NotificationRecipient notificationRecipient) {
+        repository.save(RecipientMapper.toDocument(notificationRecipient));
+    }
 }
