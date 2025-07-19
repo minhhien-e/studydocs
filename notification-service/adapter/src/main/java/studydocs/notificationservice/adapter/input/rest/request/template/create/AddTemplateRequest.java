@@ -1,9 +1,9 @@
-package studydocs.notificationservice.adapter.input.rest.request;
+package studydocs.notificationservice.adapter.input.rest.request.template.create;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import studydocs.notificationservice.application.port.input.inputmodel.template.add.AddTemplateInputModel;
+import studydocs.notificationservice.application.port.input.dto.inputmodel.template.create.AddTemplateInputModel;
 
 public record AddTemplateRequest(
         @NotBlank(message = "Thông tin tên mẫu thông báo không được bỏ trống")

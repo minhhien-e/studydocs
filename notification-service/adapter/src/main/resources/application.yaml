@@ -29,6 +29,7 @@ spring:
   data:
     mongodb:
       uri: mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}/${MONGO_DB}
+      uuid-representation: standard
 rabbitmq:
   exchange: exchange.notification
   queue:
@@ -36,3 +37,7 @@ rabbitmq:
         name: queue.notification.email
         routing-key:
           - notification.email.send
+    - push:
+        name: queue.notification.push.document.upload
+        routing-key:
+          - notification.push.upload.document

@@ -4,6 +4,7 @@ import studydocs.notificationservice.shared.exception.concrete.recipient.validat
 import studydocs.notificationservice.shared.exception.concrete.recipient.validation.MissingNotificationIdInRecipientException;
 import studydocs.notificationservice.shared.exception.concrete.recipient.validation.MissingRecipientIdInRecipientException;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class NotificationRecipient {
@@ -12,14 +13,17 @@ public class NotificationRecipient {
     private UUID notificationId;
     private boolean isRead;
     private boolean isDeleted;
+    private Notification notification;
 
-    public NotificationRecipient(UUID id, UUID recipientId, UUID notificationId, boolean isRead, boolean isDeleted) {
+    public NotificationRecipient(UUID id, UUID recipientId, UUID notificationId,
+                                 boolean isRead, boolean isDeleted, Notification notification) {
         validationForLoad(id, recipientId, notificationId);
         this.id = id;
         this.recipientId = recipientId;
         this.notificationId = notificationId;
         this.isRead = isRead;
         this.isDeleted = isDeleted;
+        this.notification = notification;
     }
 
     public NotificationRecipient(UUID recipientId, UUID notificationId) {
@@ -33,6 +37,10 @@ public class NotificationRecipient {
 
     public UUID getId() {
         return id;
+    }
+
+    public Optional<Notification> getNotification() {
+        return Optional.ofNullable(notification);
     }
 
     public UUID getRecipientId() {

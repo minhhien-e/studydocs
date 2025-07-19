@@ -9,6 +9,7 @@ import studydocs.notificationservice.infrastructure.mongo.mapper.NotificationTem
 import studydocs.notificationservice.infrastructure.mongo.repository.NotificationTemplateMongoRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -24,6 +25,12 @@ public class NotificationTemplateRepository implements NotificationTemplateRepos
     @Override
     public Optional<NotificationTemplate> findByName(String name) {
         Optional<NotificationTemplateDocument> document = notificationTemplateMongoRepository.findByName(name);
+        return document.map(NotificationTemplateMapper::toDomain);
+    }
+
+    @Override
+    public Optional<NotificationTemplate> findById(UUID id) {
+        Optional<NotificationTemplateDocument> document = notificationTemplateMongoRepository.findById(id);
         return document.map(NotificationTemplateMapper::toDomain);
     }
 }

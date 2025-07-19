@@ -1,4 +1,4 @@
-package studydocs.notificationservice.adapter.input.rest.controller;
+package studydocs.notificationservice.adapter.input.rest.controller.template;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import studydocs.notificationservice.adapter.input.rest.request.AddTemplateRequest;
-import studydocs.notificationservice.application.port.input.usecase.template.add.AddTemplateUseCase;
+import studydocs.notificationservice.adapter.input.rest.request.template.create.AddTemplateRequest;
+import studydocs.notificationservice.application.port.input.usecase.template.create.AddTemplateUseCase;
 import studydocs.notificationservice.shared.api.ApiResponse;
 
 @RestController
 @RequestMapping("/api/v1/templates")
 @RequiredArgsConstructor
-public class TemplateController {
+public class CreateTemplateController {
     private final AddTemplateUseCase addTemplateUseCase;
 
     @PostMapping

@@ -9,7 +9,8 @@ public final class RecipientMapper {
                 document.getRecipientId(),
                 document.getNotificationId(),
                 document.isRead(),
-                document.isDeleted()
+                document.isDeleted(),
+                NotificationMapper.toDomain(document.getNotification())
         );
     }
 
