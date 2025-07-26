@@ -6,7 +6,7 @@ import studydocs.notificationservice.application.port.input.dto.inputmodel.templ
 import studydocs.notificationservice.application.port.input.dto.outputmodel.template.TemplateOutputModel;
 import studydocs.notificationservice.application.port.input.usecase.template.read.GetTemplateByNameUseCase;
 import studydocs.notificationservice.application.port.ouput.repository.NotificationTemplateRepositoryPort;
-import studydocs.notificationservice.shared.exception.concrete.template.notfound.TemplateNotFoundException;
+import studydocs.notificationservice.shared.exception.concrete.template.TemplateNotFoundException;
 
 @Service
 @RequiredArgsConstructor

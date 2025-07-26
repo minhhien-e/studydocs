@@ -21,7 +21,6 @@ public class AddNotificationInputModel {
         return new Notification(
                 templateId,
                 senderId,
-                chanel,
                 type,
                 templateData);
     }

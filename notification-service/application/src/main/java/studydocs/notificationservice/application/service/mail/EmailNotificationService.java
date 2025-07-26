@@ -10,8 +10,9 @@ import studydocs.notificationservice.domain.entities.NotificationTemplate;
 import studydocs.notificationservice.domain.event.SendMailEvent;
 import studydocs.notificationservice.domain.valueobject.EmailData;
 import studydocs.notificationservice.shared.exception.concrete.mail.MissingEmailInSendMailException;
-import studydocs.notificationservice.shared.exception.concrete.template.notfound.TemplateNotFoundException;
-import studydocs.notificationservice.shared.exception.concrete.template.validation.MissingNameInTemplateException;
+import studydocs.notificationservice.shared.exception.concrete.template.TemplateNotFoundException;
+import studydocs.notificationservice.shared.exception.concrete.valueobjects.name.MissingNameFieldException;
+import studydocs.notificationservice.shared.utils.StringUtils;
 
 @Service
 public class EmailNotificationService implements SendEmailNotificationUseCase {
@@ -36,8 +37,8 @@ public class EmailNotificationService implements SendEmailNotificationUseCase {
         NotificationTemplate notificationTemplate = templateRepository
                 .findByName(templateName)
                 .orElseThrow(() -> new TemplateNotFoundException(templateName));
-        String subject = notificationTemplate.getSubjectTemplate();
-        String content = notificationTemplate.getBodyTemplate();
+        String subject = notificationTemplate.getSubjectTemplate().value();
+        String content = notificationTemplate.getBodyTemplate().value();
         if (event.templateData() != null) {
             content = templateRenderer.render(content, event.templateData());
         }
@@ -45,11 +46,11 @@ public class EmailNotificationService implements SendEmailNotificationUseCase {
     }
 
     private void validate(SendMailEvent event) {
-        if (event.email() == null || event.email().isBlank()) {
+        if (StringUtils.isNullOrBlank(event.email())) {
             throw new MissingEmailInSendMailException();
         }
-        if (event.templateName() == null || event.templateName().isBlank()) {
-            throw new MissingNameInTemplateException();
+        if (StringUtils.isNullOrBlank(event.templateName())) {
+            throw new MissingNameFieldException("mẫu thông báo khi gửi mail");
         }
     }
 

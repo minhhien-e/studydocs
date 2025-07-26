@@ -10,7 +10,6 @@ public final class NotificationMapper {
         return new Notification(document.getId(),
                 document.getTemplateId(),
                 document.getSenderId(),
-                document.getChanel(),
                 document.getType(),
                 document.getTemplateData(),
                 document.getCreatedAt());
@@ -20,11 +19,10 @@ public final class NotificationMapper {
         return NotificationDocument.builder()
                 .id(notification.getId())
                 .templateId(notification.getTemplateId())
-                .chanel(notification.getChanel().name())
                 .senderId(notification.getSenderId())
-                .templateData(notification.getTemplateData())
-                .type(notification.getType().name())
-                .createdAt(notification.getCreateAt())
+                .templateData(notification.getTemplateData().data())
+                .type(notification.getType().getValue())
+                .createdAt(notification.getCreateAt().getValue())
                 .build();
     }
 }

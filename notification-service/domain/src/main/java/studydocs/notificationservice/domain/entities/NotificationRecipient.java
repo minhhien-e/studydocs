@@ -1,16 +1,16 @@
 package studydocs.notificationservice.domain.entities;
 
-import studydocs.notificationservice.shared.exception.concrete.recipient.validation.MissingIdInRecipientException;
-import studydocs.notificationservice.shared.exception.concrete.recipient.validation.MissingNotificationIdInRecipientException;
-import studydocs.notificationservice.shared.exception.concrete.recipient.validation.MissingRecipientIdInRecipientException;
+import studydocs.notificationservice.shared.exception.concrete.recipient.MissingIdInRecipientException;
+import studydocs.notificationservice.shared.exception.concrete.recipient.MissingNotificationIdInRecipientException;
+import studydocs.notificationservice.shared.exception.concrete.recipient.MissingRecipientIdInRecipientException;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public class NotificationRecipient {
-    private UUID id;
-    private UUID recipientId;
-    private UUID notificationId;
+    private final UUID id;
+    private final UUID recipientId;
+    private final UUID notificationId;
     private boolean isRead;
     private boolean isDeleted;
     private Notification notification;
