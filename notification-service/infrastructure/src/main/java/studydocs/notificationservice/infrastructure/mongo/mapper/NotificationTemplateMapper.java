@@ -7,12 +7,12 @@ public final class NotificationTemplateMapper {
     public static NotificationTemplateDocument toDocument(NotificationTemplate domain) {
         return NotificationTemplateDocument.builder()
                 .id(domain.getId())
-                .name(domain.getName())
-                .channel(domain.getChannel().name())
-                .subjectTemplate(domain.getSubjectTemplate())
-                .bodyTemplate(domain.getBodyTemplate())
+                .name(domain.getName().getValue())
+                .channel(domain.getChannel().getChannel())
+                .subjectTemplate(domain.getSubjectTemplate().value())
+                .bodyTemplate(domain.getBodyTemplate().value())
                 .description(domain.getDescription().orElse(null))
-                .createdAt(domain.getCreatedAt())
+                .createdAt(domain.getCreatedAt().getValue())
                 .build();
     }
 

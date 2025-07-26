@@ -1,6 +1,6 @@
 package studydocs.notificationservice.shared.exception.concrete.mail;
 
-import studydocs.notificationservice.shared.exception.validation.RequiredFieldMissingException;
+import studydocs.notificationservice.shared.exception.abstracts.RequiredFieldMissingException;
 
 public class MissingEmailInSendMailException extends RequiredFieldMissingException {
     public MissingEmailInSendMailException() {

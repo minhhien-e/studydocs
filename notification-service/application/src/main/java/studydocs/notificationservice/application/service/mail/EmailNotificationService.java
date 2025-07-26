@@ -10,8 +10,8 @@ import studydocs.notificationservice.domain.entities.NotificationTemplate;
 import studydocs.notificationservice.domain.event.SendMailEvent;
 import studydocs.notificationservice.domain.valueobject.EmailData;
 import studydocs.notificationservice.shared.exception.concrete.mail.MissingEmailInSendMailException;
-import studydocs.notificationservice.shared.exception.concrete.template.notfound.TemplateNotFoundException;
-import studydocs.notificationservice.shared.exception.concrete.template.validation.MissingNameInTemplateException;
+import studydocs.notificationservice.shared.exception.concrete.template.TemplateNotFoundException;
+import studydocs.notificationservice.shared.exception.concrete.valueobjects.name.MissingNameFieldException;
 
 @Service
 public class EmailNotificationService implements SendEmailNotificationUseCase {
@@ -49,7 +49,7 @@ public class EmailNotificationService implements SendEmailNotificationUseCase {
             throw new MissingEmailInSendMailException();
         }
         if (event.templateName() == null || event.templateName().isBlank()) {
-            throw new MissingNameInTemplateException();
+            throw new MissingNameFieldException();
         }
     }
 

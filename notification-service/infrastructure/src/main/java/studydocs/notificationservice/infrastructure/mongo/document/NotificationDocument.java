@@ -22,7 +22,6 @@ public class NotificationDocument {
     private UUID id;
     private UUID templateId;
     private UUID senderId;
-    private String chanel;
     private String type;
     private Map<String, Object> templateData;
     @CreatedDate

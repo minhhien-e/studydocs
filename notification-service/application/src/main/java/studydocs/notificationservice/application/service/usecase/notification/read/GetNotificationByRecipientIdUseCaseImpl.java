@@ -13,7 +13,7 @@ import studydocs.notificationservice.application.port.ouput.repository.Notificat
 import studydocs.notificationservice.domain.entities.Notification;
 import studydocs.notificationservice.domain.entities.NotificationRecipient;
 import studydocs.notificationservice.domain.entities.NotificationTemplate;
-import studydocs.notificationservice.shared.exception.concrete.notification.notfound.NotificationNotFoundException;
+import studydocs.notificationservice.shared.exception.concrete.notification.NotificationNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
