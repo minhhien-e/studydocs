@@ -7,7 +7,9 @@ import studydocs.notificationservice.domain.valueobject.date.past.UpdateDate;
 import studydocs.notificationservice.domain.valueobject.notification.NotificationChannelType;
 import studydocs.notificationservice.domain.valueobject.template.BodyTemplate;
 import studydocs.notificationservice.domain.valueobject.template.SubjectTemplate;
+import studydocs.notificationservice.shared.exception.concrete.template.MissingDescriptionInTemplateException;
 import studydocs.notificationservice.shared.exception.concrete.template.MissingIdInTemplateException;
+import studydocs.notificationservice.shared.utils.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -29,8 +31,8 @@ public class NotificationTemplate {
         this.id = UUID.randomUUID();
         this.name = new Name(name, "mẫu thông báo");
         this.channel = new NotificationChannelType(channel, "mẫu thông báo");
-        this.subjectTemplate = new SubjectTemplate(subjectTemplate);
-        this.bodyTemplate = new BodyTemplate(bodyTemplate);
+        setSubjectTemplate(subjectTemplate);
+        setBodyTemplate(bodyTemplate);
         this.description = description;
         this.createdAt = new CreateDate("tạo", "mẫu thông báo", LocalDateTime.now());
     }
@@ -41,10 +43,10 @@ public class NotificationTemplate {
         if (id == null)
             throw new MissingIdInTemplateException();
         this.id = id;
-        this.name = new Name(name, "mẫu thông báo");
+        setName(name);
         this.channel = new NotificationChannelType(channel, "mẫu thông báo");
-        this.subjectTemplate = new SubjectTemplate(subjectTemplate);
-        this.bodyTemplate = new BodyTemplate(bodyTemplate);
+        setSubjectTemplate(subjectTemplate);
+        setBodyTemplate(bodyTemplate);
         this.description = description;
         this.createdAt = new CreateDate("tạo", "mẫu thông báo", createdAt);
         this.updatedAt = new UpdateDate("thay đổi", "mẫu thông báo", updatedAt, createdAt);
@@ -58,12 +60,24 @@ public class NotificationTemplate {
         return name;
     }
 
+    private void setName(String name) {
+        this.name = new Name(name, "mẫu thông báo");
+    }
+
     public SubjectTemplate getSubjectTemplate() {
         return subjectTemplate;
     }
 
+    private void setSubjectTemplate(String subjectTemplate) {
+        this.subjectTemplate = new SubjectTemplate(subjectTemplate);
+    }
+
     public BodyTemplate getBodyTemplate() {
         return bodyTemplate;
+    }
+
+    private void setBodyTemplate(String bodyTemplate) {
+        this.bodyTemplate = new BodyTemplate(bodyTemplate);
     }
 
     public Optional<String> getDescription() {
@@ -92,5 +106,23 @@ public class NotificationTemplate {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    public void updateName(String newName) {
+        setName(newName);
+    }
+
+    public void updateSubject(String newSubject) {
+        setSubjectTemplate(newSubject);
+    }
+
+    public void updateBody(String newBody) {
+        setBodyTemplate(newBody);
+    }
+
+    public void updateDescription(String newDescription) {
+        if (StringUtils.isNullOrBlank(newDescription))
+            throw new MissingDescriptionInTemplateException();
+        else this.description = newDescription;
     }
 }

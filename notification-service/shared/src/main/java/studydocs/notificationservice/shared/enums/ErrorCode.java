@@ -29,4 +29,5 @@ public enum ErrorCode {
 
     // CUSTOM
     TOO_MANY_REQUESTS,
+    UPDATE_FAILED,
 }

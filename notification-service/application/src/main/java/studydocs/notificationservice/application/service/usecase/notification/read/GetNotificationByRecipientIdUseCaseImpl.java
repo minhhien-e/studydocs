@@ -61,17 +61,17 @@ public class GetNotificationByRecipientIdUseCaseImpl implements GetNotificationB
                 .senderId(notification.getSenderId())
                 .recipientId(recipient.getRecipientId())
                 .isRead(recipient.isRead())
-                .type(notification.getType())
-                .subject(template.getSubjectTemplate())
+                .type(notification.getType().getValue())
+                .subject(template.getSubjectTemplate().value())
                 .content(content)
-                .createdAt(notification.getCreateAt())
+                .createdAt(notification.getCreateAt().getValue())
                 .build();
     }
 
     private String createContent(Notification notification, NotificationTemplate template) {
-        String content = template.getBodyTemplate();
+        String content = template.getBodyTemplate().value();
         if (notification.getTemplateData() != null)
-            content = templateRenderer.render(content, notification.getTemplateData());
+            content = templateRenderer.render(content, notification.getTemplateData().data());
         return content;
     }
 }

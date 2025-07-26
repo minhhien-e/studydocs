@@ -1,6 +1,10 @@
 package studydocs.notificationservice.adapter.output.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 import studydocs.notificationservice.application.port.ouput.repository.NotificationTemplateRepositoryPort;
 import studydocs.notificationservice.domain.entities.NotificationTemplate;
@@ -15,6 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class NotificationTemplateRepository implements NotificationTemplateRepositoryPort {
     private final NotificationTemplateMongoRepository notificationTemplateMongoRepository;
+    private final MongoTemplate mongoTemplate;
 
     @Override
     public void save(NotificationTemplate notificationTemplate) {
@@ -32,5 +37,37 @@ public class NotificationTemplateRepository implements NotificationTemplateRepos
     public Optional<NotificationTemplate> findById(UUID id) {
         Optional<NotificationTemplateDocument> document = notificationTemplateMongoRepository.findById(id);
         return document.map(NotificationTemplateMapper::toDomain);
+    }
+
+    @Override
+    public long updateName(UUID id, String newName) {
+        Query query = new Query(Criteria.where("_id").is(id));
+        Update update = new Update().set("name", newName);
+        var result = mongoTemplate.updateFirst(query, update, NotificationTemplateDocument.class);
+        return result.getModifiedCount();
+    }
+
+    @Override
+    public long updateSubject(UUID id, String newSubject) {
+        Query query = new Query(Criteria.where("_id").is(id));
+        Update update = new Update().set("subjectTemplate", newSubject);
+        var result = mongoTemplate.updateFirst(query, update, NotificationTemplateDocument.class);
+        return result.getModifiedCount();
+    }
+
+    @Override
+    public long updateBody(UUID id, String newBody) {
+        Query query = new Query(Criteria.where("_id").is(id));
+        Update update = new Update().set("bodyTemplate", newBody);
+        var result = mongoTemplate.updateFirst(query, update, NotificationTemplateDocument.class);
+        return result.getModifiedCount();
+    }
+
+    @Override
+    public long updateDescription(UUID id, String newDescription) {
+        Query query = new Query(Criteria.where("_id").is(id));
+        Update update = new Update().set("description", newDescription);
+        var result = mongoTemplate.updateFirst(query, update, NotificationTemplateDocument.class);
+        return result.getModifiedCount();
     }
 }

@@ -9,6 +9,6 @@ import java.util.UUID;
 public record NotificationOutputModel(UUID id, UUID senderId, UUID recipientId,
                                       String subject, String content,
                                       boolean isRead,
-                                      NotificationType type,
+                                      String type,
                                       LocalDateTime createdAt ) {
 }

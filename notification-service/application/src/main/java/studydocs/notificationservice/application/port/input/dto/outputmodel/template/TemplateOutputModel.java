@@ -13,7 +13,7 @@ import java.util.UUID;
 public class TemplateOutputModel {
     private UUID id;
     private String name;
-    private NotificationChannel channel;
+    private String channel;
     private String subjectTemplate;
     private String bodyTemplate;
     private String description;
@@ -23,12 +23,12 @@ public class TemplateOutputModel {
     public static TemplateOutputModel toOutputModel(NotificationTemplate template) {
         return TemplateOutputModel.builder()
                 .id(template.getId())
-                .name(template.getName())
-                .channel(template.getChannel())
-                .subjectTemplate(template.getSubjectTemplate())
-                .bodyTemplate(template.getBodyTemplate())
+                .name(template.getName().getValue())
+                .channel(template.getChannel().getChannel())
+                .subjectTemplate(template.getSubjectTemplate().value())
+                .bodyTemplate(template.getBodyTemplate().value())
                 .description(template.getDescription().orElse(null))
-                .updatedAt(template.getUpdatedAt())
+                .updatedAt(template.getUpdatedAt().getValue())
                 .build();
     }
 }
