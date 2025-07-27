@@ -5,6 +5,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 import studydocs.notificationservice.application.port.input.dto.paging.SliceOutput;
 import studydocs.notificationservice.application.port.ouput.repository.NotificationRecipientRepositoryPort;
@@ -57,5 +59,37 @@ public class NotificationRecipientRepository implements NotificationRecipientRep
     @Override
     public void save(NotificationRecipient notificationRecipient) {
         repository.save(RecipientMapper.toDocument(notificationRecipient));
+    }
+
+    @Override
+    public boolean hasAnyUnread(UUID recipientId) {
+        return repository.existsByRecipientIdAndReadIsFalse(recipientId);
+    }
+
+    @Override
+    public boolean isUnread(UUID recipientId, UUID notificationId) {
+        return repository.existsByRecipientIdAndNotificationIdAndReadIsFalse(recipientId, notificationId);
+    }
+
+    @Override
+    public long markAllAsRead(UUID recipientId) {
+        Query query = Query.query(Criteria.where("recipientId").is(recipientId));
+        Update update = new Update().set("read", true);
+        var result = mongoTemplate.updateMulti(query, update, NotificationRecipient.class);
+        return result.getModifiedCount();
+    }
+
+    @Override
+    public long markAsRead(UUID recipientId, UUID notificationId) {
+        Query query = Query.query(Criteria.where("recipientId").is(recipientId)
+                .and("notificationId").is(notificationId));
+        Update update = new Update().set("read", true);
+        var result = mongoTemplate.updateFirst(query, update, NotificationRecipient.class);
+        return result.getModifiedCount();
+    }
+
+    @Override
+    public boolean existsByRecipientIdAndNotificationId(UUID recipientId, UUID notificationId) {
+        return repository.existsByRecipientIdAndNotificationId(recipientId, notificationId);
     }
 }

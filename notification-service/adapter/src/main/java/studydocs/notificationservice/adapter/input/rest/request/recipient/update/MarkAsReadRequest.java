@@ -2,7 +2,7 @@ package studydocs.notificationservice.adapter.input.rest.request.recipient.updat
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import studydocs.notificationservice.application.port.input.dto.inputmodel.recipient.update.MarkAsReadInputCommand;
+import studydocs.notificationservice.application.port.input.dto.inputmodel.recipient.update.MarkAsReadInputModel;
 
 import java.util.UUID;
 
@@ -16,7 +16,7 @@ public class MarkAsReadRequest {
         this.notificationId = notificationId;
     }
 
-    public MarkAsReadInputCommand toInputModel() {
-        return new MarkAsReadInputCommand(recipientId, notificationId);
+    public MarkAsReadInputModel toInputModel() {
+        return new MarkAsReadInputModel(recipientId, notificationId);
     }
 }

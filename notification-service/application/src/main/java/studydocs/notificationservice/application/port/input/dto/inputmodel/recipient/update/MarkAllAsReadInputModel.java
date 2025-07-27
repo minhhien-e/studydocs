@@ -2,5 +2,5 @@ package studydocs.notificationservice.application.port.input.dto.inputmodel.reci
 
 import java.util.UUID;
 
-public record MarkAsReadInputCommand(UUID recipientId, UUID notificationId) {
+public record MarkAllAsReadInputModel(UUID recipientId) {
 }

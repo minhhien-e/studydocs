@@ -9,4 +9,13 @@ import java.util.UUID;
 public interface NotificationRecipientRepositoryPort {
     SliceOutput<NotificationRecipient> findByRecipientId(UUID recipientId, LocalDateTime createdAt, int pageNumber, int limit);
     void save(NotificationRecipient notificationRecipient);
+
+    boolean hasAnyUnread(UUID uuid);
+    boolean isUnread(UUID recipientId,UUID notificationId);
+
+    long markAllAsRead(UUID recipientId);
+
+    long markAsRead(UUID recipientId, UUID notificationId);
+
+    boolean existsByRecipientIdAndNotificationId(UUID recipientId, UUID notificationId);
 }
