@@ -1,4 +1,4 @@
-package studydocs.notificationservice.adapter.input.rest.request.template.read;
+package studydocs.notificationservice.adapter.input.rest.request.recipient.read;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

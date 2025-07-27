@@ -1,7 +1,7 @@
 package studydocs.notificationservice.application.port.input.usecase.template.update;
 
 
-import studydocs.notificationservice.application.port.input.dto.inputmodel.template.update.UpdateTemplateSubjectInputModel;
+import studydocs.notificationservice.application.port.input.dto.inputmodel.template.update.concrete.UpdateTemplateSubjectInputModel;
 
 public interface UpdateTemplateSubjectUseCase {
     void execute(UpdateTemplateSubjectInputModel inputModel);
