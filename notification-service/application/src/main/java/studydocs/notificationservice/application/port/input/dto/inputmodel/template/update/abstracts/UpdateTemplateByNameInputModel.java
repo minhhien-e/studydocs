@@ -1,12 +1,10 @@
 package studydocs.notificationservice.application.port.input.dto.inputmodel.template.update.abstracts;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 public class UpdateTemplateByNameInputModel {
     protected String name;
-
-    public UpdateTemplateByNameInputModel(final String name) {
-        this.name = name;
-    }
 }

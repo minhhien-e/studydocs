@@ -2,6 +2,7 @@ package studydocs.notificationservice.adapter.input.rest.request.template.update
 
 import lombok.Getter;
 import studydocs.notificationservice.adapter.input.rest.request.template.update.abstracts.UpdateTemplateByNameRequest;
+import studydocs.notificationservice.application.port.input.dto.inputmodel.template.update.abstracts.UpdateTemplateByNameInputModel;
 import studydocs.notificationservice.application.port.input.dto.inputmodel.template.update.concrete.UpdateTemplateSubjectInputModel;
 @Getter
 public class UpdateTemplateSubjectRequest extends UpdateTemplateByNameRequest {
@@ -11,9 +12,12 @@ public class UpdateTemplateSubjectRequest extends UpdateTemplateByNameRequest {
         this.newSubject = newSubject;
     }
 
+    @Override
+    protected UpdateTemplateByNameInputModel createInputModel() {
+        return new UpdateTemplateSubjectInputModel(newSubject);
+    }
+
     public UpdateTemplateSubjectInputModel toInputModel() {
-        var inputModel =(UpdateTemplateSubjectInputModel) super.toInputModel();
-        inputModel.setNewSubject(newSubject);
-        return inputModel;
+        return (UpdateTemplateSubjectInputModel) super.toInputModel();
     }
 }

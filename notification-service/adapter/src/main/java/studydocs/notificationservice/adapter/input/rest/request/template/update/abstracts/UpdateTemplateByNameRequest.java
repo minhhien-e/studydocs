@@ -9,7 +9,11 @@ public abstract class UpdateTemplateByNameRequest {
     @JsonIgnore
     protected String templateName;
 
+    protected abstract UpdateTemplateByNameInputModel createInputModel();
+
     protected UpdateTemplateByNameInputModel toInputModel() {
-        return new UpdateTemplateByNameInputModel(templateName);
+        var input = createInputModel();
+        input.setName(templateName);
+        return input;
     }
 }
