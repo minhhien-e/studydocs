@@ -28,7 +28,7 @@ spring:
       enabled: true
   data:
     mongodb:
-      uri: mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}/${MONGO_DB}
+      uri: mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}
       uuid-representation: standard
 rabbitmq:
   exchange: exchange.notification

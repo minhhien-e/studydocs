@@ -7,8 +7,6 @@ import studydocs.notificationservice.application.port.input.usecase.recipient.up
 import studydocs.notificationservice.application.port.ouput.repository.NotificationRecipientRepositoryPort;
 import studydocs.notificationservice.shared.exception.abstracts.UpdateFailedException;
 import studydocs.notificationservice.shared.exception.concrete.notification.NotificationNotFoundException;
-import studydocs.notificationservice.shared.exception.concrete.recipient.NotificationUnreadNotFoundException;
-import studydocs.notificationservice.shared.exception.concrete.recipient.NotificationsUnreadNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -17,11 +15,12 @@ public class MarkAsReadUseCaseImpl implements MarkAsReadUseCase {
 
     @Override
     public void execute(MarkAsReadInputModel inputModel) {
-        if (!repository.existsByRecipientIdAndNotificationId(inputModel.recipientId(), inputModel.notificationId()))
+        var recipientOptional = repository.findByRecipientIdAndNotificationId(inputModel.recipientId(), inputModel.notificationId());
+        if (recipientOptional.isEmpty())
             throw new NotificationNotFoundException(inputModel.notificationId());
-        if (!repository.isUnread(inputModel.recipientId(), inputModel.notificationId()))
-            throw new NotificationUnreadNotFoundException(inputModel.notificationId());
-        long modifierCol = repository.markAsRead(inputModel.recipientId(), inputModel.notificationId());
+        var recipient = recipientOptional.get();
+        recipient.read();
+        long modifierCol = repository.markAsRead(recipient.getRecipientId(), recipient.getNotificationId());
         if (modifierCol <= 0)
             throw new UpdateFailedException();
     }

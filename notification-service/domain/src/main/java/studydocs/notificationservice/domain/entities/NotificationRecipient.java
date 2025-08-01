@@ -3,6 +3,7 @@ package studydocs.notificationservice.domain.entities;
 import studydocs.notificationservice.shared.exception.concrete.recipient.MissingIdInRecipientException;
 import studydocs.notificationservice.shared.exception.concrete.recipient.MissingNotificationIdInRecipientException;
 import studydocs.notificationservice.shared.exception.concrete.recipient.MissingRecipientIdInRecipientException;
+import studydocs.notificationservice.shared.exception.concrete.recipient.NotificationAlreadyDeletedException;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -59,6 +60,15 @@ public class NotificationRecipient {
         return isDeleted;
     }
 
+    public void read() {
+        if (isDeleted)
+            throw new NotificationAlreadyDeletedException();
+        isRead = true;
+    }
+    public void delete() {
+        isDeleted = true;
+    }
+
     private void validationForLoad(UUID id, UUID recipientId, UUID notificationId) {
         if (id == null)
             throw new MissingIdInRecipientException();
@@ -72,4 +82,6 @@ public class NotificationRecipient {
             throw new MissingNotificationIdInRecipientException();
 
     }
+
+
 }

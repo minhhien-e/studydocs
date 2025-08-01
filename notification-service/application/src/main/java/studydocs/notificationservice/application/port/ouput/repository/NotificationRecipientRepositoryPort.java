@@ -4,6 +4,7 @@ import studydocs.notificationservice.application.port.input.dto.paging.SliceOutp
 import studydocs.notificationservice.domain.entities.NotificationRecipient;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface NotificationRecipientRepositoryPort {
@@ -11,11 +12,11 @@ public interface NotificationRecipientRepositoryPort {
     void save(NotificationRecipient notificationRecipient);
 
     boolean hasAnyUnread(UUID uuid);
-    boolean isUnread(UUID recipientId,UUID notificationId);
+    int countUnread(UUID recipientId,UUID notificationId);
 
     long markAllAsRead(UUID recipientId);
 
     long markAsRead(UUID recipientId, UUID notificationId);
 
-    boolean existsByRecipientIdAndNotificationId(UUID recipientId, UUID notificationId);
+    Optional<NotificationRecipient> findByRecipientIdAndNotificationId(UUID recipientId, UUID notificationId);
 }

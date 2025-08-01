@@ -1,6 +1,7 @@
 package studydocs.notificationservice.adapter.input.rest.controller.notification;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import studydocs.notificationservice.adapter.input.rest.request.recipient.update.MarkAllAsReadRequest;
@@ -17,7 +18,7 @@ import java.util.UUID;
 public class UpdateNotificationController {
     private final MarkAllAsReadUseCase markAllAsReadUseCase;
     private final MarkAsReadUseCase markAsReadUseCase;
-    @PutMapping("/{notificationId}/read")
+    @PatchMapping("/{notificationId}/read")
     public ResponseEntity<?> markAsRead(@PathVariable("notificationId") UUID notificationId, @RequestParam("userId") UUID recipientId) {
         var request = new MarkAsReadRequest(notificationId);
         request.setRecipientId(recipientId);
@@ -25,7 +26,7 @@ public class UpdateNotificationController {
         markAsReadUseCase.execute(inputModel);
         return ResponseEntity.ok(ApiResponse.success(null, "Đánh dấu đã đọc thành công"));
     }
-    @PutMapping("/read-all")
+    @PatchMapping("/read-all")
     public ResponseEntity<?> markAllAsRead(@RequestParam("userId") UUID recipientId) {
         var request = new MarkAllAsReadRequest();
         request.setRecipientId(recipientId);
