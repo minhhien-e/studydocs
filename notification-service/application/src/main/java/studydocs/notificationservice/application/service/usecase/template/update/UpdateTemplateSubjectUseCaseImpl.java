@@ -2,7 +2,7 @@ package studydocs.notificationservice.application.service.usecase.template.updat
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import studydocs.notificationservice.application.port.input.dto.inputmodel.template.update.UpdateTemplateSubjectInputModel;
+import studydocs.notificationservice.application.port.input.dto.inputmodel.template.update.concrete.UpdateTemplateSubjectInputModel;
 import studydocs.notificationservice.application.port.input.usecase.template.update.UpdateTemplateSubjectUseCase;
 import studydocs.notificationservice.application.port.ouput.repository.NotificationTemplateRepositoryPort;
 import studydocs.notificationservice.shared.exception.abstracts.UpdateFailedException;
@@ -15,9 +15,9 @@ public class UpdateTemplateSubjectUseCaseImpl implements UpdateTemplateSubjectUs
 
     @Override
     public void execute(UpdateTemplateSubjectInputModel inputModel) {
-        var notificationTemplate = repository.findByName(inputModel.templateName())
-                .orElseThrow(() -> new TemplateNotFoundException(inputModel.templateName()));
-        notificationTemplate.updateSubject(inputModel.newSubject());
+        var notificationTemplate = repository.findByName(inputModel.getName())
+                .orElseThrow(() -> new TemplateNotFoundException(inputModel.getName()));
+        notificationTemplate.updateSubject(inputModel.getNewSubject());
         long modifierCount = repository.updateSubject(notificationTemplate.getId(),
                 notificationTemplate.getSubjectTemplate().value());
         if (modifierCount <= 0)

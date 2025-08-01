@@ -9,6 +9,6 @@ public class InvalidUpdateDateException extends BusinessRuleViolationException {
     private static final String format = "Thời gian cập nhật (%s) không thể trước thời gian tạo (%s)";
 
     public InvalidUpdateDateException(LocalDateTime createdAt, LocalDateTime updatedAt) {
-        super("Thời gian cập nhật (" + LocalDateUtils.getDateTimeFormat(LocalDateUtils.DATE_TIME_FORMAT, updatedAt) + ") không thể trước thời gian tạo (" + LocalDateUtils.getDateTimeFormat(LocalDateUtils.DATE_TIME_FORMAT, createdAt) + ").");
+        super(String.format(format,LocalDateUtils.getDateTimeFormat(LocalDateUtils.DATE_TIME_FORMAT, updatedAt),LocalDateUtils.getDateTimeFormat(LocalDateUtils.DATE_TIME_FORMAT, createdAt)));
     }
 }

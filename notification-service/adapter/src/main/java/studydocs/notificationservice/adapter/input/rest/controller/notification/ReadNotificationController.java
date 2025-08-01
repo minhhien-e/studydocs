@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import studydocs.notificationservice.adapter.input.rest.request.template.read.GetNotificationByRecipientIdRequest;
+import studydocs.notificationservice.adapter.input.rest.request.recipient.read.GetNotificationByRecipientIdRequest;
 import studydocs.notificationservice.application.port.input.usecase.notificaton.read.GetNotificationByRecipientIdUseCase;
 import studydocs.notificationservice.shared.api.ApiResponse;
 
