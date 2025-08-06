@@ -1,4 +1,4 @@
 package studydocs.notificationservice.application.port.input.dto.paging;
 
-public record SliceInput<T>(T request, int page, int limit) {
+public record SliceInput<T>(T request, int limit) {
 }

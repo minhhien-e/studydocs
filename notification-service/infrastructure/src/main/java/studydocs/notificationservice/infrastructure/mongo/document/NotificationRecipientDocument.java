@@ -22,6 +22,5 @@ public class NotificationRecipientDocument {
     private UUID notificationId;
     private boolean isRead;
     private boolean isDeleted;
-    @Transient
     private NotificationDocument notification;
 }

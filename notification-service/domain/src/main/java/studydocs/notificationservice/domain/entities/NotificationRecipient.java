@@ -5,7 +5,6 @@ import studydocs.notificationservice.shared.exception.concrete.recipient.Missing
 import studydocs.notificationservice.shared.exception.concrete.recipient.MissingRecipientIdInRecipientException;
 import studydocs.notificationservice.shared.exception.concrete.recipient.NotificationAlreadyDeletedException;
 
-import java.util.Optional;
 import java.util.UUID;
 
 public class NotificationRecipient {
@@ -40,8 +39,8 @@ public class NotificationRecipient {
         return id;
     }
 
-    public Optional<Notification> getNotification() {
-        return Optional.ofNullable(notification);
+    public Notification getNotification() {
+        return notification;
     }
 
     public UUID getRecipientId() {

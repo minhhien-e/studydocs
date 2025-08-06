@@ -14,6 +14,7 @@ import studydocs.notificationservice.domain.entities.Notification;
 import studydocs.notificationservice.domain.entities.NotificationRecipient;
 import studydocs.notificationservice.domain.entities.NotificationTemplate;
 import studydocs.notificationservice.shared.exception.concrete.notification.NotificationNotFoundException;
+import studydocs.notificationservice.shared.exception.concrete.template.TemplateNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,10 +38,9 @@ public class GetNotificationByRecipientIdUseCaseImpl implements GetNotificationB
         var sliceOutput = findByRecipientId(inputModel);
         List<NotificationOutputModel> outputModels = new ArrayList<>();
         sliceOutput.content().forEach(recipient -> {
-            Notification notification = recipient.getNotification().orElseThrow(()
-                    -> new NotificationNotFoundException(recipient.getNotificationId()));
+            Notification notification = recipient.getNotification();
             NotificationTemplate template = templateRepositoryPort.findById(notification.getTemplateId()).orElseThrow(() ->
-                    new NotificationNotFoundException(notification.getTemplateId()));
+                    new TemplateNotFoundException(notification.getTemplateId()));
             String content = createContent(notification, template);
             outputModels.add(createNotificationOutputModel(notification, template, recipient, content));
         });
@@ -51,7 +51,6 @@ public class GetNotificationByRecipientIdUseCaseImpl implements GetNotificationB
         var request = inputModel.request();
         return recipientRepositoryPort.findByRecipientId(request.recipientId(),
                 request.createdAt(),
-                inputModel.page(),
                 inputModel.limit());
     }
 
@@ -69,9 +68,6 @@ public class GetNotificationByRecipientIdUseCaseImpl implements GetNotificationB
     }
 
     private String createContent(Notification notification, NotificationTemplate template) {
-        String content = template.getBodyTemplate().value();
-        if (notification.getTemplateData() != null)
-            content = templateRenderer.render(content, notification.getTemplateData().data());
-        return content;
+        return templateRenderer.render(templateRenderer.render(template.getBodyTemplate().value(), notification.getTemplateData().data()), notification.getTemplateData().data());
     }
 }

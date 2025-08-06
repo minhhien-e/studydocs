@@ -5,8 +5,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 import studydocs.notificationservice.application.port.input.dto.paging.SliceOutput;
 import studydocs.notificationservice.application.port.ouput.repository.NotificationRecipientRepositoryPort;
@@ -31,15 +29,19 @@ public class NotificationRecipientRepository implements NotificationRecipientRep
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public SliceOutput<NotificationRecipient> findByRecipientId(UUID recipientId, LocalDateTime createdAt, int pageNumber, int limit) {
-        MatchOperation matchRecipient = Aggregation.match(where("recipientId").is(recipientId));
+    public SliceOutput<NotificationRecipient> findByRecipientId(UUID recipientId, LocalDateTime createdAt, int limit) {
+        MatchOperation matchRecipient = Aggregation.match(where("recipientId").is(recipientId)
+                .and("isDeleted").is(false));
         LookupOperation lookupNotification = LookupOperation.newLookup()
                 .from("notification")
                 .localField("notificationId")
-                .foreignField("id")
+                .foreignField("_id")
                 .as("notification");
         UnwindOperation unwindNotification = Aggregation.unwind("notification");
-        MatchOperation matchCreatedAt = Aggregation.match(where("notification.createdAt").gte(createdAt));
+        MatchOperation matchCreatedAt = Aggregation.match(
+                where("notification.createdAt").lte(createdAt)
+        );
+
         SortOperation sortByCreatedAt = Aggregation.sort(Sort.Direction.ASC, "notification.createdAt");
         LimitOperation limitOperation = Aggregation.limit(limit + 1);
 
@@ -55,9 +57,13 @@ public class NotificationRecipientRepository implements NotificationRecipientRep
                 .aggregate(aggregation, "notification_recipient", NotificationRecipientDocument.class);
         List<NotificationRecipient> recipientDomain = recipients.getMappedResults().stream()
                 .map(RecipientMapper::toDomain)
-                .toList()
-                .subList(0, Math.min(recipients.getMappedResults().size(), limit));
+                .toList();
+
         boolean hasNext = recipientDomain.size() > limit;
+
+        if (hasNext)
+            recipientDomain = recipientDomain.subList(0, limit);
+
         return new SliceOutput<>(recipientDomain, hasNext);
     }
 
