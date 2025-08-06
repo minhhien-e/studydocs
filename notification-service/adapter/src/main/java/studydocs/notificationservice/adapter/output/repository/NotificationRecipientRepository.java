@@ -78,8 +78,8 @@ public class NotificationRecipientRepository implements NotificationRecipientRep
     }
 
     @Override
-    public int countUnread(UUID recipientId, UUID notificationId) {
-        return repository.countByRecipientIdAndReadIsTrueAndDeletedIsFalse(recipientId, notificationId);
+    public int countUnread(UUID recipientId) {
+        return repository.countByRecipientIdAndReadIsTrueAndIsDeletedIsFalse(recipientId);
     }
 
     @Override

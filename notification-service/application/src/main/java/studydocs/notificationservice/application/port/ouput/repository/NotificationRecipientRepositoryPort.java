@@ -12,7 +12,7 @@ public interface NotificationRecipientRepositoryPort {
     void save(NotificationRecipient notificationRecipient);
 
     boolean hasAnyUnread(UUID uuid);
-    int countUnread(UUID recipientId,UUID notificationId);
+    int countUnread(UUID recipientId);
 
     long markAllAsRead(UUID recipientId);
 
