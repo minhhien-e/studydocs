@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface NotificationRecipientRepositoryPort {
-    SliceOutput<NotificationRecipient> findByRecipientId(UUID recipientId, LocalDateTime createdAt, int pageNumber, int limit);
+    SliceOutput<NotificationRecipient> findByRecipientId(UUID recipientId, LocalDateTime createdAt,  int limit);
     void save(NotificationRecipient notificationRecipient);
 
     boolean hasAnyUnread(UUID uuid);

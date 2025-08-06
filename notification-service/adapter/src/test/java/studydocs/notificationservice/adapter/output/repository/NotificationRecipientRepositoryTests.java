@@ -3,18 +3,25 @@ package studydocs.notificationservice.adapter.output.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import studydocs.notificationservice.application.port.input.dto.paging.SliceOutput;
 import studydocs.notificationservice.application.port.ouput.repository.NotificationRecipientRepositoryPort;
+import studydocs.notificationservice.application.port.ouput.repository.NotificationRepositoryPort;
+import studydocs.notificationservice.domain.entities.Notification;
 import studydocs.notificationservice.domain.entities.NotificationRecipient;
+import studydocs.notificationservice.shared.enums.NotificationType;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Testcontainers
@@ -30,6 +37,12 @@ public class NotificationRecipientRepositoryTests {
 
     @Autowired
     private NotificationRecipientRepositoryPort repository;
+    @Autowired
+    private NotificationRepositoryPort notificationRepository;
+
+    @Test
+    void hasAnyUnread_WhenUnreadExists_ReturnsTrue() {
+    }
 
     @Test
     void hasAnyUnread_WhenNoUnreadExists_ReturnsFalse() {
@@ -52,7 +65,7 @@ public class NotificationRecipientRepositoryTests {
         UUID recipientId = UUID.randomUUID();
         NotificationRecipient unread1 = new NotificationRecipient(recipientId, UUID.randomUUID());
         NotificationRecipient unread2 = new NotificationRecipient(recipientId, UUID.randomUUID());
-        NotificationRecipient otherRecipient = new NotificationRecipient( UUID.randomUUID(), UUID.randomUUID());
+        NotificationRecipient otherRecipient = new NotificationRecipient(UUID.randomUUID(), UUID.randomUUID());
         NotificationRecipient deleted = new NotificationRecipient(recipientId, UUID.randomUUID());
         deleted.delete();
         repository.save(unread1);
@@ -83,4 +96,41 @@ public class NotificationRecipientRepositoryTests {
         // Assert
         assertEquals(0, modifiedCount);
     }
+
+    @Test
+    void findByRecipientId_WhenDataValid_ReturnsPaging() {
+        // Arrange
+        UUID recipientId = UUID.randomUUID();
+        int limit = 3;
+
+        // Tạo 5 notifications với thời gian createdAt tăng dần
+        for (int i = 0; i < 5; i++) {
+            // Tạo Notification
+            Map<String, Object> templateData = Map.of("name", "name" + i);
+            Notification notification = new Notification(UUID.randomUUID(), UUID.randomUUID(), NotificationType.NEW_DOCUMENT.name(), templateData);
+            NotificationRecipient recipient = new NotificationRecipient(recipientId, notification.getId());
+            repository.save(recipient);
+            notificationRepository.save(notification);
+        }
+
+        LocalDateTime cutoff = LocalDateTime.now(); // Thời gian hiện tại làm mốc
+
+        // Act
+        SliceOutput<NotificationRecipient> result = repository.findByRecipientId(recipientId, cutoff, limit);
+
+        // Assert
+        assertEquals(limit, result.content().size()); // Chỉ lấy đúng số lượng limit
+        assertTrue(result.hasNext()); // Vì có 5 bản ghi nhưng limit = 3
+
+        // Kiểm tra thứ tự createdAt tăng dần
+        List<LocalDateTime> createdAts = result.content().stream()
+                .map(recipient -> recipient.getNotification().getCreateAt().getValue()) // hoặc recipient.getNotification().getCreatedAt() tùy cấu trúc
+                .toList();
+
+        for (int i = 1; i < createdAts.size(); i++) {
+            assert createdAts.get(i - 1).isBefore(createdAts.get(i)) ||
+                    createdAts.get(i - 1).isEqual(createdAts.get(i));
+        }
+    }
+
 }
