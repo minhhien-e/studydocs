@@ -5,9 +5,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import studydocs.notificationservice.application.port.input.dto.inputmodel.recipient.update.MarkAsReadInputModel;
-import studydocs.notificationservice.application.port.ouput.repository.NotificationRecipientRepositoryPort;
-import studydocs.notificationservice.domain.entities.NotificationRecipient;
+import studydocs.notificationservice.application.dto.input.recipient.update.MarkAsReadInput;
+import studydocs.notificationservice.domain.entity.NotificationRecipient;
+import studydocs.notificationservice.domain.repository.NotificationRecipientRepositoryPort;
 import studydocs.notificationservice.shared.exception.abstracts.UpdateFailedException;
 import studydocs.notificationservice.shared.exception.concrete.notification.NotificationNotFoundException;
 import studydocs.notificationservice.shared.exception.concrete.recipient.NotificationAlreadyDeletedException;
@@ -40,8 +40,10 @@ public class MarkAsReadUseCaseTests {
                 null);
     }
 
-    private MarkAsReadInputModel createMarkAsReadInputModel() {
-        return new MarkAsReadInputModel(recipientId, notificationId);
+    private MarkAsReadInput createMarkAsReadInputModel() {
+        var input= new MarkAsReadInput( notificationId);
+        input.setRecipientId(recipientId);
+        return input;
     }
 
     @Test

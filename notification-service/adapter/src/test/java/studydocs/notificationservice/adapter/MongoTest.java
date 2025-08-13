@@ -3,8 +3,8 @@ package studydocs.notificationservice.adapter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import studydocs.notificationservice.infrastructure.mongo.document.NotificationTemplateDocument;
-import studydocs.notificationservice.infrastructure.mongo.repository.NotificationTemplateMongoRepository;
+import studydocs.notificationservice.infrastructure.outbound.persistence.entity.NotificationTemplateDocument;
+import studydocs.notificationservice.infrastructure.outbound.persistence.repository.template.NotificationTemplateMongoRepository;
 
 @SpringBootTest
 public class MongoTest {

@@ -1,8 +1,8 @@
 package studydocs.notificationservice.application.utils;
 
-import studydocs.notificationservice.domain.entities.Notification;
-import studydocs.notificationservice.domain.entities.NotificationRecipient;
-import studydocs.notificationservice.domain.entities.NotificationTemplate;
+import studydocs.notificationservice.domain.entity.Notification;
+import studydocs.notificationservice.domain.entity.NotificationRecipient;
+import studydocs.notificationservice.domain.entity.NotificationTemplate;
 import studydocs.notificationservice.shared.enums.NotificationChannel;
 
 import java.util.Map;

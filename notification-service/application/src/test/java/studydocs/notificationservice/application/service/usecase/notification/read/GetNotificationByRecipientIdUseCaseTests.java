@@ -7,17 +7,17 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import studydocs.notificationservice.application.port.input.dto.inputmodel.notification.read.GetNotificationByRecipientIdInputModel;
-import studydocs.notificationservice.application.port.input.dto.outputmodel.notification.NotificationOutputModel;
-import studydocs.notificationservice.application.port.input.dto.paging.SliceInput;
-import studydocs.notificationservice.application.port.input.dto.paging.SliceOutput;
-import studydocs.notificationservice.application.port.input.template.TemplateRenderer;
-import studydocs.notificationservice.application.port.ouput.repository.NotificationRecipientRepositoryPort;
-import studydocs.notificationservice.application.port.ouput.repository.NotificationTemplateRepositoryPort;
+import studydocs.notificationservice.application.dto.input.notification.read.GetNotificationByRecipientIdInput;
+import studydocs.notificationservice.application.dto.output.notification.NotificationOutput;
+import studydocs.notificationservice.shared.paging.SliceInput;
+import studydocs.notificationservice.shared.paging.SliceOutput;
+import studydocs.notificationservice.application.port.render.TemplateRenderer;
+import studydocs.notificationservice.domain.repository.NotificationRecipientRepositoryPort;
+import studydocs.notificationservice.domain.repository.NotificationTemplateRepositoryPort;
 import studydocs.notificationservice.application.utils.DataTestFactory;
-import studydocs.notificationservice.domain.entities.Notification;
-import studydocs.notificationservice.domain.entities.NotificationRecipient;
-import studydocs.notificationservice.domain.entities.NotificationTemplate;
+import studydocs.notificationservice.domain.entity.Notification;
+import studydocs.notificationservice.domain.entity.NotificationRecipient;
+import studydocs.notificationservice.domain.entity.NotificationTemplate;
 import studydocs.notificationservice.shared.enums.NotificationType;
 import studydocs.notificationservice.shared.exception.concrete.template.TemplateNotFoundException;
 
@@ -45,8 +45,8 @@ public class GetNotificationByRecipientIdUseCaseTests {
     @Captor
     ArgumentCaptor<String> templateDataCaptor;
 
-    private SliceInput<GetNotificationByRecipientIdInputModel> createSliceInput(UUID recipientId, LocalDateTime createdAt, int limit) {
-        return new SliceInput<>(new GetNotificationByRecipientIdInputModel(recipientId, createdAt), limit);
+    private SliceInput<GetNotificationByRecipientIdInput> createSliceInput(UUID recipientId, LocalDateTime createdAt, int limit) {
+        return new SliceInput<>(new GetNotificationByRecipientIdInput(recipientId, createdAt), limit);
     }
 
     private SliceOutput<NotificationRecipient> createSliceOutput(List<NotificationRecipient> content, boolean hasNext) {
@@ -71,8 +71,8 @@ public class GetNotificationByRecipientIdUseCaseTests {
         UUID recipientId = UUID.randomUUID();
         NotificationTemplate template = DataTestFactory.createNotificationTemplate();
         List<NotificationRecipient> recipients = createNotifications(5, recipientId, template.getId());
-        SliceInput<GetNotificationByRecipientIdInputModel> input = createSliceInput(recipientId, LocalDateTime.now(), 10);
-        GetNotificationByRecipientIdInputModel request = input.request();
+        SliceInput<GetNotificationByRecipientIdInput> input = createSliceInput(recipientId, LocalDateTime.now(), 10);
+        GetNotificationByRecipientIdInput request = input.request();
         //Mock
         when(recipientRepositoryPort.findByRecipientId(request.recipientId(), request.createdAt(), input.limit())).thenReturn(createSliceOutput(recipients, false));
         recipients.forEach(recipient -> {
@@ -83,7 +83,7 @@ public class GetNotificationByRecipientIdUseCaseTests {
             }
         });
         //Act
-        SliceOutput<NotificationOutputModel> output = useCase.execute(input);
+        SliceOutput<NotificationOutput> output = useCase.execute(input);
         //Assert
         assertEquals(output.content().size(), recipients.size());
         output.content().forEach(content -> {
@@ -111,8 +111,8 @@ public class GetNotificationByRecipientIdUseCaseTests {
         UUID recipientId = UUID.randomUUID();
         NotificationTemplate template = DataTestFactory.createNotificationTemplate();
         List<NotificationRecipient> recipients = createNotifications(5, recipientId, template.getId());
-        SliceInput<GetNotificationByRecipientIdInputModel> input = createSliceInput(recipientId, LocalDateTime.now(), 10);
-        GetNotificationByRecipientIdInputModel request = input.request();
+        SliceInput<GetNotificationByRecipientIdInput> input = createSliceInput(recipientId, LocalDateTime.now(), 10);
+        GetNotificationByRecipientIdInput request = input.request();
         //Mock
         when(recipientRepositoryPort.findByRecipientId(request.recipientId(), request.createdAt(), input.limit())).thenReturn(createSliceOutput(recipients, false));
         recipients.forEach(recipient -> {

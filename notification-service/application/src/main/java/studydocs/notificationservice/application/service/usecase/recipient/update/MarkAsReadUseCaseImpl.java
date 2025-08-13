@@ -2,9 +2,9 @@ package studydocs.notificationservice.application.service.usecase.recipient.upda
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import studydocs.notificationservice.application.port.input.dto.inputmodel.recipient.update.MarkAsReadInputModel;
-import studydocs.notificationservice.application.port.input.usecase.recipient.update.MarkAsReadUseCase;
-import studydocs.notificationservice.application.port.ouput.repository.NotificationRecipientRepositoryPort;
+import studydocs.notificationservice.application.dto.input.recipient.update.MarkAsReadInput;
+import studydocs.notificationservice.application.usecase.recipient.update.MarkAsReadUseCase;
+import studydocs.notificationservice.domain.repository.NotificationRecipientRepositoryPort;
 import studydocs.notificationservice.shared.exception.abstracts.UpdateFailedException;
 import studydocs.notificationservice.shared.exception.concrete.notification.NotificationNotFoundException;
 
@@ -14,10 +14,10 @@ public class MarkAsReadUseCaseImpl implements MarkAsReadUseCase {
     private final NotificationRecipientRepositoryPort repository;
 
     @Override
-    public void execute(MarkAsReadInputModel inputModel) {
-        var recipientOptional = repository.findByRecipientIdAndNotificationId(inputModel.recipientId(), inputModel.notificationId());
+    public void execute(MarkAsReadInput inputModel) {
+        var recipientOptional = repository.findByRecipientIdAndNotificationId(inputModel.getRecipientId(), inputModel.getNotificationId());
         if (recipientOptional.isEmpty())
-            throw new NotificationNotFoundException(inputModel.notificationId());
+            throw new NotificationNotFoundException(inputModel.getNotificationId());
         var recipient = recipientOptional.get();
         recipient.read();
         long modifierCol = repository.markAsRead(recipient.getRecipientId(), recipient.getNotificationId());

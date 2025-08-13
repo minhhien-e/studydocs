@@ -2,9 +2,9 @@ package studydocs.notificationservice.application.service.usecase.template.updat
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import studydocs.notificationservice.application.port.input.dto.inputmodel.template.update.concrete.UpdateTemplateDescriptionInputModel;
-import studydocs.notificationservice.application.port.input.usecase.template.update.UpdateTemplateDescriptionUseCase;
-import studydocs.notificationservice.application.port.ouput.repository.NotificationTemplateRepositoryPort;
+import studydocs.notificationservice.application.dto.input.template.update.concrete.UpdateTemplateDescriptionInput;
+import studydocs.notificationservice.application.usecase.template.update.UpdateTemplateDescriptionUseCase;
+import studydocs.notificationservice.domain.repository.NotificationTemplateRepositoryPort;
 import studydocs.notificationservice.shared.exception.abstracts.UpdateFailedException;
 import studydocs.notificationservice.shared.exception.concrete.template.TemplateNotFoundException;
 
@@ -14,7 +14,7 @@ public class UpdateTemplateDescriptionUseCaseImpl implements UpdateTemplateDescr
     private final NotificationTemplateRepositoryPort repository;
 
     @Override
-    public void execute(UpdateTemplateDescriptionInputModel inputModel) {
+    public void execute(UpdateTemplateDescriptionInput inputModel) {
         var notificationTemplate = repository.findByName(inputModel.getName())
                 .orElseThrow(() -> new TemplateNotFoundException(inputModel.getName()));
         notificationTemplate.updateDescription(inputModel.getNewDescription());

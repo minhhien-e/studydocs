@@ -5,16 +5,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import studydocs.notificationservice.application.port.input.dto.inputmodel.recipient.update.MarkAllAsReadInputModel;
-import studydocs.notificationservice.application.port.input.dto.inputmodel.recipient.update.MarkAsReadInputModel;
-import studydocs.notificationservice.application.port.ouput.repository.NotificationRecipientRepositoryPort;
-import studydocs.notificationservice.domain.entities.NotificationRecipient;
+import studydocs.notificationservice.application.dto.input.recipient.update.MarkAllAsReadInput;
+import studydocs.notificationservice.domain.repository.NotificationRecipientRepositoryPort;
 import studydocs.notificationservice.shared.exception.abstracts.UpdateFailedException;
-import studydocs.notificationservice.shared.exception.concrete.notification.NotificationNotFoundException;
-import studydocs.notificationservice.shared.exception.concrete.recipient.NotificationAlreadyDeletedException;
 import studydocs.notificationservice.shared.exception.concrete.recipient.NotificationsUnreadNotFoundException;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -32,35 +27,37 @@ public class MarkAllAsReadUseCaseTests {
     private static final long SUCCESS_UPDATE = 1L;
     private static final long FAIL_UPDATE = 0L;
 
-    private MarkAllAsReadInputModel createMarkAllAsReadInputModel() {
-        return new MarkAllAsReadInputModel(recipientId);
+    private MarkAllAsReadInput createMarkAllAsReadInputModel() {
+        var input = new MarkAllAsReadInput();
+        input.setRecipientId(recipientId);
+        return input;
     }
 
     @Test
     public void markAllAsRead_WhenValid_ShouldUpdateSuccessfully() {
         var input = createMarkAllAsReadInputModel();
-        when(repository.hasAnyUnread(input.recipientId())).thenReturn(true);
-        when(repository.markAllAsRead(input.recipientId())).thenReturn(SUCCESS_UPDATE);
+        when(repository.hasAnyUnread(input.getRecipientId())).thenReturn(true);
+        when(repository.markAllAsRead(input.getRecipientId())).thenReturn(SUCCESS_UPDATE);
         markAllAsReadUseCase.execute(input);
-        verify(repository).hasAnyUnread(input.recipientId());
-        verify(repository).markAllAsRead(input.recipientId());
+        verify(repository).hasAnyUnread(input.getRecipientId());
+        verify(repository).markAllAsRead(input.getRecipientId());
     }
 
     @Test
     public void markAllAsRead_WhenNotificationsAlreadyRead_ShouldThrowException() {
         var input = createMarkAllAsReadInputModel();
-        when(repository.hasAnyUnread(input.recipientId())).thenReturn(false);
+        when(repository.hasAnyUnread(input.getRecipientId())).thenReturn(false);
         assertThrows(NotificationsUnreadNotFoundException.class, () -> markAllAsReadUseCase.execute(input));
-        verify(repository).hasAnyUnread(input.recipientId());
+        verify(repository).hasAnyUnread(input.getRecipientId());
     }
 
     @Test
     public void markAsRead_WhenRepositoryFailsToUpdate_ShouldThrowException() {
         var input = createMarkAllAsReadInputModel();
-        when(repository.hasAnyUnread(input.recipientId())).thenReturn(true);
-        when(repository.markAllAsRead(input.recipientId())).thenReturn(FAIL_UPDATE);
+        when(repository.hasAnyUnread(input.getRecipientId())).thenReturn(true);
+        when(repository.markAllAsRead(input.getRecipientId())).thenReturn(FAIL_UPDATE);
         assertThrows(UpdateFailedException.class, () -> markAllAsReadUseCase.execute(input));
-        verify(repository).hasAnyUnread(input.recipientId());
-        verify(repository).markAllAsRead(input.recipientId());
+        verify(repository).hasAnyUnread(input.getRecipientId());
+        verify(repository).markAllAsRead(input.getRecipientId());
     }
 }

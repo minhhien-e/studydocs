@@ -2,11 +2,11 @@ package studydocs.notificationservice.application.service.mail;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import studydocs.notificationservice.application.port.input.email.SendEmailNotificationUseCase;
-import studydocs.notificationservice.application.port.input.template.TemplateRenderer;
-import studydocs.notificationservice.application.port.ouput.mail.EmailSenderPort;
-import studydocs.notificationservice.application.port.ouput.repository.NotificationTemplateRepositoryPort;
-import studydocs.notificationservice.domain.entities.NotificationTemplate;
+import studydocs.notificationservice.application.usecase.email.SendEmailNotificationUseCase;
+import studydocs.notificationservice.application.port.render.TemplateRenderer;
+import studydocs.notificationservice.application.port.mail.EmailSenderPort;
+import studydocs.notificationservice.domain.repository.NotificationTemplateRepositoryPort;
+import studydocs.notificationservice.domain.entity.NotificationTemplate;
 import studydocs.notificationservice.domain.event.SendMailEvent;
 import studydocs.notificationservice.domain.valueobject.EmailData;
 import studydocs.notificationservice.shared.exception.concrete.mail.MissingEmailInSendMailException;

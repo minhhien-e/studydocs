@@ -2,16 +2,16 @@ package studydocs.notificationservice.application.service.usecase.template.creat
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import studydocs.notificationservice.application.port.input.dto.inputmodel.template.create.AddTemplateInputModel;
-import studydocs.notificationservice.application.port.input.usecase.template.create.AddTemplateUseCase;
-import studydocs.notificationservice.application.port.ouput.repository.NotificationTemplateRepositoryPort;
+import studydocs.notificationservice.application.dto.input.template.create.AddTemplateInput;
+import studydocs.notificationservice.application.usecase.template.create.AddTemplateUseCase;
+import studydocs.notificationservice.domain.repository.NotificationTemplateRepositoryPort;
 
 @Service
 @RequiredArgsConstructor
 public class AddTemplateUseCaseImpl implements AddTemplateUseCase {
     private final NotificationTemplateRepositoryPort repository;
     @Override
-    public void execute(AddTemplateInputModel inputModel) {
+    public void execute(AddTemplateInput inputModel) {
         var notificationTemplate = inputModel.toDomain();
         repository.save(notificationTemplate);
     }
