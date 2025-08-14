@@ -12,6 +12,7 @@ import studydocs.notificationservice.infrastructure.outbound.persistence.entity.
 import studydocs.notificationservice.infrastructure.outbound.persistence.mapper.NotificationTemplateMapper;
 import studydocs.notificationservice.infrastructure.outbound.persistence.repository.template.NotificationTemplateMongoRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,6 +28,7 @@ public class NotificationTemplateRepository implements NotificationTemplateRepos
         notificationTemplateMongoRepository.save(document);
     }
 
+    //region Find
     @Override
     public Optional<NotificationTemplate> findByName(String name) {
         Optional<NotificationTemplateDocument> document = notificationTemplateMongoRepository.findByName(name);
@@ -39,6 +41,31 @@ public class NotificationTemplateRepository implements NotificationTemplateRepos
         return document.map(NotificationTemplateMapper::toDomain);
     }
 
+    //endregion
+    //region Find All
+    @Override
+    public List<NotificationTemplate> findAll() {
+        return notificationTemplateMongoRepository.findAll().stream()
+                .map(NotificationTemplateMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<NotificationTemplate> searchByName(String name) {
+        return notificationTemplateMongoRepository.searchByNameLikeIgnoreCase(name).stream()
+                .map(NotificationTemplateMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<NotificationTemplate> findByChannel(String channel) {
+        return notificationTemplateMongoRepository.findAllByChannel(channel).stream()
+                .map(NotificationTemplateMapper::toDomain)
+                .toList();
+    }
+
+    //endregion
+    //region Update
     @Override
     public long updateName(UUID id, String newName) {
         Query query = new Query(Criteria.where("_id").is(id));
@@ -70,4 +97,5 @@ public class NotificationTemplateRepository implements NotificationTemplateRepos
         var result = mongoTemplate.updateFirst(query, update, NotificationTemplateDocument.class);
         return result.getModifiedCount();
     }
+    //endregion
 }
