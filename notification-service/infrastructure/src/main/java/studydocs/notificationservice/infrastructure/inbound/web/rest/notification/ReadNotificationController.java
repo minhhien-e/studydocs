@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import studydocs.notificationservice.application.usecase.notificaton.read.GetNotificationByRecipientIdUseCase;
 import studydocs.notificationservice.application.usecase.recipient.read.CountUnreadUseCase;
+import studydocs.notificationservice.infrastructure.inbound.web.dto.mapper.recipient.ReadRecipientRequestMapper;
 import studydocs.notificationservice.infrastructure.inbound.web.dto.request.recipient.read.CountUnreadRequest;
 import studydocs.notificationservice.infrastructure.inbound.web.dto.request.recipient.read.GetNotificationByRecipientIdRequest;
 import studydocs.notificationservice.shared.api.ApiResponse;
@@ -25,14 +26,14 @@ public class ReadNotificationController {
                                               @RequestParam(value = "createAt", required = false) Optional<LocalDateTime> createAt,
                                               @RequestParam(value = "limit", required = false) int limit) {
         var request = new GetNotificationByRecipientIdRequest(recipientId, createAt, limit);
-        var outputModel = getNotificationByRecipientIdUseCase.execute(request.toInput());
+        var outputModel = getNotificationByRecipientIdUseCase.execute(ReadRecipientRequestMapper.toInput(request));
         return ResponseEntity.ok(ApiResponse.success(outputModel, null));
     }
 
     @GetMapping("/recipient/{recipientId}/count-unread")
     public ResponseEntity<?> countUnread(@PathVariable("recipientId") UUID recipientId, @RequestAttribute("userId") UUID requesterId) {
         var request = new CountUnreadRequest(recipientId);
-        var inputModel = request.toInput();
+        var inputModel = ReadRecipientRequestMapper.toInput(request);
         inputModel.setRequesterId(requesterId);
         var count = countUnreadUseCase.execute(inputModel);
         return ResponseEntity.ok(ApiResponse.success(count, null));

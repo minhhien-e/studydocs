@@ -11,10 +11,4 @@ public record GetNotificationByRecipientIdRequest(
         UUID recipientId,
         Optional<LocalDateTime> createdAt,
         int limit) {
-    public SliceInput<GetNotificationByRecipientIdInput> toInput() {
-        var limit = this.limit <= 0 ? 10 : this.limit;
-        var request = new GetNotificationByRecipientIdInput(recipientId,
-                createdAt.orElse(LocalDateTime.now()));
-        return new SliceInput<>(request, limit);
-    }
 }
