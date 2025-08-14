@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import studydocs.notificationservice.infrastructure.inbound.web.dto.mapper.template.CreateTemplateRequestMapper;
 import studydocs.notificationservice.infrastructure.inbound.web.dto.request.template.create.AddTemplateRequest;
 import studydocs.notificationservice.application.usecase.template.create.AddTemplateUseCase;
 import studydocs.notificationservice.shared.api.ApiResponse;
@@ -20,7 +21,7 @@ public class CreateTemplateController {
 
     @PostMapping
     public ResponseEntity<?> addTemplate(@Valid @RequestBody AddTemplateRequest request) {
-        var inputModel = request.toInput();
+        var inputModel = CreateTemplateRequestMapper.toInput(request);
         addTemplateUseCase.execute(inputModel);
         return ResponseEntity.status(HttpServletResponse.SC_CREATED)
                 .body(ApiResponse.success(null, "Thêm template thành công"));
