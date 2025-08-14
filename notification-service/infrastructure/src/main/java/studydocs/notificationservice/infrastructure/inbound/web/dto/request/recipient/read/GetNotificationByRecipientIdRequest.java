@@ -1,4 +1,4 @@
-package studydocs.notificationservice.infrastructure.inbound.web.request.recipient.read;
+package studydocs.notificationservice.infrastructure.inbound.web.dto.request.recipient.read;
 
 import studydocs.notificationservice.application.dto.input.notification.read.GetNotificationByRecipientIdInput;
 import studydocs.notificationservice.shared.paging.SliceInput;

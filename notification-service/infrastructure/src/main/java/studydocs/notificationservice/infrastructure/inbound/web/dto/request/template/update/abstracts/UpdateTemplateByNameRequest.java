@@ -1,4 +1,4 @@
-package studydocs.notificationservice.infrastructure.inbound.web.request.template.update.abstracts;
+package studydocs.notificationservice.infrastructure.inbound.web.dto.request.template.update.abstracts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

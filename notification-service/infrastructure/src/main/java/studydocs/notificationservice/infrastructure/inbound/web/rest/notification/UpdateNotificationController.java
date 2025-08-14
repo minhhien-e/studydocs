@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import studydocs.notificationservice.application.usecase.recipient.update.MarkAllAsReadUseCase;
 import studydocs.notificationservice.application.usecase.recipient.update.MarkAsReadUseCase;
-import studydocs.notificationservice.infrastructure.inbound.web.request.recipient.update.MarkAllAsReadRequest;
-import studydocs.notificationservice.infrastructure.inbound.web.request.recipient.update.MarkAsReadRequest;
+import studydocs.notificationservice.infrastructure.inbound.web.dto.request.recipient.update.MarkAllAsReadRequest;
+import studydocs.notificationservice.infrastructure.inbound.web.dto.request.recipient.update.MarkAsReadRequest;
 import studydocs.notificationservice.shared.api.ApiResponse;
 
 import java.util.UUID;

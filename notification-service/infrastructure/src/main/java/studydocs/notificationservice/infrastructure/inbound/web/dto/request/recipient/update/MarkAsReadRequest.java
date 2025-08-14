@@ -1,4 +1,4 @@
-package studydocs.notificationservice.infrastructure.inbound.web.request.recipient.update;
+package studydocs.notificationservice.infrastructure.inbound.web.dto.request.recipient.update;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

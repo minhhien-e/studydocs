@@ -19,7 +19,7 @@ public class TemplateOutput {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static TemplateOutput toOutputModel(NotificationTemplate template) {
+    public static TemplateOutput toOutput(NotificationTemplate template) {
         return TemplateOutput.builder()
                 .id(template.getId())
                 .name(template.getName().getValue())

@@ -1,7 +1,7 @@
-package studydocs.notificationservice.infrastructure.inbound.web.request.template.update.concrete;
+package studydocs.notificationservice.infrastructure.inbound.web.dto.request.template.update.concrete;
 
 import lombok.Getter;
-import studydocs.notificationservice.infrastructure.inbound.web.request.template.update.abstracts.UpdateTemplateByNameRequest;
+import studydocs.notificationservice.infrastructure.inbound.web.dto.request.template.update.abstracts.UpdateTemplateByNameRequest;
 import studydocs.notificationservice.application.dto.input.template.update.abstracts.UpdateTemplateByNameInput;
 import studydocs.notificationservice.application.dto.input.template.update.concrete.UpdateTemplateSubjectInput;
 @Getter

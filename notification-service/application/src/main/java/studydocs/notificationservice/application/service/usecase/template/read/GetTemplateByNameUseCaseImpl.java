@@ -17,7 +17,7 @@ public class GetTemplateByNameUseCaseImpl implements GetTemplateByNameUseCase {
     public TemplateOutput execute(GetTemplateByNameInput inputModel) {
         var notificationTemplate = repository.findByName(inputModel.name())
                 .orElseThrow(() -> new TemplateNotFoundException(inputModel.name()));
-        return TemplateOutput.toOutputModel(notificationTemplate);
+        return TemplateOutput.toOutput(notificationTemplate);
 
     }
 }

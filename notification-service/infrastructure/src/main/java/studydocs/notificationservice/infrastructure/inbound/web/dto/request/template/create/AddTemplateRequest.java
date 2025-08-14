@@ -1,4 +1,4 @@
-package studydocs.notificationservice.infrastructure.inbound.web.request.template.create;
+package studydocs.notificationservice.infrastructure.inbound.web.dto.request.template.create;
 
 import studydocs.notificationservice.application.dto.input.template.create.AddTemplateInput;
 

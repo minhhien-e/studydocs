@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import studydocs.notificationservice.application.usecase.notificaton.read.GetNotificationByRecipientIdUseCase;
 import studydocs.notificationservice.application.usecase.recipient.read.CountUnreadUseCase;
-import studydocs.notificationservice.infrastructure.inbound.web.request.recipient.read.CountUnreadRequest;
-import studydocs.notificationservice.infrastructure.inbound.web.request.recipient.read.GetNotificationByRecipientIdRequest;
+import studydocs.notificationservice.infrastructure.inbound.web.dto.request.recipient.read.CountUnreadRequest;
+import studydocs.notificationservice.infrastructure.inbound.web.dto.request.recipient.read.GetNotificationByRecipientIdRequest;
 import studydocs.notificationservice.shared.api.ApiResponse;
 
 import java.time.LocalDateTime;
