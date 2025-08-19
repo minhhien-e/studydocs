@@ -1,0 +1,27 @@
+server:
+  port: ${SERVER_PORT:9150}
+
+spring:
+  application:
+    name: upload-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+cloudflare:
+  r2:
+    access-key: 159530fe5e82e3b6a23f1b3c656a1cb7
+    secret-key: 39debd5558359c32c3dc6f2369af438dff2dc7c84feb48f96b04d89e464a5bf4
+    region: auto
+    endpoint: https://d676a6e647ba0a44b89169a2ead87835.r2.cloudflarestorage.com
+    bucket-name: studydocs-2025
+    public-domain: pub-fb57bb27d5834b97b55b58b4b68efbc5.r2.dev
+    allowed-file-types: application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png
+    max-file-size: 52428800  # 50 MB
+
+logging:
+  level:
+    org.springframework: DEBUG
+    com.amazonaws: DEBUG

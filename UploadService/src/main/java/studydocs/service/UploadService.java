@@ -2,6 +2,7 @@ package studydocs.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,27 +32,37 @@ public class UploadService {
     @Value("${cloudflare.r2.public-domain}")
     private String r2PublicDomain;
 
-    @Value("${cloudflare.r2.allowed-file-types}")
+    @Value("${cloudflare.r2.allowed-file-types:application/pdf,image/png,image/jpeg}")
     private String allowedFileTypesStr;
 
     @Value("${cloudflare.r2.max-file-size}")
     private long maxFileSize;
 
-    private final Set<String> allowedFileTypes = new HashSet<>(Arrays.asList(allowedFileTypesStr.split(",")));
+    private Set<String> allowedFileTypes;
+
+    @PostConstruct
+    public void init() {
+        if (allowedFileTypesStr == null || allowedFileTypesStr.isBlank()) {
+            allowedFileTypes = Set.of("application/pdf", "image/png", "image/jpeg");
+        } else {
+            allowedFileTypes = Arrays.stream(allowedFileTypesStr.split(","))
+                    .map(String::trim)
+                    .collect(Collectors.toSet());
+        }
+    }
 
     public UploadResponse uploadFile(MultipartFile file) throws IOException {
-        // Kiểm tra file rỗng
+        System.out.println("Đang upload: " + file.getOriginalFilename());
+
         if (file.isEmpty()) {
             throw new IllegalArgumentException("File rỗng, vui lòng chọn file hợp lệ");
         }
 
-        // Kiểm tra định dạng file
         String contentType = file.getContentType();
         if (!allowedFileTypes.contains(contentType)) {
             throw new FileTypeNotAllowedException("Định dạng file không được phép: " + contentType);
         }
 
-        // Kiểm tra kích thước file
         long fileSize = file.getSize();
         if (fileSize > maxFileSize) {
             throw new FileSizeExceededException("Kích thước file vượt quá giới hạn 50 MB");
@@ -65,11 +76,13 @@ public class UploadService {
         amazonS3.putObject(bucketName, filename, file.getInputStream(), metadata);
 
         String publicUrl = String.format("https://%s/%s", r2PublicDomain, filename);
+        System.out.println("Upload thành công: " + filename);
         return new UploadResponse(filename, publicUrl);
     }
 
     public UploadResponse uploadFile(File file) throws IOException {
-        // Kiểm tra định dạng file
+        System.out.println("Đang upload: " + file.getName());
+
         String contentType = Files.probeContentType(file.toPath());
         if (contentType == null) {
             contentType = "application/octet-stream";
@@ -78,7 +91,6 @@ public class UploadService {
             throw new FileTypeNotAllowedException("Định dạng file không được phép: " + contentType);
         }
 
-        // Kiểm tra kích thước file
         long fileSize = file.length();
         if (fileSize > maxFileSize) {
             throw new FileSizeExceededException("Kích thước file vượt quá giới hạn 50 MB");
@@ -94,6 +106,7 @@ public class UploadService {
         }
 
         String publicUrl = String.format("https://%s/%s", r2PublicDomain, filename);
+        System.out.println("Upload thành công: " + filename);
         return new UploadResponse(filename, publicUrl);
     }
 }
