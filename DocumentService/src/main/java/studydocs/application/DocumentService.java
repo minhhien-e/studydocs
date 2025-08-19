@@ -2,6 +2,7 @@ package studydocs.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -10,13 +11,12 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.listener.ChannelTopic;
 import studydocs.domain.Document;
 import studydocs.exception.DocumentNotFoundException;
 import studydocs.exception.DocumentProcessingException;
 import studydocs.repository.DocumentRepository;
 import studydocs.dto.UploadDocumentRequest;
+import studydocs.dto.ApiResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,17 +28,15 @@ public class DocumentService {
 
     private final DocumentRepository documentRepository;
     private final RestTemplate restTemplate;
-    private final StringRedisTemplate redisTemplate;
-    private final ChannelTopic uploadStartedTopic;
+    private final RabbitTemplate rabbitTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Value("${upload.service.url}")
     private String uploadServiceUrl;
 
-
     @Transactional
     public Document createAndUploadDocument(UploadDocumentRequest req, MultipartFile file) {
         try {
-            // 1) tạo record document với trạng thái UPLOADING
+            // 1) Tạo record document với trạng thái UPLOADING
             Document document = new Document(req.getUserId(), req.getTitle(), req.getDescription());
             document.markUploading();
             document = documentRepository.save(document);
@@ -51,10 +49,9 @@ public class DocumentService {
             startedPayload.put("documentId", documentId);
             startedPayload.put("userId", req.getUserId());
             startedPayload.put("title", req.getTitle());
-            redisTemplate.convertAndSend(uploadStartedTopic.getTopic(), objectMapper.writeValueAsString(startedPayload));
+            rabbitTemplate.convertAndSend("upload_started", objectMapper.writeValueAsString(startedPayload));
 
             // 3) Gửi file tới UploadService (multipart) kèm documentId
-            // String uploadServiceUrl = "http://localhost:9150/api/upload"
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
@@ -66,13 +63,13 @@ public class DocumentService {
             ResponseEntity<String> response = restTemplate.postForEntity(uploadServiceUrl, requestEntity, String.class);
 
             if (!response.getStatusCode().is2xxSuccessful()) {
-                // nếu upload thất bại ngay lập tức -> mark failed : trạng thái thất bại (failed)
+                // Nếu upload thất bại ngay lập tức -> mark failed
                 document.markFailed("UploadService returned non-2xx");
                 documentRepository.save(document);
                 throw new DocumentProcessingException("UploadService trả về lỗi: " + response.getStatusCode());
             }
 
-            // trả về document (client sẽ nhận là đang upload; kết quả cuối cùng được cập nhật khi Redis event tới)
+            // Trả về document (client sẽ nhận là đang upload; kết quả cuối cùng được cập nhật khi RabbitMQ message tới)
             return document;
         } catch (Exception ex) {
             throw new DocumentProcessingException("Lỗi khi upload tài liệu: " + ex.getMessage());
@@ -82,7 +79,7 @@ public class DocumentService {
     @Transactional(readOnly = true)
     public Document getDocumentById(Long id) {
         return documentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài liệu " + id));
+                .orElseThrow(() -> new DocumentNotFoundException(id));
     }
 
     @Transactional(readOnly = true)

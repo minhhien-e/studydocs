@@ -3,35 +3,23 @@ package studydocs.messaging;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import studydocs.repository.DocumentRepository;
 import studydocs.domain.Document;
-import jakarta.annotation.PostConstruct;
-import java.nio.charset.StandardCharsets;
+
 import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class UploadSuccessListener implements MessageListener {
+public class UploadSuccessListener {
 
-    private final RedisMessageListenerContainer container;
-    private final ChannelTopic uploadSuccessTopic;
     private final DocumentRepository documentRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @PostConstruct
-    public void init() {
-        container.addMessageListener(this, uploadSuccessTopic);
-    }
-
-    @Override
-    public void onMessage(Message message, byte[] pattern) {
+    @RabbitListener(queues = "upload_success")
+    public void handleUploadSuccess(String body) {
         try {
-            String body = new String(message.getBody(), StandardCharsets.UTF_8);
             JsonNode node = objectMapper.readTree(body);
             Long documentId = node.has("documentId") && !node.get("documentId").isNull()
                     ? node.get("documentId").asLong() : null;
@@ -40,7 +28,7 @@ public class UploadSuccessListener implements MessageListener {
             if (documentId != null && fileUrl != null) {
                 boolean updated = false;
 
-                for (int i = 0; i < 5; i++) { // thử tối đa 5 lần
+                for (int i = 0; i < 5; i++) { // Thử tối đa 5 lần
                     Optional<Document> opt = documentRepository.findById(documentId);
                     if (opt.isPresent()) {
                         Document doc = opt.get();
@@ -51,16 +39,15 @@ public class UploadSuccessListener implements MessageListener {
                         break;
                     } else {
                         System.out.println("DocumentService: Không tìm thấy documentId = " + documentId + " (retry " + (i + 1) + ")");
-                        Thread.sleep(500); // chờ 0.5s trước khi thử lại
+                        Thread.sleep(500); // Chờ 0.5s trước khi thử lại
                     }
                 }
 
                 if (!updated) {
                     System.err.println("DocumentService: Hết số lần retry nhưng vẫn không tìm thấy documentId = " + documentId);
                 }
-
             } else {
-                System.out.println("UploadSuccessListener: payload không đủ: " + body);
+                System.out.println("UploadSuccessListener: Payload không đủ: " + body);
             }
         } catch (Exception ex) {
             System.err.println("UploadSuccessListener lỗi khi parse message: " + ex.getMessage());
