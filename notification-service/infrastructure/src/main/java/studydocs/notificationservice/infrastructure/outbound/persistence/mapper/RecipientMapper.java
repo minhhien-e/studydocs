@@ -9,7 +9,7 @@ public final class RecipientMapper {
                 document.getRecipientId(),
                 document.getNotificationId(),
                 document.isRead(),
-                document.isDeleted(),
+                document.getDeletedAt(),
                 NotificationMapper.toDomain(document.getNotification())
         );
     }
@@ -20,7 +20,6 @@ public final class RecipientMapper {
                 .recipientId(recipient.getRecipientId())
                 .notificationId(recipient.getNotificationId())
                 .isRead(recipient.isRead())
-                .isDeleted(recipient.isDeleted())
                 .build();
     }
 }

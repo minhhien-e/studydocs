@@ -5,16 +5,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.stereotype.Repository;
-import studydocs.notificationservice.shared.paging.SliceOutput;
-import studydocs.notificationservice.domain.repository.NotificationRecipientRepositoryPort;
 import studydocs.notificationservice.domain.entity.NotificationRecipient;
+import studydocs.notificationservice.domain.repository.NotificationRecipientRepositoryPort;
 import studydocs.notificationservice.infrastructure.outbound.persistence.entity.NotificationRecipientDocument;
 import studydocs.notificationservice.infrastructure.outbound.persistence.mapper.RecipientMapper;
 import studydocs.notificationservice.infrastructure.outbound.persistence.repository.recipient.NotificationRecipientMongoRepository;
+import studydocs.notificationservice.shared.exception.concrete.recipient.RecipientNotFoundException;
+import studydocs.notificationservice.shared.paging.SliceOutput;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -28,40 +28,27 @@ public class NotificationRecipientRepository implements NotificationRecipientRep
     private final MongoTemplate mongoTemplate;
 
     @Override
+    public void deleteById(UUID id) {
+        repository.deleteById(id);
+    }
+
+    @Override
     public SliceOutput<NotificationRecipient> findByRecipientId(UUID recipientId, LocalDateTime createdAt, int limit) {
-        MatchOperation matchRecipient = Aggregation.match(where("recipientId").is(recipientId)
-                .and("isDeleted").is(false));
-        LookupOperation lookupNotification = LookupOperation.newLookup()
-                .from("notification")
-                .localField("notificationId")
-                .foreignField("_id")
-                .as("notification");
+        MatchOperation matchRecipient = Aggregation.match(where("recipientId").is(recipientId).and("isDeleted").is(false));
+        LookupOperation lookupNotification = LookupOperation.newLookup().from("notification").localField("notificationId").foreignField("_id").as("notification");
         UnwindOperation unwindNotification = Aggregation.unwind("notification");
-        MatchOperation matchCreatedAt = Aggregation.match(
-                where("notification.createdAt").lte(createdAt)
-        );
+        MatchOperation matchCreatedAt = Aggregation.match(where("notification.createdAt").lte(createdAt));
 
         SortOperation sortByCreatedAt = Aggregation.sort(Sort.Direction.ASC, "notification.createdAt");
         LimitOperation limitOperation = Aggregation.limit(limit + 1);
 
-        Aggregation aggregation = Aggregation.newAggregation(
-                matchRecipient,
-                lookupNotification,
-                unwindNotification,
-                matchCreatedAt,
-                sortByCreatedAt,
-                limitOperation
-        );
-        AggregationResults<NotificationRecipientDocument> recipients = mongoTemplate
-                .aggregate(aggregation, "notification_recipient", NotificationRecipientDocument.class);
-        List<NotificationRecipient> recipientDomain = recipients.getMappedResults().stream()
-                .map(RecipientMapper::toDomain)
-                .toList();
+        Aggregation aggregation = Aggregation.newAggregation(matchRecipient, lookupNotification, unwindNotification, matchCreatedAt, sortByCreatedAt, limitOperation);
+        AggregationResults<NotificationRecipientDocument> recipients = mongoTemplate.aggregate(aggregation, "notification_recipient", NotificationRecipientDocument.class);
+        List<NotificationRecipient> recipientDomain = recipients.getMappedResults().stream().map(RecipientMapper::toDomain).toList();
 
         boolean hasNext = recipientDomain.size() > limit;
 
-        if (hasNext)
-            recipientDomain = recipientDomain.subList(0, limit);
+        if (hasNext) recipientDomain = recipientDomain.subList(0, limit);
 
         return new SliceOutput<>(recipientDomain, hasNext);
     }
@@ -78,30 +65,31 @@ public class NotificationRecipientRepository implements NotificationRecipientRep
 
     @Override
     public int countUnread(UUID recipientId) {
-        return repository.countByRecipientIdAndReadIsFalseAndDeletedIsFalse(recipientId);
+        return repository.countByRecipientIdAndReadIsFalseAndDeletedAtIsNull(recipientId);
     }
 
     @Override
     public long markAllAsRead(UUID recipientId) {
-        var result = mongoTemplate.updateMulti(
-                query(where("recipientId").is(recipientId)
-                        .and("isDeleted").is(false)),
-                update("isRead", true), NotificationRecipientDocument.class);
+        var result = mongoTemplate.updateMulti(query(where("recipientId").is(recipientId).and("isDeleted").is(false)), update("isRead", true), NotificationRecipientDocument.class);
         return result.getModifiedCount();
     }
 
     @Override
     public long markAsRead(UUID recipientId, UUID notificationId) {
-        var result = mongoTemplate.updateFirst(
-                query(where("recipientId").is(recipientId)
-                        .and("notificationId").is(notificationId)),
-                update("isRead", true), NotificationRecipientDocument.class);
+        var result = mongoTemplate.updateFirst(query(where("recipientId").is(recipientId).and("notificationId").is(notificationId)), update("isRead", true), NotificationRecipientDocument.class);
         return result.getModifiedCount();
     }
 
     @Override
-    public Optional<NotificationRecipient> findByRecipientIdAndNotificationId(UUID recipientId, UUID notificationId) {
-        var recipientDocument = repository.findByRecipientIdAndNotificationId(recipientId, notificationId);
-        return recipientDocument.map(RecipientMapper::toDomain);
+    public NotificationRecipient getByRecipientIdAndNotificationId(UUID recipientId, UUID notificationId) {
+        var recipientDocument = repository.findByRecipientIdAndNotificationId(recipientId, notificationId)
+                .orElseThrow(() -> new RecipientNotFoundException(recipientId, notificationId));
+        return RecipientMapper.toDomain(recipientDocument);
+
+    }
+
+    @Override
+    public void updateDeletedAt(NotificationRecipient recipient) {
+        mongoTemplate.updateFirst(query(where("_id").is(recipient.getId())), update("deletedAt", recipient.getDeletedAt()), NotificationRecipientDocument.class);
     }
 }

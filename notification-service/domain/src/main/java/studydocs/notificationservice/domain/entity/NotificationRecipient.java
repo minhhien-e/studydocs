@@ -5,6 +5,7 @@ import studydocs.notificationservice.shared.exception.concrete.recipient.Missing
 import studydocs.notificationservice.shared.exception.concrete.recipient.MissingRecipientIdInRecipientException;
 import studydocs.notificationservice.shared.exception.concrete.recipient.NotificationAlreadyDeletedException;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class NotificationRecipient {
@@ -12,17 +13,17 @@ public class NotificationRecipient {
     private final UUID recipientId;
     private final UUID notificationId;
     private boolean isRead;
-    private boolean isDeleted;
+    private LocalDateTime deletedAt;
     private Notification notification;
 
     public NotificationRecipient(UUID id, UUID recipientId, UUID notificationId,
-                                 boolean isRead, boolean isDeleted, Notification notification) {
+                                 boolean isRead, LocalDateTime deletedAt, Notification notification) {
         validationForLoad(id, recipientId, notificationId);
         this.id = id;
         this.recipientId = recipientId;
         this.notificationId = notificationId;
         this.isRead = isRead;
-        this.isDeleted = isDeleted;
+        this.deletedAt = deletedAt;
         this.notification = notification;
     }
 
@@ -32,7 +33,6 @@ public class NotificationRecipient {
         this.recipientId = recipientId;
         this.notificationId = notificationId;
         this.isRead = false;
-        this.isDeleted = false;
     }
 
     public UUID getId() {
@@ -55,17 +55,18 @@ public class NotificationRecipient {
         return isRead;
     }
 
-    public boolean isDeleted() {
-        return isDeleted;
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
     }
 
     public void read() {
-        if (isDeleted)
+        if (deletedAt != null)
             throw new NotificationAlreadyDeletedException();
         isRead = true;
     }
+
     public void delete() {
-        isDeleted = true;
+        deletedAt = LocalDateTime.now();
     }
 
     private void validationForLoad(UUID id, UUID recipientId, UUID notificationId) {
