@@ -92,4 +92,11 @@ public class NotificationRecipientRepository implements NotificationRecipientRep
     public void updateDeletedAt(NotificationRecipient recipient) {
         mongoTemplate.updateFirst(query(where("_id").is(recipient.getId())), update("deletedAt", recipient.getDeletedAt()), NotificationRecipientDocument.class);
     }
+
+    @Override
+    public List<NotificationRecipient> findAll() {
+        return repository.findAll().stream()
+                .map(RecipientMapper::toDomain)
+                .toList();
+    }
 }

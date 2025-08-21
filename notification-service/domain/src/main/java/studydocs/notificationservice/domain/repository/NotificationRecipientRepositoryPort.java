@@ -4,6 +4,7 @@ import studydocs.notificationservice.domain.entity.NotificationRecipient;
 import studydocs.notificationservice.shared.paging.SliceOutput;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public interface NotificationRecipientRepositoryPort {
@@ -24,4 +25,6 @@ public interface NotificationRecipientRepositoryPort {
     NotificationRecipient getByRecipientIdAndNotificationId(UUID recipientId, UUID notificationId);
 
     void updateDeletedAt(NotificationRecipient recipient);
+
+    List<NotificationRecipient> findAll();
 }
