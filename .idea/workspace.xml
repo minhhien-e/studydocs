@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="091de765-1739-410e-9425-dd97c9c9080f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/gradlew" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/gradlew.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/settings.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/src/main/java/studydocs/eureka/EurekaApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/src/main/resources/application.yaml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="user-service" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Enum" />
+        <option value="package-info" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;lambaoduy1807&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/minhhien-e/studydocs.git&quot;,
+    &quot;accountId&quot;: &quot;c0fa327f-b4a4-4a58-8c3c-86f3c954ef25&quot;
+  }
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2zurtEI5kHgclqeWbk3ydmMcJ1f" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Build user-service.executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.UserDomainServiceTest.executor": "Run",
+    "Gradle.UserMongoRepositoryTest (1).executor": "Run",
+    "Gradle.UserMongoRepositoryTest (2).executor": "Run",
+    "Gradle.UserMongoRepositoryTest (3).executor": "Run",
+    "Gradle.UserMongoRepositoryTest (4).executor": "Run",
+    "Gradle.UserMongoRepositoryTest.executor": "Run",
+    "Gradle.UserMongoRepositoryTest.testSaveAndFindById.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.UserService (1).executor": "Run",
+    "Spring Boot.UserService.executor": "Run",
+    "git-widget-placeholder": "feature/user-service",
+    "last_directory_selection": "D:/MyPropject/Microservice/studydocs/user-service/user-service/src/test/java/infrastructure/repository",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "onboarding.tips.debug.path": "D:/MyPropject/Microservice/studydocs/user-service/user-service/src/main/java/studydocs/user-service/Main.java",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlserver",
+      "mysql"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="interfaces.model" />
+      <recent name="repository" />
+      <recent name="studydocs.user_service.interfaces.response" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.UserService (1)">
+    <configuration name="UserMongoRepositoryTest (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;studydocs.user_service.repository.UserMongoRepositoryTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="UserMongoRepositoryTest (2)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;infrastructure.repository.UserMongoRepositoryTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="UserMongoRepositoryTest (3)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;test.infrastructure.repository.UserMongoRepositoryTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="UserService (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="user-service.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.UserService" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.UserMongoRepositoryTest (2)" />
+        <item itemvalue="Gradle.UserMongoRepositoryTest (3)" />
+        <item itemvalue="Gradle.UserMongoRepositoryTest (1)" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="StructureViewState">
+    <option name="selectedTab" value="Logical" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="091de765-1739-410e-9425-dd97c9c9080f" name="Changes" comment="" />
+      <created>1752592011856</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1752592011856</updated>
+      <workItem from="1752592013030" duration="1862000" />
+      <workItem from="1752665916935" duration="6951000" />
+      <workItem from="1752732209485" duration="1207000" />
+      <workItem from="1752828061678" duration="2932000" />
+      <workItem from="1752875320351" duration="1173000" />
+      <workItem from="1753016144334" duration="8624000" />
+      <workItem from="1753164134890" duration="7264000" />
+      <workItem from="1753283825768" duration="2562000" />
+      <workItem from="1753338623298" duration="1033000" />
+      <workItem from="1753440895242" duration="1937000" />
+      <workItem from="1753503710038" duration="8545000" />
+      <workItem from="1753582729176" duration="7882000" />
+      <workItem from="1753691152492" duration="2762000" />
+      <workItem from="1753805170557" duration="1113000" />
+      <workItem from="1753878325230" duration="5513000" />
+      <workItem from="1753952196220" duration="4043000" />
+      <workItem from="1754018516750" duration="8761000" />
+      <workItem from="1754117954507" duration="9484000" />
+      <workItem from="1754193026708" duration="4058000" />
+      <workItem from="1754382245751" duration="5084000" />
+      <workItem from="1754465409732" duration="6517000" />
+      <workItem from="1754498616071" duration="1375000" />
+      <workItem from="1754537810121" duration="5079000" />
+      <workItem from="1754634818289" duration="6269000" />
+      <workItem from="1754714104212" duration="7157000" />
+      <workItem from="1754805839720" duration="5053000" />
+      <workItem from="1754828264303" duration="902000" />
+      <workItem from="1754829261724" duration="595000" />
+      <workItem from="1754830175721" duration="3192000" />
+      <workItem from="1754984786801" duration="1193000" />
+      <workItem from="1755166562305" duration="805000" />
+      <workItem from="1755340897705" duration="1223000" />
+      <workItem from="1755434114963" duration="3619000" />
+      <workItem from="1755503536156" duration="1527000" />
+      <workItem from="1755586303768" duration="6631000" />
+      <workItem from="1755615594935" duration="622000" />
+      <workItem from="1755680636712" duration="595000" />
+      <workItem from="1755764544100" duration="1417000" />
+      <workItem from="1755765983379" duration="284000" />
+      <workItem from="1755766281787" duration="2375000" />
+      <workItem from="1755794164266" duration="83000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/../../.." />
+      <path value="$PROJECT_DIR$" />
+    </ignored-roots>
+  </component>
+</project>

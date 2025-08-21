@@ -1,0 +1,25 @@
+package com.interfaces.model;
+
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class RegisterRequest {
+        @NotEmpty
+        private String fullName;
+        private String username;
+        private String email;
+        @Positive
+        private long phoneNumber;
+        private String avatarUrl;
+        private String gender;
+        private LocalDate dateOfBirth;
+        private String address;
+
+}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.domain.service.UserDomainServiceTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2025-08-10T07:33:25.687Z" hostname="DESKTOP-2ICGTE0" time="1.463">
+  <properties/>
+  <testcase name="update_invalidData_returnsLeft()" classname="com.domain.service.UserDomainServiceTest" time="1.342"/>
+  <testcase name="register_usernameExists_returnsLeft()" classname="com.domain.service.UserDomainServiceTest" time="0.036"/>
+  <testcase name="update_userNotFound_returnsLeft()" classname="com.domain.service.UserDomainServiceTest" time="0.016"/>
+  <testcase name="getUser_found_returnsRight()" classname="com.domain.service.UserDomainServiceTest" time="0.011"/>
+  <testcase name="getUser_notFound_returnsLeft()" classname="com.domain.service.UserDomainServiceTest" time="0.005"/>
+  <testcase name="register_newUser_returnsRight()" classname="com.domain.service.UserDomainServiceTest" time="0.008"/>
+  <testcase name="getUser_foundEmptyOptional_returnsLeft()" classname="com.domain.service.UserDomainServiceTest" time="0.004"/>
+  <testcase name="update_success_returnsRight()" classname="com.domain.service.UserDomainServiceTest" time="0.007"/>
+  <testcase name="register_saveThrowsException_returnsLeft()" classname="com.domain.service.UserDomainServiceTest" time="0.005"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (C:\Users\lamba\.gradle\caches\modules-2\files-2.1\net.bytebuddy\byte-buddy-agent\1.14.13\979ce25f7d3096a2e82214ba7dc972a05ce7a171\byte-buddy-agent-1.14.13.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+</testsuite>

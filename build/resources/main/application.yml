@@ -1,0 +1,8 @@
+server:
+  port: 8081
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://user1:12345@user.hzlz13a.mongodb.net/?retryWrites=true&w=majority&appName=User
+      database: userDB

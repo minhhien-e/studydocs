@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal" created-in="IU-251.25410.129">
+    <data-source name="userDB@user.hzlz13a.mongodb.net" uuid="5406c4c5-3578-4449-a4b1-942e6618d4bf">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MONGO" />
+      <schema-mapping />
+    </data-source>
+    <data-source name="userDB@user.hzlz13a.mongodb.net" uuid="c69cdeb9-9f6f-4150-8e06-353cd8499009">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MONGO" />
+      <schema-mapping />
+    </data-source>
+  </component>
+</project>
