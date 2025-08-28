@@ -1,20 +1,28 @@
 package com.interfaces.controller;
 
+import com.application.ManageUserService;
 import com.domain.dto.UserDTO;
 import com.domain.exception.ExceptionMessage;
+import com.domain.result.OperationResult;
+import com.interfaces.model.ApiResponse;
 import com.interfaces.model.RegisterRequest;
 import com.interfaces.model.UserMapper;
-import com.interfaces.model.ApiResponse;
-import jakarta.validation.Valid;
+
+import io.github.resilience4j.core.functions.Either;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.application.ManageUserService;
 
-import java.util.concurrent.CompletableFuture;
+import jakarta.validation.Valid;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionStage;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
     private final ManageUserService manageUserService;
 
@@ -23,66 +31,54 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public CompletableFuture<ResponseEntity<ApiResponse<Object>>> register(
-            @Valid @RequestBody RegisterRequest request
-    ) {
-        UserDTO user = UserMapper.toDTO(request);
+    public Callable<CompletionStage<ResponseEntity<?>>> register(@Valid @RequestBody RegisterRequest request) {
+        LOG.debug("Register request {}", request);
 
-        return manageUserService.registerUser(user)
-                .thenApply(result -> {
-                    if (result.isLeft()) {
-                        ExceptionMessage e = result.getLeft();
-                        return ResponseEntity.status(e.getStatusCode())
-                                .body(ApiResponse.<Object>error(e.getStatusCode(), e.getMessage(), e.getMessage()));
-                    } else {
-                        return ResponseEntity.ok(ApiResponse.<Object>success(result.get(), "Đăng ký thành công"));
-                    }
-                })
-                .exceptionally(ex -> ResponseEntity
-                        .internalServerError()
-                        .body(ApiResponse.<Object>error(500, "INTERNAL_ERROR", "Unexpected error: " + ex.getMessage()))
-                );
+        return () -> {
+            LOG.debug("Callable register...");
+
+            UserDTO user = UserMapper.toDTO(request);
+
+            CompletionStage<Either<ExceptionMessage, OperationResult>> promise = manageUserService.registerUser(user);
+            return promise.thenApply(result -> result.fold(
+                    error -> ResponseEntity.status(error.getStatusCode())
+                            .body(ApiResponse.error(error.getStatusCode(), error.getMessage(), error.getDescription())),
+                    success -> ResponseEntity.ok(ApiResponse.success(success, "Đăng ký thành công"))
+            ));
+        };
     }
+
     @PutMapping("/update")
-    public CompletableFuture<ResponseEntity<ApiResponse<Object>>> update(
-            @Valid @RequestBody RegisterRequest request
-    ) {
-        UserDTO userDTO = UserMapper.toDTO(request);
+    public Callable<CompletionStage<ResponseEntity<?>>> update(@Valid @RequestBody RegisterRequest request) {
+        LOG.debug("Update request {}", request);
 
-        return manageUserService.updateUser(userDTO)
-                .thenApply(result -> {
-                    if (result.isLeft()) {
-                        ExceptionMessage e = result.getLeft();
-                        return ResponseEntity.status(e.getStatusCode())
-                                .body(ApiResponse.<Object>error(e.getStatusCode(), e.getMessage(), e.getDescription()));
-                    } else {
-                        return ResponseEntity.ok(ApiResponse.<Object>success(result.get(), "Cập nhật thành công"));
-                    }
-                })
-                .exceptionally(ex -> ResponseEntity
-                        .internalServerError()
-                        .body(ApiResponse.<Object>error(500, "INTERNAL_ERROR", "Unexpected error: " + ex.getMessage()))
-                );
+        return () -> {
+            LOG.debug("Callable update...");
+
+            UserDTO userDTO = UserMapper.toDTO(request);
+
+            CompletionStage<Either<ExceptionMessage, OperationResult>> promise = manageUserService.updateUser(userDTO);
+            return promise.thenApply(result -> result.fold(
+                    error -> ResponseEntity.status(error.getStatusCode())
+                            .body(ApiResponse.error(error.getStatusCode(), error.getMessage(), error.getDescription())),
+                    success -> ResponseEntity.ok(ApiResponse.success(success, "Cập nhật thành công"))
+            ));
+        };
     }
-
 
     @GetMapping("/getUserByID")
-    public CompletableFuture<ResponseEntity<ApiResponse<UserDTO>>> getUserByID(@RequestParam String id) {
-        return manageUserService.getUserById(id)
-                .thenApply(result -> {
-                    if (result.isLeft()) {
-                        ExceptionMessage e = result.getLeft();
-                        return ResponseEntity.status(e.getStatusCode())
-                                .body(ApiResponse.<UserDTO>error(e.getStatusCode(), e.getMessage(), e.getMessage()));
-                    } else {
-                        return ResponseEntity.ok(ApiResponse.<UserDTO>success( (UserDTO)result.get().getData(), "Lấy thông tin người dùng thành công"));
-                    }
-                })
-                .exceptionally(ex -> ResponseEntity
-                        .internalServerError()
-                        .body(ApiResponse.<UserDTO>error(500, "INTERNAL_ERROR", "Unexpected error: " + ex.getMessage()))
-                )
-                .toCompletableFuture();
-    }
+    public Callable<CompletionStage<ResponseEntity<?>>> getUserByID(@RequestParam String id) {
+        LOG.debug("Get user by id {}", id);
 
+        return () -> {
+            LOG.debug("Callable getUserByID...");
+
+            CompletionStage<Either<ExceptionMessage, OperationResult>> promise = manageUserService.getUserById(id);
+            return promise.thenApply(result -> result.fold(
+                    error -> ResponseEntity.status(error.getStatusCode())
+                            .body(ApiResponse.error(error.getStatusCode(), error.getMessage(), error.getDescription())),
+                    success -> ResponseEntity.ok(ApiResponse.success(success.getData(), "Lấy thông tin người dùng thành công"))
+            ));
+        };
+    }
 }

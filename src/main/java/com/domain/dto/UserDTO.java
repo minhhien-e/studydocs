@@ -19,7 +19,7 @@ public class UserDTO {
     private String fullName;
     private String username;
     private String email;
-    private long phoneNumber;
+    private String phoneNumber;
     private String avatarUrl;
     private String gender;
     private LocalDate dateOfBirth;

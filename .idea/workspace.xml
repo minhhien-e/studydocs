@@ -4,17 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="091de765-1739-410e-9425-dd97c9c9080f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eureka/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eureka/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eureka/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eureka/gradlew" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eureka/gradlew.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eureka/settings.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eureka/src/main/java/studydocs/eureka/EurekaApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/eureka/src/main/resources/application.yaml" beforeDir="false" />
+    <list default="true" id="091de765-1739-410e-9425-dd97c9c9080f" name="Changes" comment="feature: manage user infor (crud)">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/application/bus/SimpleUserCommandBus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/application/bus/UserCommandBus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/application/handler/CommandHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/application/handler/GetUserByIdHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/application/handler/RegisterUserHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/application/handler/UpdateUserHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/application/impl/ManageUserServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/domain/command/GetUserById.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/domain/command/RegisterUser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/domain/command/UpdateUser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/domain/command/UserCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.13/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.13/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.13/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.13/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.13/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.13/checksums/sha1-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/application/ManageUserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/application/ManageUserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/domain/dto/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/domain/dto/UserDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/interfaces/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/interfaces/controller/UserController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,9 +59,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Enum" />
         <option value="package-info" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -80,6 +90,9 @@
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -88,46 +101,47 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.Build user-service.executor": "Run",
-    "Gradle.Download Sources.executor": "Run",
-    "Gradle.UserDomainServiceTest.executor": "Run",
-    "Gradle.UserMongoRepositoryTest (1).executor": "Run",
-    "Gradle.UserMongoRepositoryTest (2).executor": "Run",
-    "Gradle.UserMongoRepositoryTest (3).executor": "Run",
-    "Gradle.UserMongoRepositoryTest (4).executor": "Run",
-    "Gradle.UserMongoRepositoryTest.executor": "Run",
-    "Gradle.UserMongoRepositoryTest.testSaveAndFindById.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Spring Boot.UserService (1).executor": "Run",
-    "Spring Boot.UserService.executor": "Run",
-    "git-widget-placeholder": "feature/user-service",
-    "last_directory_selection": "D:/MyPropject/Microservice/studydocs/user-service/user-service/src/test/java/infrastructure/repository",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "D:/MyPropject/Microservice/studydocs/user-service/user-service/src/main/java/studydocs/user-service/Main.java",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Build user-service.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.UserDomainServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.UserMongoRepositoryTest (1).executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.UserMongoRepositoryTest (2).executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.UserMongoRepositoryTest (3).executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.UserMongoRepositoryTest (4).executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.UserMongoRepositoryTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.UserMongoRepositoryTest.testSaveAndFindById.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.UserService (1).executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.UserService.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/user-service&quot;,
+    &quot;last_directory_selection&quot;: &quot;D:/MyPropject/Microservice/studydocs/user-service/user-service/src/test/java/infrastructure/repository&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;D:/MyPropject/Microservice/studydocs/user-service/user-service/src/main/java/studydocs/user-service/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "sqlserver",
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;sqlserver&quot;,
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="interfaces.model" />
@@ -284,8 +298,30 @@
       <workItem from="1755764544100" duration="1417000" />
       <workItem from="1755765983379" duration="284000" />
       <workItem from="1755766281787" duration="2375000" />
-      <workItem from="1755794164266" duration="83000" />
+      <workItem from="1755794164266" duration="799000" />
+      <workItem from="1755834820406" duration="1660000" />
+      <workItem from="1756134441090" duration="1390000" />
+      <workItem from="1756183827564" duration="836000" />
+      <workItem from="1756269408307" duration="1297000" />
+      <workItem from="1756277148138" duration="5223000" />
     </task>
+    <task id="LOCAL-00001" summary="feature: manage user infor (crud)">
+      <option name="closed" value="true" />
+      <created>1755794342562</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1755794342562</updated>
+    </task>
+    <task id="LOCAL-00002" summary="feature: manage user infor (crud)">
+      <option name="closed" value="true" />
+      <created>1755794350158</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1755794350158</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -305,7 +341,10 @@
   <component name="VcsManagerConfiguration">
     <ignored-roots>
       <path value="$PROJECT_DIR$/../../.." />
-      <path value="$PROJECT_DIR$" />
+      <path value="$PROJECT_DIR$/../.." />
     </ignored-roots>
+    <MESSAGE value="chore(config): khởi tạo project, cấu hình eureka" />
+    <MESSAGE value="feature: manage user infor (crud)" />
+    <option name="LAST_COMMIT_MESSAGE" value="feature: manage user infor (crud)" />
   </component>
 </project>
