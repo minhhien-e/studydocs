@@ -2,12 +2,14 @@ package studydocs.notificationservice.application.service.usecase.notification.c
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import studydocs.notificationservice.application.dto.input.notification.create.AddNotificationInput;
 import studydocs.notificationservice.application.usecase.notificaton.create.AddNotificationUseCase;
 import studydocs.notificationservice.domain.repository.NotificationRepositoryPort;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AddNotificationUseCaseImpl implements AddNotificationUseCase {
     private final NotificationRepositoryPort notificationRepositoryPort;
 

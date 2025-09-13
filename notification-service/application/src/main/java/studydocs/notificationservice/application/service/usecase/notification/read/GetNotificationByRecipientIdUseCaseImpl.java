@@ -2,23 +2,25 @@ package studydocs.notificationservice.application.service.usecase.notification.r
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import studydocs.notificationservice.application.dto.input.notification.read.GetNotificationByRecipientIdInput;
 import studydocs.notificationservice.application.dto.output.notification.NotificationOutput;
-import studydocs.notificationservice.shared.paging.SliceInput;
-import studydocs.notificationservice.shared.paging.SliceOutput;
 import studydocs.notificationservice.application.port.render.TemplateRenderer;
 import studydocs.notificationservice.application.usecase.notificaton.read.GetNotificationByRecipientIdUseCase;
-import studydocs.notificationservice.domain.repository.NotificationRecipientRepositoryPort;
-import studydocs.notificationservice.domain.repository.NotificationTemplateRepositoryPort;
 import studydocs.notificationservice.domain.entity.Notification;
 import studydocs.notificationservice.domain.entity.NotificationRecipient;
 import studydocs.notificationservice.domain.entity.NotificationTemplate;
+import studydocs.notificationservice.domain.repository.NotificationRecipientRepositoryPort;
+import studydocs.notificationservice.domain.repository.NotificationTemplateRepositoryPort;
 import studydocs.notificationservice.shared.exception.concrete.template.TemplateNotFoundException;
+import studydocs.notificationservice.shared.paging.SliceInput;
+import studydocs.notificationservice.shared.paging.SliceOutput;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class GetNotificationByRecipientIdUseCaseImpl implements GetNotificationByRecipientIdUseCase {
     private final NotificationRecipientRepositoryPort recipientRepositoryPort;
     private final NotificationTemplateRepositoryPort templateRepositoryPort;
@@ -67,6 +69,6 @@ public class GetNotificationByRecipientIdUseCaseImpl implements GetNotificationB
     }
 
     private String createContent(Notification notification, NotificationTemplate template) {
-        return templateRenderer.render(templateRenderer.render(template.getBodyTemplate().value(), notification.getTemplateData().data()), notification.getTemplateData().data());
+        return templateRenderer.render(template.getBodyTemplate().value(), notification.getTemplateData().data());
     }
 }

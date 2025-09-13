@@ -2,6 +2,7 @@ package studydocs.notificationservice.application.service.usecase.recipient.upda
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import studydocs.notificationservice.application.dto.input.recipient.update.MarkAllAsReadInput;
 import studydocs.notificationservice.application.usecase.recipient.update.MarkAllAsReadUseCase;
 import studydocs.notificationservice.domain.repository.NotificationRecipientRepositoryPort;
@@ -10,6 +11,7 @@ import studydocs.notificationservice.shared.exception.concrete.recipient.Notific
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MarkAllAsReadUseCaseImpl implements MarkAllAsReadUseCase {
     private final NotificationRecipientRepositoryPort repository;
 

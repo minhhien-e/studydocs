@@ -7,8 +7,9 @@ dependencies {
     implementation project(":application")
     //web
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     //env
     implementation("me.paulschwarz:spring-dotenv:4.0.0")
@@ -18,6 +19,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     //rabbit
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    //document
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.11")
     //lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

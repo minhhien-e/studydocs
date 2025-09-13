@@ -9,6 +9,7 @@ import studydocs.notificationservice.domain.valueobject.template.BodyTemplate;
 import studydocs.notificationservice.domain.valueobject.template.SubjectTemplate;
 import studydocs.notificationservice.shared.exception.concrete.template.MissingDescriptionInTemplateException;
 import studydocs.notificationservice.shared.exception.concrete.template.MissingIdInTemplateException;
+import studydocs.notificationservice.shared.exception.concrete.valueobjects.name.NameAlreadyExistsException;
 import studydocs.notificationservice.shared.utils.StringUtils;
 
 import java.time.LocalDateTime;
@@ -109,6 +110,8 @@ public class NotificationTemplate {
     }
 
     public void updateName(String newName) {
+        if (newName.equalsIgnoreCase(name.getValue()))
+            throw new NameAlreadyExistsException("mẫu thông báo");
         setName(newName);
     }
 

@@ -2,6 +2,7 @@ package studydocs.notificationservice.application.service.usecase.template.updat
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import studydocs.notificationservice.application.dto.input.template.update.concrete.UpdateTemplateNameInput;
 import studydocs.notificationservice.application.usecase.template.update.UpdateTemplateNameUseCase;
 import studydocs.notificationservice.domain.repository.NotificationTemplateRepositoryPort;
@@ -10,6 +11,7 @@ import studydocs.notificationservice.shared.exception.concrete.template.Template
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UpdateTemplateNameUseCaseImpl implements UpdateTemplateNameUseCase {
     private final NotificationTemplateRepositoryPort repository;
 
