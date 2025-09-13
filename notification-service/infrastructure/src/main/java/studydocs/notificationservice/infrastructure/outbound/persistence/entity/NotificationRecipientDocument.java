@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Document(collection = "notification_recipient")
@@ -20,6 +21,6 @@ public class NotificationRecipientDocument {
     private UUID recipientId;
     private UUID notificationId;
     private boolean isRead;
-    private boolean isDeleted;
+    private LocalDateTime deletedAt;
     private NotificationDocument notification;
 }

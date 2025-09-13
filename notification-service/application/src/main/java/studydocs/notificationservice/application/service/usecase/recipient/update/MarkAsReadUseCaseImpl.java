@@ -7,7 +7,6 @@ import studydocs.notificationservice.application.dto.input.recipient.update.Mark
 import studydocs.notificationservice.application.usecase.recipient.update.MarkAsReadUseCase;
 import studydocs.notificationservice.domain.repository.NotificationRecipientRepositoryPort;
 import studydocs.notificationservice.shared.exception.abstracts.UpdateFailedException;
-import studydocs.notificationservice.shared.exception.concrete.notification.NotificationNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -17,10 +16,7 @@ public class MarkAsReadUseCaseImpl implements MarkAsReadUseCase {
 
     @Override
     public void execute(MarkAsReadInput inputModel) {
-        var recipientOptional = repository.findByRecipientIdAndNotificationId(inputModel.getRecipientId(), inputModel.getNotificationId());
-        if (recipientOptional.isEmpty())
-            throw new NotificationNotFoundException(inputModel.getNotificationId());
-        var recipient = recipientOptional.get();
+        var recipient = repository.getByRecipientIdAndNotificationId(inputModel.getRecipientId(), inputModel.getNotificationId());
         recipient.read();
         long modifierCol = repository.markAsRead(recipient.getRecipientId(), recipient.getNotificationId());
         if (modifierCol <= 0)

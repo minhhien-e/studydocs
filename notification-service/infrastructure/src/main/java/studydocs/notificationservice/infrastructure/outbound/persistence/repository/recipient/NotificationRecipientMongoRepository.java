@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface NotificationRecipientMongoRepository extends MongoRepository<NotificationRecipientDocument, UUID> {
     boolean existsByRecipientIdAndReadIsFalse(UUID recipientId);
 
-    int countByRecipientIdAndReadIsFalseAndDeletedIsFalse(UUID recipientId);
+    int countByRecipientIdAndReadIsFalseAndDeletedAtIsNull(UUID recipientId);
 
     Optional<NotificationRecipientDocument> findByRecipientIdAndNotificationId(UUID recipientId, UUID notificationId);
 }
