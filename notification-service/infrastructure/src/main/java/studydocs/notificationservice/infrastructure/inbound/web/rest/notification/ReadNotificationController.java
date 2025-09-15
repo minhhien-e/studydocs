@@ -29,25 +29,16 @@ public class ReadNotificationController {
     private final CountUnreadUseCase countUnreadUseCase;
 
     @Operation(summary = "Lấy danh sách thông báo theo người nhận", description = "Lấy danh sách thông báo của một người nhận cụ thể với khả năng lọc theo thời gian tạo và giới hạn số lượng")
-    @StandardApiResponses(
-            successExample = @SuccessfulResponse(message = "Lấy danh sách thông báo thành công", data = Object.class),
-            errorExamples = {
-                    @ErrorResponse(statusCode = "404", code = "RESOURCE_NOT_FOUND", message = "Không tìm thấy người nhận với ID đã cho"),
-            }
-    )
-    @GetMapping("/recipient/{recipientId}")
-    public ResponseEntity<?> getByRecipientId(@PathVariable("recipientId") UUID recipientId,
-                                              @RequestParam(value = "createAt", required = false) Optional<LocalDateTime> createAt,
-                                              @RequestParam(value = "limit", required = false) int limit) {
-        var request = new GetNotificationByRecipientIdRequest(recipientId, createAt, limit);
+    @StandardApiResponses(successExample = @SuccessfulResponse(message = "Lấy danh sách thông báo thành công", data = Object.class), errorExamples = {@ErrorResponse(statusCode = "404", code = "RESOURCE_NOT_FOUND", message = "Không tìm thấy người nhận với ID đã cho"),})
+    @GetMapping
+    public ResponseEntity<?> getByRecipientId(@RequestAttribute("userId") UUID recipientId, @RequestParam boolean isDeleted, @RequestParam(value = "createAt", required = false) Optional<LocalDateTime> createAt, @RequestParam(value = "limit", required = false) int limit) {
+        var request = new GetNotificationByRecipientIdRequest(recipientId, isDeleted, createAt, limit);
         var outputModel = getNotificationByRecipientIdUseCase.execute(toInput(request));
         return ResponseEntity.ok(ApiResponse.success(outputModel, "Lấy danh sách thông báo thành công"));
     }
 
     @Operation(summary = "Đếm số thông báo chưa đọc", description = "Đếm số lượng thông báo chưa đọc của một người nhận cụ thể")
-    @StandardApiResponses(
-            successExample = @SuccessfulResponse(message = "Đếm số thông báo chưa đọc thành công", data = Integer.class)
-    )
+    @StandardApiResponses(successExample = @SuccessfulResponse(message = "Đếm số thông báo chưa đọc thành công", data = Integer.class))
     @GetMapping("/recipient/count-unread")
     public ResponseEntity<?> countUnread(@RequestAttribute("userId") UUID recipientId) {
         var request = new CountUnreadRequest(recipientId);

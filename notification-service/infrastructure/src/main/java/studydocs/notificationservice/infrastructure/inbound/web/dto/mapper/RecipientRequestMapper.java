@@ -19,7 +19,7 @@ public class RecipientRequestMapper {
 
     public static SliceInput<GetNotificationByRecipientIdInput> toInput(GetNotificationByRecipientIdRequest request) {
         var limit = request.limit() <= 0 ? 10 : request.limit();
-        var input = new GetNotificationByRecipientIdInput(request.recipientId(), request.createdAt().orElse(LocalDateTime.now()));
+        var input = new GetNotificationByRecipientIdInput(request.recipientId(), request.isDeleted(), request.createdAt().orElse(LocalDateTime.now()));
         return new SliceInput<>(input, limit);
     }
 

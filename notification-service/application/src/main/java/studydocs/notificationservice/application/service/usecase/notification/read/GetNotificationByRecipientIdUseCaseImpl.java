@@ -51,6 +51,7 @@ public class GetNotificationByRecipientIdUseCaseImpl implements GetNotificationB
     private SliceOutput<NotificationRecipient> findByRecipientId(SliceInput<GetNotificationByRecipientIdInput> inputModel) {
         var request = inputModel.request();
         return recipientRepositoryPort.findByRecipientId(request.recipientId(),
+                request.isDeleted(),
                 request.createdAt(),
                 inputModel.limit());
     }

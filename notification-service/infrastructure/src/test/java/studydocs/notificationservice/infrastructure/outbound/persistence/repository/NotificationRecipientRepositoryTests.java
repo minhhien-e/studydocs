@@ -115,7 +115,7 @@ public class NotificationRecipientRepositoryTests {
         LocalDateTime cutoff = LocalDateTime.now(); // Thời gian hiện tại làm mốc
 
         // Act
-        SliceOutput<NotificationRecipient> result = repository.findByRecipientId(recipientId, cutoff, limit);
+        SliceOutput<NotificationRecipient> result = repository.findByRecipientId(recipientId, , cutoff, limit);
 
         // Assert
         assertEquals(limit, result.content().size()); // Chỉ lấy đúng số lượng limit

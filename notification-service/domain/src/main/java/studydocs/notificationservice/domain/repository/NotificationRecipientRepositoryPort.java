@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface NotificationRecipientRepositoryPort {
-    SliceOutput<NotificationRecipient> findByRecipientId(UUID recipientId, LocalDateTime createdAt, int limit);
+    SliceOutput<NotificationRecipient> findByRecipientId(UUID recipientId, boolean isDeleted, LocalDateTime createdAt, int limit);
 
     void save(NotificationRecipient notificationRecipient);
 

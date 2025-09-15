@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 import studydocs.notificationservice.domain.entity.NotificationRecipient;
 import studydocs.notificationservice.domain.repository.NotificationRecipientRepositoryPort;
@@ -33,8 +34,16 @@ public class NotificationRecipientRepository implements NotificationRecipientRep
     }
 
     @Override
-    public SliceOutput<NotificationRecipient> findByRecipientId(UUID recipientId, LocalDateTime createdAt, int limit) {
-        MatchOperation matchRecipient = Aggregation.match(where("recipientId").is(recipientId).and("isDeleted").is(false));
+    public SliceOutput<NotificationRecipient> findByRecipientId(UUID recipientId, boolean isDeleted, LocalDateTime createdAt, int limit) {
+        Criteria criteria = Criteria.where("recipientId").is(recipientId);
+
+        if (isDeleted) {
+            criteria = criteria.and("deletedAt").ne(null);
+        } else {
+            criteria = criteria.and("deletedAt").is(null);
+        }
+
+        MatchOperation matchRecipient = Aggregation.match(criteria);
         LookupOperation lookupNotification = LookupOperation.newLookup().from("notification").localField("notificationId").foreignField("_id").as("notification");
         UnwindOperation unwindNotification = Aggregation.unwind("notification");
         MatchOperation matchCreatedAt = Aggregation.match(where("notification.createdAt").lte(createdAt));
@@ -82,8 +91,7 @@ public class NotificationRecipientRepository implements NotificationRecipientRep
 
     @Override
     public NotificationRecipient getByRecipientIdAndNotificationId(UUID recipientId, UUID notificationId) {
-        var recipientDocument = repository.findByRecipientIdAndNotificationId(recipientId, notificationId)
-                .orElseThrow(() -> new RecipientNotFoundException(recipientId, notificationId));
+        var recipientDocument = repository.findByRecipientIdAndNotificationId(recipientId, notificationId).orElseThrow(() -> new RecipientNotFoundException(recipientId, notificationId));
         return RecipientMapper.toDomain(recipientDocument);
 
     }
@@ -95,8 +103,6 @@ public class NotificationRecipientRepository implements NotificationRecipientRep
 
     @Override
     public List<NotificationRecipient> findAll() {
-        return repository.findAll().stream()
-                .map(RecipientMapper::toDomain)
-                .toList();
+        return repository.findAll().stream().map(RecipientMapper::toDomain).toList();
     }
 }
