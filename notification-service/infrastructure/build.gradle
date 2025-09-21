@@ -19,8 +19,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     //rabbit
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
-    //document
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.11")
     //lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

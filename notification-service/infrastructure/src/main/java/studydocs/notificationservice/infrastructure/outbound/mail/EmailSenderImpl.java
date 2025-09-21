@@ -7,7 +7,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import studydocs.notificationservice.application.port.mail.EmailSenderPort;
-import studydocs.notificationservice.domain.valueobject.EmailData;
+import studydocs.notificationservice.domain.model.valueobject.email.Email;
 import studydocs.notificationservice.shared.exception.concrete.mail.EmailSendFailureException;
 
 @Component
@@ -16,7 +16,7 @@ public class EmailSenderImpl implements EmailSenderPort {
     private final JavaMailSender mailSender;
 
     @Override
-    public void send(EmailData emailData) {
+    public void send(Email emailData) {
         MimeMessage message = mailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);

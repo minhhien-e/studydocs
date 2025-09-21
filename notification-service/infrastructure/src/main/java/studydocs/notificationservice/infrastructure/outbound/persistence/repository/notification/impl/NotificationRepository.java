@@ -2,7 +2,7 @@ package studydocs.notificationservice.infrastructure.outbound.persistence.reposi
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import studydocs.notificationservice.domain.entity.Notification;
+import studydocs.notificationservice.domain.model.entity.Notification;
 import studydocs.notificationservice.domain.repository.NotificationRepositoryPort;
 import studydocs.notificationservice.infrastructure.outbound.persistence.entity.NotificationDocument;
 import studydocs.notificationservice.infrastructure.outbound.persistence.mapper.NotificationMapper;

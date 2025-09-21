@@ -1,7 +1,7 @@
 package studydocs.notificationservice.application.usecase.template.read;
 
 import studydocs.notificationservice.application.dto.input.template.read.GetAllTemplateInput;
-import studydocs.notificationservice.application.dto.output.template.TemplateOutput;
+import studydocs.notificationservice.application.dto.output.TemplateOutput;
 
 import java.util.List;
 

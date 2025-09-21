@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
-import studydocs.notificationservice.domain.entity.NotificationRecipient;
+import studydocs.notificationservice.domain.model.entity.NotificationRecipient;
 import studydocs.notificationservice.domain.repository.NotificationRecipientRepositoryPort;
 import studydocs.notificationservice.infrastructure.outbound.persistence.entity.NotificationRecipientDocument;
 import studydocs.notificationservice.infrastructure.outbound.persistence.mapper.RecipientMapper;
@@ -98,7 +98,7 @@ public class NotificationRecipientRepository implements NotificationRecipientRep
 
     @Override
     public void updateDeletedAt(NotificationRecipient recipient) {
-        mongoTemplate.updateFirst(query(where("_id").is(recipient.getId())), update("deletedAt", recipient.getDeletedAt()), NotificationRecipientDocument.class);
+        mongoTemplate.updateFirst(query(where("_id").is(recipient.getId())), update("deletedAt", recipient.getDeletionTime()), NotificationRecipientDocument.class);
     }
 
     @Override

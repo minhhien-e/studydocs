@@ -1,6 +1,6 @@
 package studydocs.notificationservice.infrastructure.outbound.persistence.mapper;
 
-import studydocs.notificationservice.domain.entity.NotificationRecipient;
+import studydocs.notificationservice.domain.model.entity.NotificationRecipient;
 import studydocs.notificationservice.infrastructure.outbound.persistence.entity.NotificationRecipientDocument;
 
 public final class RecipientMapper {

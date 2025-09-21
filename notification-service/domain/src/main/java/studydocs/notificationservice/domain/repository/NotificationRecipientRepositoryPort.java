@@ -1,6 +1,6 @@
 package studydocs.notificationservice.domain.repository;
 
-import studydocs.notificationservice.domain.entity.NotificationRecipient;
+import studydocs.notificationservice.domain.model.entity.NotificationRecipient;
 import studydocs.notificationservice.shared.paging.SliceOutput;
 
 import java.time.LocalDateTime;

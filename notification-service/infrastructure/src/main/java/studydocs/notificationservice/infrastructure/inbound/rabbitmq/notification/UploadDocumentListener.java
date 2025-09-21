@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 import studydocs.notificationservice.application.dto.input.notification.create.AddNotificationInput;
 import studydocs.notificationservice.application.dto.input.recipient.create.AddRecipientInput;
 import studydocs.notificationservice.application.dto.input.template.read.GetTemplateByNameInput;
-import studydocs.notificationservice.application.dto.output.template.TemplateOutput;
+import studydocs.notificationservice.application.dto.output.TemplateOutput;
 import studydocs.notificationservice.application.usecase.notificaton.create.AddNotificationUseCase;
 import studydocs.notificationservice.application.usecase.recipient.create.AddRecipientUseCase;
 import studydocs.notificationservice.application.usecase.template.read.GetTemplateByNameUseCase;
-import studydocs.notificationservice.domain.event.UploadDocumentEvent;
-import studydocs.notificationservice.shared.enums.NotificationChannel;
-import studydocs.notificationservice.shared.enums.NotificationType;
+import studydocs.notificationservice.domain.enums.NotificationCategoryEnum;
+import studydocs.notificationservice.domain.enums.NotificationChannel;
+import studydocs.notificationservice.domain.model.event.UploadDocumentEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,7 @@ public class UploadDocumentListener {
     @RabbitListener(queues = "queue.notification.push.document.upload")
     public void receive(UploadDocumentEvent event) {
         TemplateOutput templateOutputModel = getTemplateByNameUseCase
-                .execute(new GetTemplateByNameInput(NotificationType.NEW_DOCUMENT.name()));
+                .execute(new GetTemplateByNameInput(NotificationCategoryEnum.NEW_DOCUMENT.name()));
         Map<String, Object> templateData = new HashMap<>();
         templateData.put("documentName", event.documentName());
         AddNotificationInput addNotificationInputModel = AddNotificationInput.builder()
@@ -37,7 +37,7 @@ public class UploadDocumentListener {
                 .templateId(templateOutputModel.getId())
                 .templateData(templateData)
                 .chanel(NotificationChannel.PUSH.name())
-                .type(NotificationType.NEW_DOCUMENT.name())
+                .type(NotificationCategoryEnum.NEW_DOCUMENT.name())
                 .build();
         addNotificationUseCase.execute(addNotificationInputModel);
         AddRecipientInput recipient = new AddRecipientInput(event.userId(), event.userId());

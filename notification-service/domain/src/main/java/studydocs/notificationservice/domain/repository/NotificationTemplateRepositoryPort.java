@@ -1,6 +1,6 @@
 package studydocs.notificationservice.domain.repository;
 
-import studydocs.notificationservice.domain.entity.NotificationTemplate;
+import studydocs.notificationservice.domain.model.entity.NotificationTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,8 +17,11 @@ public interface NotificationTemplateRepositoryPort {
     //endregion
     //region Find All
     List<NotificationTemplate> findAll();
+
     List<NotificationTemplate> searchByName(String name);
+
     List<NotificationTemplate> findByChannel(String channel);
+
     //endregion
     //region Update
     long updateName(UUID id, String newName);

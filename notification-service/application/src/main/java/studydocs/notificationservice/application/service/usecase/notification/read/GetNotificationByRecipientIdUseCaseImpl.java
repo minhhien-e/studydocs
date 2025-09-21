@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studydocs.notificationservice.application.dto.input.notification.read.GetNotificationByRecipientIdInput;
-import studydocs.notificationservice.application.dto.output.notification.NotificationOutput;
+import studydocs.notificationservice.application.dto.output.NotificationOutput;
 import studydocs.notificationservice.application.port.render.TemplateRenderer;
 import studydocs.notificationservice.application.usecase.notificaton.read.GetNotificationByRecipientIdUseCase;
-import studydocs.notificationservice.domain.entity.Notification;
-import studydocs.notificationservice.domain.entity.NotificationRecipient;
-import studydocs.notificationservice.domain.entity.NotificationTemplate;
+import studydocs.notificationservice.domain.model.entity.Notification;
+import studydocs.notificationservice.domain.model.entity.NotificationRecipient;
+import studydocs.notificationservice.domain.model.entity.NotificationTemplate;
 import studydocs.notificationservice.domain.repository.NotificationRecipientRepositoryPort;
 import studydocs.notificationservice.domain.repository.NotificationTemplateRepositoryPort;
 import studydocs.notificationservice.shared.exception.concrete.template.TemplateNotFoundException;
@@ -62,10 +62,10 @@ public class GetNotificationByRecipientIdUseCaseImpl implements GetNotificationB
                 .senderId(notification.getSenderId())
                 .recipientId(recipient.getRecipientId())
                 .isRead(recipient.isRead())
-                .type(notification.getType().getValue())
+                .type(notification.getNotificationCategory().getValue())
                 .subject(template.getSubjectTemplate().value())
                 .content(content)
-                .createdAt(notification.getCreateAt().getValue())
+                .createdAt(notification.getCreationTime().getValue())
                 .build();
     }
 

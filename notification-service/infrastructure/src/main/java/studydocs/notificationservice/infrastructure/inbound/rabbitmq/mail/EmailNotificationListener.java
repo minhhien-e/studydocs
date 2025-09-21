@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import studydocs.notificationservice.application.usecase.email.SendEmailNotificationUseCase;
-import studydocs.notificationservice.domain.event.SendMailEvent;
+import studydocs.notificationservice.domain.model.event.SendMailEvent;
 
 @Component
 @RequiredArgsConstructor

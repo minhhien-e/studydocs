@@ -1,15 +1,13 @@
 package studydocs.notificationservice.shared.exception.abstracts;
 
-import studydocs.notificationservice.shared.enums.ErrorCode;
-
 public abstract class HttpException extends RuntimeException {
     private final int statusCode;
     private final String errorCode;
 
-    protected HttpException(int statusCode, ErrorCode errorCode, String message) {
+    protected HttpException(int statusCode, String errorCode, String message) {
         super(message);
         this.statusCode = statusCode;
-        this.errorCode = errorCode.name();
+        this.errorCode = errorCode;
     }
 
     public int getStatusCode() {

@@ -1,6 +1,6 @@
 package studydocs.notificationservice.application.dto.input.recipient.create;
 
-import studydocs.notificationservice.domain.entity.NotificationRecipient;
+import studydocs.notificationservice.domain.model.entity.NotificationRecipient;
 
 import java.util.UUID;
 

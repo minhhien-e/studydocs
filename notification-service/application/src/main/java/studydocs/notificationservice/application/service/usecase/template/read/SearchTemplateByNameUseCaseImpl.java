@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studydocs.notificationservice.application.dto.input.template.read.SearchTemplateByNameInput;
-import studydocs.notificationservice.application.dto.output.template.TemplateOutput;
+import studydocs.notificationservice.application.dto.output.TemplateOutput;
 import studydocs.notificationservice.application.usecase.template.read.SearchTemplateByNameUseCase;
 import studydocs.notificationservice.domain.repository.NotificationTemplateRepositoryPort;
 

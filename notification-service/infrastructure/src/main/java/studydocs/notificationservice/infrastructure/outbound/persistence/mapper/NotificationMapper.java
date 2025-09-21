@@ -1,6 +1,6 @@
 package studydocs.notificationservice.infrastructure.outbound.persistence.mapper;
 
-import studydocs.notificationservice.domain.entity.Notification;
+import studydocs.notificationservice.domain.model.entity.Notification;
 import studydocs.notificationservice.infrastructure.outbound.persistence.entity.NotificationDocument;
 
 public final class NotificationMapper {
@@ -21,8 +21,8 @@ public final class NotificationMapper {
                 .templateId(notification.getTemplateId())
                 .senderId(notification.getSenderId())
                 .templateData(notification.getTemplateData().data())
-                .type(notification.getType().getValue())
-                .createdAt(notification.getCreateAt().getValue())
+                .type(notification.getNotificationCategory().getValue())
+                .createdAt(notification.getCreationTime().getValue())
                 .build();
     }
 }

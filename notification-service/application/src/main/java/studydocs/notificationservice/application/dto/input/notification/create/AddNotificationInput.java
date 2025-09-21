@@ -2,7 +2,7 @@ package studydocs.notificationservice.application.dto.input.notification.create;
 
 import lombok.Builder;
 import lombok.Getter;
-import studydocs.notificationservice.domain.entity.Notification;
+import studydocs.notificationservice.domain.model.entity.Notification;
 
 import java.util.Map;
 import java.util.UUID;

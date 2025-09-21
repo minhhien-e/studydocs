@@ -1,6 +1,6 @@
 package studydocs.notificationservice.application.dto.input.template.create;
 
-import studydocs.notificationservice.domain.entity.NotificationTemplate;
+import studydocs.notificationservice.domain.model.entity.NotificationTemplate;
 
 public record AddTemplateInput(String name,
                                String channel,

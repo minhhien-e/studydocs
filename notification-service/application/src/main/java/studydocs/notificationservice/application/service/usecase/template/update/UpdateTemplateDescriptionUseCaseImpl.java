@@ -3,7 +3,7 @@ package studydocs.notificationservice.application.service.usecase.template.updat
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import studydocs.notificationservice.application.dto.input.template.update.concrete.UpdateTemplateDescriptionInput;
+import studydocs.notificationservice.application.dto.input.template.update.UpdateTemplateDescriptionInput;
 import studydocs.notificationservice.application.usecase.template.update.UpdateTemplateDescriptionUseCase;
 import studydocs.notificationservice.domain.repository.NotificationTemplateRepositoryPort;
 import studydocs.notificationservice.shared.exception.abstracts.UpdateFailedException;

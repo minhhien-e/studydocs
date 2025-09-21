@@ -1,6 +1,6 @@
 package studydocs.notificationservice.domain.repository;
 
-import studydocs.notificationservice.domain.entity.Notification;
+import studydocs.notificationservice.domain.model.entity.Notification;
 
 import java.util.UUID;
 
