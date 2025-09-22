@@ -5,18 +5,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studydocs.notificationservice.application.dto.input.notification.delete.SoftDeleteNotificationInput;
 import studydocs.notificationservice.application.usecase.notificaton.delete.SoftDeleteNotificationUseCase;
-import studydocs.notificationservice.domain.repository.NotificationRecipientRepositoryPort;
+import studydocs.notificationservice.domain.repository.RecipientRepositoryPort;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class SoftDeleteNotificationUseCaseImpl implements SoftDeleteNotificationUseCase {
-    private final NotificationRecipientRepositoryPort notificationRecipientRepository;
+    private final RecipientRepositoryPort notificationRecipientRepository;
 
     @Override
     public void execute(SoftDeleteNotificationInput inputModel) {
-        var recipient = notificationRecipientRepository.getByRecipientIdAndNotificationId(inputModel.requesterId(), inputModel.notificationId());
-        recipient.delete();
+        //Load dữ liệu
+        var notificationId = inputModel.notificationId();
+        var recipientId = inputModel.requesterId();
+        var userNotificationAggregate = notificationRecipientRepository.getByRecipientIdAndNotificationId(recipientId, notificationId);
+        // Xử lý logic
+        var recipient = userNotificationAggregate.softDeleteNotification(notificationId);
+        // Gọi repository
         notificationRecipientRepository.updateDeletedAt(recipient);
     }
 }

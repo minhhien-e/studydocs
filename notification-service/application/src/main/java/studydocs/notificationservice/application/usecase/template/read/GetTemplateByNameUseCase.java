@@ -1,8 +1,8 @@
 package studydocs.notificationservice.application.usecase.template.read;
 
 import studydocs.notificationservice.application.dto.input.template.read.GetTemplateByNameInput;
-import studydocs.notificationservice.application.dto.output.TemplateOutput;
+import studydocs.notificationservice.application.dto.output.TemplateDto;
 
 public interface GetTemplateByNameUseCase {
-    TemplateOutput execute(GetTemplateByNameInput inputModel);
+    TemplateDto execute(GetTemplateByNameInput inputModel);
 }

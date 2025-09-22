@@ -5,13 +5,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studydocs.notificationservice.application.dto.input.recipient.create.CountUnreadInput;
 import studydocs.notificationservice.application.usecase.recipient.read.CountUnreadUseCase;
-import studydocs.notificationservice.domain.repository.NotificationRecipientRepositoryPort;
+import studydocs.notificationservice.domain.repository.RecipientRepositoryPort;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class CountUnreadUseCaseImpl implements CountUnreadUseCase {
-    private final NotificationRecipientRepositoryPort repository;
+    private final RecipientRepositoryPort repository;
 
     @Override
     public int execute(CountUnreadInput inputModel) {

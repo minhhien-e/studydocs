@@ -2,11 +2,11 @@ package studydocs.notificationservice.domain.enums;
 
 import java.util.Arrays;
 
-public enum NotificationChannel {
+public enum NotificationChannelEnum {
     EMAIL, SMS, IN_APP, PUSH;
 
     public static boolean contains(String channel) {
-        for (NotificationChannel notificationChannel : NotificationChannel.values()) {
+        for (NotificationChannelEnum notificationChannel : NotificationChannelEnum.values()) {
             if (notificationChannel.name().equalsIgnoreCase(channel)) {
                 return true;
             }
@@ -15,6 +15,6 @@ public enum NotificationChannel {
     }
 
     public static String getValues() {
-        return Arrays.stream(NotificationChannel.values()).map(Enum::name).toList().toString();
+        return Arrays.stream(NotificationChannelEnum.values()).map(Enum::name).toList().toString();
     }
 }

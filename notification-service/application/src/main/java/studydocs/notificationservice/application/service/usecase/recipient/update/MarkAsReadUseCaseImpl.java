@@ -5,21 +5,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studydocs.notificationservice.application.dto.input.recipient.update.MarkAsReadInput;
 import studydocs.notificationservice.application.usecase.recipient.update.MarkAsReadUseCase;
-import studydocs.notificationservice.domain.repository.NotificationRecipientRepositoryPort;
-import studydocs.notificationservice.shared.exception.abstracts.UpdateFailedException;
+import studydocs.notificationservice.domain.repository.RecipientRepositoryPort;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class MarkAsReadUseCaseImpl implements MarkAsReadUseCase {
-    private final NotificationRecipientRepositoryPort repository;
+    private final RecipientRepositoryPort repository;
 
     @Override
     public void execute(MarkAsReadInput inputModel) {
-        var recipient = repository.getByRecipientIdAndNotificationId(inputModel.getRecipientId(), inputModel.getNotificationId());
-        recipient.read();
-        long modifierCol = repository.markAsRead(recipient.getRecipientId(), recipient.getNotificationId());
-        if (modifierCol <= 0)
-            throw new UpdateFailedException();
+        //Load dữ liệu
+        var recipientId = inputModel.recipientId();
+        var notificationId = inputModel.notificationId();
+        var userNotificationAggregate = repository.getByRecipientIdAndNotificationId(recipientId, notificationId);
+        //Xử lý logic
+        userNotificationAggregate.markNotificationAsRead(notificationId);
+        //Gọi repository
+        repository.markAsRead(recipientId, notificationId);
     }
 }

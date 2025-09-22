@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studydocs.notificationservice.application.dto.input.notification.create.AddNotificationInput;
 import studydocs.notificationservice.application.usecase.notificaton.create.AddNotificationUseCase;
+import studydocs.notificationservice.domain.factory.abstracts.NotificationFactory;
 import studydocs.notificationservice.domain.repository.NotificationRepositoryPort;
 
 @Service
@@ -12,9 +13,14 @@ import studydocs.notificationservice.domain.repository.NotificationRepositoryPor
 @Transactional
 public class AddNotificationUseCaseImpl implements AddNotificationUseCase {
     private final NotificationRepositoryPort notificationRepositoryPort;
+    private final NotificationFactory notificationFactory;
 
     @Override
     public void execute(AddNotificationInput inputModel) {
-        notificationRepositoryPort.save(inputModel.toDomain());
+        var templateId = inputModel.getTemplateId();
+        var senderId = inputModel.getSenderId();
+        var category = inputModel.getCategory();
+        var templateData = inputModel.getTemplateData();
+        notificationRepositoryPort.save(notificationFactory.create(templateId, senderId, category, templateData));
     }
 }

@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
-public class NotificationRepository implements NotificationRepositoryPort {
+public class NotificationRepositoryAdapter implements NotificationRepositoryPort {
     private final NotificationMongoRepository repository;
 
     @Override

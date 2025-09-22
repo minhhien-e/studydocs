@@ -2,7 +2,7 @@ package studydocs.notificationservice.infrastructure.inbound.web.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import studydocs.notificationservice.application.dto.output.TemplateOutput;
+import studydocs.notificationservice.application.dto.output.TemplateDto;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -19,7 +19,7 @@ public class TemplateResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static TemplateResponse toResponse(TemplateOutput template) {
+    public static TemplateResponse toResponse(TemplateDto template) {
         return TemplateResponse.builder()
                 .id(template.getId())
                 .name(template.getName())
@@ -27,7 +27,7 @@ public class TemplateResponse {
                 .subjectTemplate(template.getSubjectTemplate())
                 .bodyTemplate(template.getBodyTemplate())
                 .description(template.getDescription())
-                .updatedAt(template.getUpdatedAt())
+                .updatedAt(template.getUpdatedTime())
                 .build();
     }
 }

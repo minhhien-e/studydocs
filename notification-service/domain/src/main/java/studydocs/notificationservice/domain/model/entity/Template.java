@@ -2,29 +2,29 @@ package studydocs.notificationservice.domain.model.entity;
 
 
 import studydocs.notificationservice.domain.exceptions.vo.name.NameAlreadyExistsException;
-import studydocs.notificationservice.domain.model.valueobject.channel.TemplateChannel;
+import studydocs.notificationservice.domain.model.valueobject.channel.NotificationChannel;
 import studydocs.notificationservice.domain.model.valueobject.date.past.TemplateCreationTime;
 import studydocs.notificationservice.domain.model.valueobject.date.past.TemplateUpdatedTime;
 import studydocs.notificationservice.domain.model.valueobject.name.Name;
 import studydocs.notificationservice.domain.model.valueobject.name.TemplateName;
-import studydocs.notificationservice.domain.model.valueobject.template.BodyTemplate;
-import studydocs.notificationservice.domain.model.valueobject.template.SubjectTemplate;
+import studydocs.notificationservice.domain.model.valueobject.template.TemplateBody;
+import studydocs.notificationservice.domain.model.valueobject.template.TemplateSubject;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-public class NotificationTemplate {
+public class Template {
     private final UUID id;
     private Name name;
-    private TemplateChannel channel;
-    private SubjectTemplate subjectTemplate;
-    private BodyTemplate bodyTemplate;
+    private NotificationChannel channel;
+    private TemplateSubject subjectTemplate;
+    private TemplateBody bodyTemplate;
     private String description;
     private final TemplateCreationTime creationTime;
     private TemplateUpdatedTime updatedTime;
 
-    public NotificationTemplate(Name name, TemplateChannel channel, SubjectTemplate subjectTemplate, BodyTemplate bodyTemplate, String description) {
+    public Template(Name name, NotificationChannel channel, TemplateSubject subjectTemplate, TemplateBody bodyTemplate, String description) {
         this.id = UUID.randomUUID();
         this.name = name;
         this.channel = channel;
@@ -34,12 +34,12 @@ public class NotificationTemplate {
         this.creationTime = new TemplateCreationTime(LocalDateTime.now());
     }
 
-    public NotificationTemplate(UUID id, String name, String channel, String subjectTemplate, String bodyTemplate, String description, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Template(UUID id, String name, String channel, String subjectTemplate, String bodyTemplate, String description, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = new TemplateName(name);
-        this.channel = new TemplateChannel(channel);
-        this.subjectTemplate = new SubjectTemplate(subjectTemplate);
-        this.bodyTemplate = new BodyTemplate(bodyTemplate);
+        this.channel = new NotificationChannel(channel);
+        this.subjectTemplate = new TemplateSubject(subjectTemplate);
+        this.bodyTemplate = new TemplateBody(bodyTemplate);
         this.description = description;
         this.creationTime = new TemplateCreationTime(createdAt);
         this.updatedTime = new TemplateUpdatedTime(updatedAt, creationTime);
@@ -52,17 +52,17 @@ public class NotificationTemplate {
         } else throw new NameAlreadyExistsException(newName.getValue());
     }
 
-    public void updateChannel(TemplateChannel newChannel) {
+    public void updateChannel(NotificationChannel newChannel) {
         this.channel = newChannel;
         this.updatedTime = new TemplateUpdatedTime(LocalDateTime.now(), creationTime);
     }
 
-    public void updateSubject(SubjectTemplate newSubject) {
+    public void updateSubject(TemplateSubject newSubject) {
         this.subjectTemplate = newSubject;
         this.updatedTime = new TemplateUpdatedTime(LocalDateTime.now(), creationTime);
     }
 
-    public void updateBody(BodyTemplate newBody) {
+    public void updateBody(TemplateBody newBody) {
         this.bodyTemplate = newBody;
         this.updatedTime = new TemplateUpdatedTime(LocalDateTime.now(), creationTime);
     }
@@ -75,7 +75,7 @@ public class NotificationTemplate {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        NotificationTemplate that = (NotificationTemplate) o;
+        Template that = (Template) o;
         return Objects.equals(id, that.id);
     }
 
@@ -92,15 +92,15 @@ public class NotificationTemplate {
         return name;
     }
 
-    public TemplateChannel getChannel() {
+    public NotificationChannel getChannel() {
         return channel;
     }
 
-    public SubjectTemplate getSubjectTemplate() {
+    public TemplateSubject getSubjectTemplate() {
         return subjectTemplate;
     }
 
-    public BodyTemplate getBodyTemplate() {
+    public TemplateBody getBodyTemplate() {
         return bodyTemplate;
     }
 

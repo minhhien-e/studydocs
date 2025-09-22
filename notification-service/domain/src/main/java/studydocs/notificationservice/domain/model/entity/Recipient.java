@@ -1,30 +1,29 @@
 package studydocs.notificationservice.domain.model.entity;
 
 import studydocs.notificationservice.domain.exceptions.entity.notification.NotificationAlreadyDeletedException;
+import studydocs.notificationservice.domain.exceptions.entity.notification.NotificationNotDeletedException;
 import studydocs.notificationservice.domain.model.valueobject.date.past.NotificationDeletionTime;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class NotificationRecipient {
+public class Recipient {
     private final UUID id;
     private final UUID recipientId;
     private final UUID notificationId;
     private boolean isRead;
     private NotificationDeletionTime deletionTime;
-    private Notification notification;
 
-    public NotificationRecipient(UUID id, UUID recipientId, UUID notificationId,
-                                 boolean isRead, LocalDateTime deletedAt, Notification notification) {
+    public Recipient(UUID id, UUID recipientId, UUID notificationId,
+                     boolean isRead, LocalDateTime deletedAt) {
         this.id = id;
         this.recipientId = recipientId;
         this.notificationId = notificationId;
         this.isRead = isRead;
         this.deletionTime = new NotificationDeletionTime(deletedAt);
-        this.notification = notification;
     }
 
-    public NotificationRecipient(UUID recipientId, UUID notificationId) {
+    public Recipient(UUID recipientId, UUID notificationId) {
         this.id = UUID.randomUUID();
         this.recipientId = recipientId;
         this.notificationId = notificationId;
@@ -33,10 +32,6 @@ public class NotificationRecipient {
 
     public UUID getId() {
         return id;
-    }
-
-    public Notification getNotification() {
-        return notification;
     }
 
     public UUID getRecipientId() {
@@ -62,8 +57,16 @@ public class NotificationRecipient {
     }
 
     public void delete() {
+        if (deletionTime != null) {
+            throw new NotificationAlreadyDeletedException();
+        }
         deletionTime = new NotificationDeletionTime(LocalDateTime.now());
     }
 
 
+    public void restore() {
+        if (deletionTime == null)
+            throw new NotificationNotDeletedException();
+        deletionTime = null;
+    }
 }

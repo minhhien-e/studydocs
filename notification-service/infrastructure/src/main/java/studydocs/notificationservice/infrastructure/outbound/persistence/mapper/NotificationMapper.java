@@ -25,4 +25,5 @@ public final class NotificationMapper {
                 .createdAt(notification.getCreationTime().getValue())
                 .build();
     }
+
 }

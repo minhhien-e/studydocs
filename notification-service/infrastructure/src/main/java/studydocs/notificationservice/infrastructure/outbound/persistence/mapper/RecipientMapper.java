@@ -1,25 +1,20 @@
 package studydocs.notificationservice.infrastructure.outbound.persistence.mapper;
 
-import studydocs.notificationservice.domain.model.entity.NotificationRecipient;
-import studydocs.notificationservice.infrastructure.outbound.persistence.entity.NotificationRecipientDocument;
+import studydocs.notificationservice.application.dto.output.UserNotificationDto;
+import studydocs.notificationservice.domain.model.entity.Recipient;
+import studydocs.notificationservice.infrastructure.outbound.persistence.entity.NotificationDocument;
+import studydocs.notificationservice.infrastructure.outbound.persistence.entity.RecipientDocument;
 
 public final class RecipientMapper {
-    public static NotificationRecipient toDomain(NotificationRecipientDocument document) {
-        return new NotificationRecipient(document.getId(),
-                document.getRecipientId(),
-                document.getNotificationId(),
-                document.isRead(),
-                document.getDeletedAt(),
-                NotificationMapper.toDomain(document.getNotification())
-        );
+    public static Recipient toDomain(RecipientDocument document) {
+        return new Recipient(document.getId(), document.getRecipientId(), document.getNotificationId(), document.isRead(), document.getDeletedAt());
     }
 
-    public static NotificationRecipientDocument toDocument(NotificationRecipient recipient) {
-        return NotificationRecipientDocument.builder()
-                .id(recipient.getId())
-                .recipientId(recipient.getRecipientId())
-                .notificationId(recipient.getNotificationId())
-                .isRead(recipient.isRead())
-                .build();
+    public static RecipientDocument toDocument(Recipient recipient) {
+        return RecipientDocument.builder().id(recipient.getId()).recipientId(recipient.getRecipientId()).notificationId(recipient.getNotificationId()).isRead(recipient.isRead()).build();
+    }
+
+    public static UserNotificationDto toDto(NotificationDocument notification, RecipientDocument recipient) {
+        return new UserNotificationDto(recipient.getId(), notification.getSenderId(), recipient.getRecipientId(), notification.getTemplateId(), notification.getTemplateData(), recipient.isRead(), recipient.getDeletedAt(), notification.getCreatedAt());
     }
 }

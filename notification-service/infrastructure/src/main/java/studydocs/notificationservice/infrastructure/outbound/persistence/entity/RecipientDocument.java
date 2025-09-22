@@ -15,7 +15,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotificationRecipientDocument {
+public class RecipientDocument {
     @MongoId
     private UUID id;
     private UUID recipientId;

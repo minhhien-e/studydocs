@@ -3,19 +3,19 @@ package studydocs.notificationservice.application.service.usecase.notification.d
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import studydocs.notificationservice.application.usecase.notificaton.delete.CleanOldNotificationsUseCase;
-import studydocs.notificationservice.domain.repository.NotificationRecipientRepositoryPort;
-import studydocs.notificationservice.domain.service.NotificationCleanerPolicy;
+import studydocs.notificationservice.domain.repository.RecipientRepositoryPort;
+import studydocs.notificationservice.domain.service.NotificationPolicy;
 
 @Service
 @RequiredArgsConstructor
 public class CleanOldNotificationsUseCaseImpl implements CleanOldNotificationsUseCase {
-    private final NotificationRecipientRepositoryPort repository;
+    private final RecipientRepositoryPort repository;
 
     @Override
     public void execute() {
-        var notificationRecipients = repository.findAll();
-        notificationRecipients.forEach((recipient) -> {
-            if (NotificationCleanerPolicy.isExpired(recipient))
+        var recipients = repository.findAll();
+        recipients.forEach((recipient) -> {
+            if (NotificationPolicy.isTrashExpired(recipient))
                 repository.deleteById(recipient.getId());
         });
     }

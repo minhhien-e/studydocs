@@ -18,7 +18,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotificationTemplateDocument {
+public class TemplateDocument {
     @MongoId
     private UUID id;
     @Indexed(unique = true)
@@ -30,5 +30,5 @@ public class NotificationTemplateDocument {
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedTime;
 }
