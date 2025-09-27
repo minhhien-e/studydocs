@@ -27,20 +27,12 @@ public class UploadDocumentListener {
 
     @RabbitListener(queues = "queue.notification.push.document.upload")
     public void receive(UploadDocumentEvent event) {
-        TemplateDto templateOutputModel = getTemplateByNameUseCase
-                .execute(new GetTemplateByNameInput(NotificationCategoryEnum.NEW_DOCUMENT.name()));
+        TemplateDto templateOutputModel = getTemplateByNameUseCase.execute(new GetTemplateByNameInput(NotificationCategoryEnum.NEW_DOCUMENT.name()));
         Map<String, Object> templateData = new HashMap<>();
         templateData.put("documentName", event.documentName());
-        AddNotificationInput addNotificationInputModel = AddNotificationInput.builder()
-                .senderId(event.userId())
-                .recipientId(event.userId())
-                .templateId(templateOutputModel.getId())
-                .templateData(templateData)
-                .chanel(NotificationChannelEnum.PUSH.name())
-                .category(NotificationCategoryEnum.NEW_DOCUMENT.name())
-                .build();
-        addNotificationUseCase.execute(addNotificationInputModel);
-        ReceiveNotificationInput recipient = new ReceiveNotificationInput(event.userId(), event.userId());
+        AddNotificationInput addNotificationInputModel = AddNotificationInput.builder().senderId(event.userId()).recipientId(event.userId()).templateId(templateOutputModel.id()).templateData(templateData).chanel(NotificationChannelEnum.PUSH.name()).category(NotificationCategoryEnum.NEW_DOCUMENT.name()).build();
+        var notificationId = addNotificationUseCase.execute(addNotificationInputModel);
+        ReceiveNotificationInput recipient = new ReceiveNotificationInput(notificationId, event.userId());
         addRecipientUseCase.execute(recipient);
         //Push Thông báo
     }

@@ -8,6 +8,8 @@ import studydocs.notificationservice.application.usecase.email.SendEmailNotifica
 import studydocs.notificationservice.domain.model.entity.Template;
 import studydocs.notificationservice.domain.model.event.SendMailEvent;
 import studydocs.notificationservice.domain.model.valueobject.email.Email;
+import studydocs.notificationservice.domain.model.valueobject.email.EmailContent;
+import studydocs.notificationservice.domain.model.valueobject.email.EmailSubject;
 import studydocs.notificationservice.domain.repository.TemplateRepositoryPort;
 
 @Service
@@ -26,15 +28,15 @@ public class EmailNotificationService implements SendEmailNotificationUseCase {
 
     @Override
     public void send(SendMailEvent event) {
-        String to = event.email();
+        String to = event.email().value();
         Template notificationTemplate = templateRepository
                 .getByName(event.templateName());
-        String subject = notificationTemplate.getSubjectTemplate().value();
+        EmailSubject subject = new EmailSubject(notificationTemplate.getSubjectTemplate().value());
         String content = notificationTemplate.getBodyTemplate().value();
         if (event.templateData() != null) {
-            content = templateRenderer.render(content, event.templateData());
+            content = templateRenderer.render(content, event.templateData().data());
         }
-        emailSenderPort.send(new Email(event.email(), subject, content));
+        emailSenderPort.send(new Email(event.email(), subject, new EmailContent(content)));
     }
 
 }

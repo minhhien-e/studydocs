@@ -18,10 +18,10 @@ public class AddRecipientUseCaseImpl implements AddRecipientUseCase {
     public void execute(ReceiveNotificationInput inputModel) {
         //Tạo dữ liệu
         var recipientId = inputModel.recipientId();
-        var notification = inputModel.notification();
+        var notificationId = inputModel.notificationId();
         var userNotificationAggregate = new UserNotificationAggregate(recipientId);
         //Xử lý logic
-        var recipient = userNotificationAggregate.receiveNotification(notification);
+        var recipient = userNotificationAggregate.receiveNotification(notificationId);
         //Gọi repository
         repository.save(recipient);
     }

@@ -2,7 +2,6 @@ package studydocs.notificationservice.domain.model.aggregate;
 
 import studydocs.notificationservice.domain.exceptions.entity.notification.EmptyNotificationListException;
 import studydocs.notificationservice.domain.exceptions.entity.notification.NotificationNotFoundException;
-import studydocs.notificationservice.domain.model.entity.Notification;
 import studydocs.notificationservice.domain.model.entity.Recipient;
 
 import java.util.*;
@@ -20,8 +19,8 @@ public class UserNotificationAggregate {
         this.recipientId = userId;
     }
 
-    public Recipient receiveNotification(Notification notification) {
-        var recipient = new Recipient(recipientId, notification.getId());
+    public Recipient receiveNotification(UUID notificationId) {
+        var recipient = new Recipient(recipientId, notificationId);
         notifications.add(recipient);
         return recipient;
     }

@@ -14,6 +14,15 @@ public final class TemplateMapper {
     }
 
     public static TemplateDto toDto(TemplateDocument document) {
-        return TemplateDto.builder().id(document.getId()).name(document.getName()).channel(document.getChannel()).subjectTemplate(document.getSubjectTemplate()).bodyTemplate(document.getBodyTemplate()).description(document.getDescription()).creationTime(document.getCreatedAt()).updatedTime(document.getUpdatedTime()).build();
+        return new TemplateDto(
+                document.getId(),
+                document.getName(),
+                document.getChannel(),
+                document.getSubjectTemplate(),
+                document.getBodyTemplate(),
+                document.getDescription(),
+                document.getCreatedAt(),
+                document.getUpdatedTime()
+        );
     }
 }

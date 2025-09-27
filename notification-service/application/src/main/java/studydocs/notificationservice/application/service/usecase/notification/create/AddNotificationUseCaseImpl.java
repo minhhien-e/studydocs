@@ -8,6 +8,8 @@ import studydocs.notificationservice.application.usecase.notificaton.create.AddN
 import studydocs.notificationservice.domain.factory.abstracts.NotificationFactory;
 import studydocs.notificationservice.domain.repository.NotificationRepositoryPort;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -16,11 +18,13 @@ public class AddNotificationUseCaseImpl implements AddNotificationUseCase {
     private final NotificationFactory notificationFactory;
 
     @Override
-    public void execute(AddNotificationInput inputModel) {
+    public UUID execute(AddNotificationInput inputModel) {
         var templateId = inputModel.getTemplateId();
         var senderId = inputModel.getSenderId();
         var category = inputModel.getCategory();
         var templateData = inputModel.getTemplateData();
-        notificationRepositoryPort.save(notificationFactory.create(templateId, senderId, category, templateData));
+        var notification = notificationFactory.create(templateId, senderId, category, templateData);
+        notificationRepositoryPort.save(notification);
+        return notification.getId();
     }
 }

@@ -21,13 +21,13 @@ public class TemplateResponse {
 
     public static TemplateResponse toResponse(TemplateDto template) {
         return TemplateResponse.builder()
-                .id(template.getId())
-                .name(template.getName())
-                .channel(template.getChannel())
-                .subjectTemplate(template.getSubjectTemplate())
-                .bodyTemplate(template.getBodyTemplate())
-                .description(template.getDescription())
-                .updatedAt(template.getUpdatedTime())
+                .id(template.id())
+                .name(template.name())
+                .channel(template.channel())
+                .subjectTemplate(template.subjectTemplate())
+                .bodyTemplate(template.bodyTemplate())
+                .description(template.description())
+                .updatedAt(template.updatedTime())
                 .build();
     }
 }

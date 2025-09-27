@@ -1,0 +1,90 @@
+### Template Service API Tests
+### Base URL: http://localhost:8081
+
+### Variables
+@baseUrl = http://localhost:8081
+@templateName = email-template-1
+@channelName = email
+
+### 1. Create new template
+POST {{baseUrl}}/api/v1/templates
+Content-Type: application/json
+
+{
+  "name": "welcome-email-template",
+  "channel": "email",
+  "subjectTemplate": "Chào mừng {{userName}} đến với StudyDocs!",
+  "bodyTemplate": "Xin chào {{userName}},\n\nChào mừng bạn đến với StudyDocs! Chúng tôi rất vui khi có bạn tham gia.\n\nTrân trọng,\nĐội ngũ StudyDocs",
+  "description": "Template email chào mừng người dùng mới"
+}
+
+###
+
+### 2. Create another template for testing
+POST {{baseUrl}}/api/v1/templates
+Content-Type: application/json
+
+{
+  "name": "document-upload-notification",
+  "channel": "email",
+  "subjectTemplate": "Tài liệu {{documentName}} đã được tải lên thành công",
+  "bodyTemplate": "Xin chào {{userName}},\n\nTài liệu {{documentName}} của bạn đã được tải lên thành công vào lúc {{uploadTime}}.\n\nBạn có thể xem tài liệu tại: {{documentUrl}}\n\nTrân trọng,\nĐội ngũ StudyDocs",
+  "description": "Template thông báo tài liệu được tải lên thành công"
+}
+
+###
+
+### 3. Get all templates
+GET {{baseUrl}}/api/v1/templates
+
+###
+
+### 4. Get templates by channel
+GET {{baseUrl}}/api/v1/templates/channel/{{channelName}}
+
+###
+
+### 5. Search templates by name
+GET {{baseUrl}}/api/v1/templates?name=welcome
+
+###
+
+### 6. Update template name
+PATCH {{baseUrl}}/api/v1/templates/{{templateName}}/update-name
+Content-Type: application/json
+
+{
+  "newName": "updated-welcome-email-template"
+}
+
+###
+
+### 7. Update template body
+PATCH {{baseUrl}}/api/v1/templates/{{templateName}}/update-body
+Content-Type: application/json
+
+{
+  "newBody": "Xin chào {{userName}},\n\nChào mừng bạn đến với StudyDocs! Chúng tôi rất vui khi có bạn tham gia.\n\nĐây là phiên bản cập nhật của template.\n\nTrân trọng,\nĐội ngũ StudyDocs"
+}
+
+###
+
+### 8. Update template subject
+PATCH {{baseUrl}}/api/v1/templates/{{templateName}}/update-subject
+Content-Type: application/json
+
+{
+  "newSubject": "Chào mừng {{userName}} đến với StudyDocs - Phiên bản mới!"
+}
+
+###
+
+### 9. Update template description
+PATCH {{baseUrl}}/api/v1/templates/{{templateName}}/update-description
+Content-Type: application/json
+
+{
+  "newDescription": "Template email chào mừng người dùng mới - đã được cập nhật"
+}
+
+###

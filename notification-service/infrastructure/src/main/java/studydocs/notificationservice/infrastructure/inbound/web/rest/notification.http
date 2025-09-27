@@ -1,0 +1,50 @@
+### Notification Service API Tests
+### Base URL: http://localhost:8081
+### Note: All endpoints require userId in request attribute (simulated with X-User-Id header)
+
+### Variables
+@baseUrl = http://localhost:8081
+@userId = 123e4567-e89b-12d3-a456-426614174000
+@notificationId = 123e4567-e89b-12d3-a456-426614174001
+
+### 1. Get notifications by recipient ID
+GET {{baseUrl}}/api/v1/notifications?isDeleted=false&createAt=2024-01-01T00:00:00&limit=10
+X-User-Id: {{userId}}
+
+###
+
+### 2. Get notifications by recipient ID (without createAt parameter)
+GET {{baseUrl}}/api/v1/notifications?isDeleted=false&limit=10
+X-User-Id: {{userId}}
+
+###
+
+### 3. Count unread notifications
+GET {{baseUrl}}/api/v1/notifications/recipient/count-unread
+X-User-Id: {{userId}}
+
+###
+
+### 4. Mark all notifications as read
+PATCH {{baseUrl}}/api/v1/notifications/read-all
+X-User-Id: {{userId}}
+
+###
+
+### 5. Mark specific notification as read
+PATCH {{baseUrl}}/api/v1/notifications/{{notificationId}}/read
+X-User-Id: {{userId}}
+
+###
+
+### 6. Soft delete notification
+DELETE {{baseUrl}}/api/v1/notifications/{{notificationId}}/soft
+X-User-Id: {{userId}}
+
+###
+
+### 7. Hard delete notification
+DELETE {{baseUrl}}/api/v1/notifications/{{notificationId}}/hard
+X-User-Id: {{userId}}
+
+###
