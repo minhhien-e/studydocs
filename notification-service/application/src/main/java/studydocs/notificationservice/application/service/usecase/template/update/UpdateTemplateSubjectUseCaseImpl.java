@@ -3,8 +3,8 @@ package studydocs.notificationservice.application.service.usecase.template.updat
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import studydocs.notificationservice.application.dto.input.template.update.UpdateTemplateSubjectInput;
-import studydocs.notificationservice.application.usecase.template.update.UpdateTemplateSubjectUseCase;
+import studydocs.notificationservice.application.dto.input.template.update.EditTemplateSubjectInput;
+import studydocs.notificationservice.application.usecase.template.update.EditTemplateSubjectUseCase;
 import studydocs.notificationservice.domain.model.valueobject.name.TemplateName;
 import studydocs.notificationservice.domain.model.valueobject.template.TemplateSubject;
 import studydocs.notificationservice.domain.repository.TemplateRepositoryPort;
@@ -12,17 +12,17 @@ import studydocs.notificationservice.domain.repository.TemplateRepositoryPort;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class UpdateTemplateSubjectUseCaseImpl implements UpdateTemplateSubjectUseCase {
+public class UpdateTemplateSubjectUseCaseImpl implements EditTemplateSubjectUseCase {
     private final TemplateRepositoryPort repository;
 
     @Override
-    public void execute(UpdateTemplateSubjectInput inputModel) {
+    public void execute(EditTemplateSubjectInput inputModel) {
         //Load dữ liệu
         var templateName = new TemplateName(inputModel.templateName());
         var newSubject = new TemplateSubject(inputModel.newSubject());
         var template = repository.getByName(templateName);
         // Xử lý
-        template.updateSubject(newSubject);
+        template.editSubject(newSubject);
         //Gọi repository
         repository.updateSubject(template);
     }

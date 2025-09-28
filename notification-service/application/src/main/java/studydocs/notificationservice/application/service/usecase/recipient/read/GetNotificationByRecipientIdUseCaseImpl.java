@@ -1,16 +1,16 @@
-package studydocs.notificationservice.application.service.usecase.notification.read;
+package studydocs.notificationservice.application.service.usecase.recipient.read;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import studydocs.notificationservice.application.dto.input.notification.read.GetNotificationByRecipientIdInput;
+import studydocs.notificationservice.application.dto.input.recipient.read.GetNotificationByRecipientIdInput;
 import studydocs.notificationservice.application.dto.mapper.NotificationMapper;
 import studydocs.notificationservice.application.dto.output.NotificationDto;
 import studydocs.notificationservice.application.dto.output.UserNotificationDto;
 import studydocs.notificationservice.application.port.render.TemplateRenderer;
 import studydocs.notificationservice.application.port.repository.RecipientReadRepositoryPort;
 import studydocs.notificationservice.application.port.repository.TemplateReadRepositoryPort;
-import studydocs.notificationservice.application.usecase.notificaton.read.GetNotificationByRecipientIdUseCase;
+import studydocs.notificationservice.application.usecase.recipient.read.GetNotificationByRecipientIdUseCase;
 import studydocs.notificationservice.shared.paging.SliceInput;
 import studydocs.notificationservice.shared.paging.SliceOutput;
 

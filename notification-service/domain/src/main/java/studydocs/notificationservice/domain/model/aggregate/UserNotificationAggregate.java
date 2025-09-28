@@ -70,14 +70,17 @@ public class UserNotificationAggregate {
     }
 
     /// Khôi phục thông báo
-    public void restoreNotification(List<UUID> notificationIdList) {
+    public List<Recipient> restoreNotification(List<UUID> notificationIdList) {
+        var notificationsRestored = new ArrayList<Recipient>();
         notificationIdList.forEach(notificationId -> {
             var notification = getNotification(notificationId);
             if (notification.isEmpty()) {
                 throw new NotificationNotFoundException();
             }
             notification.get().restore();
+            notificationsRestored.add(notification.get());
         });
+        return notificationsRestored;
     }
 
     /// Lấy thông báo

@@ -1,27 +1,27 @@
-package studydocs.notificationservice.application.service.usecase.notification.delete;
+package studydocs.notificationservice.application.service.usecase.recipient.delete;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import studydocs.notificationservice.application.dto.input.notification.delete.SoftDeleteNotificationInput;
-import studydocs.notificationservice.application.usecase.notificaton.delete.SoftDeleteNotificationUseCase;
+import studydocs.notificationservice.application.dto.input.recipient.delete.HardDeleteNotificationInput;
+import studydocs.notificationservice.application.usecase.recipient.delete.HardDeleteNotificationUseCase;
 import studydocs.notificationservice.domain.repository.RecipientRepositoryPort;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class SoftDeleteNotificationUseCaseImpl implements SoftDeleteNotificationUseCase {
+public class HardDeleteNotificationUseCaseImpl implements HardDeleteNotificationUseCase {
     private final RecipientRepositoryPort notificationRecipientRepository;
 
     @Override
-    public void execute(SoftDeleteNotificationInput inputModel) {
+    public void execute(HardDeleteNotificationInput inputModel) {
         //Load dữ liệu
         var notificationId = inputModel.notificationId();
         var recipientId = inputModel.requesterId();
         var userNotificationAggregate = notificationRecipientRepository.getByRecipientIdAndNotificationId(recipientId, notificationId);
         // Xử lý logic
-        var recipient = userNotificationAggregate.softDeleteNotification(notificationId);
+        userNotificationAggregate.hardDeleteNotification(notificationId);
         // Gọi repository
-        notificationRecipientRepository.updateDeletedAt(recipient);
+        notificationRecipientRepository.deleteById(recipientId);
     }
 }

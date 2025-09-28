@@ -1,50 +1,115 @@
-### Notification Service API Tests
+### ========================================
+### NOTIFICATION SERVICE API TESTS
+### ========================================
 ### Base URL: http://localhost:8081
-### Note: All endpoints require userId in request attribute (simulated with X-User-Id header)
+### Service: Notification Service - Notification Management
+### Version: v1
+### Note: All endpoints use CurrentUserProvider for authentication
+###       No need for X-User-Id header as user context is handled by security layer
 
-### Variables
+### ========================================
+### VARIABLES
+### ========================================
 @baseUrl = http://localhost:8081
-@userId = 123e4567-e89b-12d3-a456-426614174000
 @notificationId = 123e4567-e89b-12d3-a456-426614174001
+@testDate = 2024-01-01T00:00:00
 
-### 1. Get notifications by recipient ID
-GET {{baseUrl}}/api/v1/notifications?isDeleted=false&createAt=2024-01-01T00:00:00&limit=10
-X-User-Id: {{userId}}
+### ========================================
+### NOTIFICATION RETRIEVAL ENDPOINTS
+### ========================================
+
+### 1. Get All Notifications (with pagination)
+GET {{baseUrl}}/api/v1/notifications?isDeleted=false&createAt={{testDate}}&limit=10
 
 ###
 
-### 2. Get notifications by recipient ID (without createAt parameter)
+### 2. Get Notifications (without createAt parameter - uses current time)
 GET {{baseUrl}}/api/v1/notifications?isDeleted=false&limit=10
-X-User-Id: {{userId}}
 
 ###
 
-### 3. Count unread notifications
+### 3. Get Notifications with Large Limit
+GET {{baseUrl}}/api/v1/notifications?isDeleted=false&createAt={{testDate}}&limit=50
+
+###
+
+### 4. Get Deleted Notifications
+GET {{baseUrl}}/api/v1/notifications?isDeleted=true&createAt={{testDate}}&limit=10
+
+###
+
+### 5. Count Unread Notifications
 GET {{baseUrl}}/api/v1/notifications/recipient/count-unread
-X-User-Id: {{userId}}
 
 ###
 
-### 4. Mark all notifications as read
+### ========================================
+### NOTIFICATION UPDATE ENDPOINTS
+### ========================================
+
+### 6. Mark All Notifications as Read
 PATCH {{baseUrl}}/api/v1/notifications/read-all
-X-User-Id: {{userId}}
 
 ###
 
-### 5. Mark specific notification as read
+### 7. Mark Specific Notification as Read
 PATCH {{baseUrl}}/api/v1/notifications/{{notificationId}}/read
-X-User-Id: {{userId}}
 
 ###
 
-### 6. Soft delete notification
+### ========================================
+### NOTIFICATION DELETE ENDPOINTS
+### ========================================
+
+### 8. Soft Delete Notification (Recommended)
 DELETE {{baseUrl}}/api/v1/notifications/{{notificationId}}/soft
-X-User-Id: {{userId}}
 
 ###
 
-### 7. Hard delete notification
+### 9. Hard Delete Notification (Permanent)
 DELETE {{baseUrl}}/api/v1/notifications/{{notificationId}}/hard
-X-User-Id: {{userId}}
+
+###
+
+### ========================================
+### TESTING SCENARIOS
+### ========================================
+
+### 10. Test with Different Date Ranges
+GET {{baseUrl}}/api/v1/notifications?isDeleted=false&createAt=2024-12-01T00:00:00&limit=5
+
+###
+
+### 11. Test with Small Limit
+GET {{baseUrl}}/api/v1/notifications?isDeleted=false&createAt={{testDate}}&limit=1
+
+###
+
+### 12. Test with Different Notification ID
+DELETE {{baseUrl}}/api/v1/notifications/123e4567-e89b-12d3-a456-426614174002/soft
+
+###
+
+### 13. Test Mark Read with Different Notification ID
+PATCH {{baseUrl}}/api/v1/notifications/123e4567-e89b-12d3-a456-426614174003/read
+
+###
+
+### ========================================
+### ERROR TESTING SCENARIOS
+### ========================================
+
+### 14. Test with Invalid Notification ID Format
+GET {{baseUrl}}/api/v1/notifications?isDeleted=false&createAt={{testDate}}&limit=invalid
+
+###
+
+### 15. Test with Negative Limit
+GET {{baseUrl}}/api/v1/notifications?isDeleted=false&createAt={{testDate}}&limit=-1
+
+###
+
+### 16. Test with Very Large Limit
+GET {{baseUrl}}/api/v1/notifications?isDeleted=false&createAt={{testDate}}&limit=1000
 
 ###

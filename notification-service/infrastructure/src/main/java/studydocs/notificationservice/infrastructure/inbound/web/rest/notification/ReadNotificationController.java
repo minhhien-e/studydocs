@@ -2,14 +2,15 @@ package studydocs.notificationservice.infrastructure.inbound.web.rest.notificati
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import studydocs.notificationservice.application.dto.input.notification.read.GetNotificationByRecipientIdInput;
-import studydocs.notificationservice.application.dto.input.recipient.create.CountUnreadInput;
-import studydocs.notificationservice.application.usecase.notificaton.read.GetNotificationByRecipientIdUseCase;
+import studydocs.notificationservice.application.dto.input.recipient.read.CountUnreadInput;
+import studydocs.notificationservice.application.dto.input.recipient.read.GetNotificationByRecipientIdInput;
 import studydocs.notificationservice.application.usecase.recipient.read.CountUnreadUseCase;
+import studydocs.notificationservice.application.usecase.recipient.read.GetNotificationByRecipientIdUseCase;
 import studydocs.notificationservice.infrastructure.inbound.security.helper.CurrentUserProvider;
 import studydocs.notificationservice.infrastructure.inbound.web.dto.response.ApiResponse;
 import studydocs.notificationservice.infrastructure.inbound.web.dto.response.NotificationResponse;
@@ -23,6 +24,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/notifications")
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('notification.read')")
 public class ReadNotificationController {
     private final GetNotificationByRecipientIdUseCase getNotificationByRecipientIdUseCase;
     private final CountUnreadUseCase countUnreadUseCase;

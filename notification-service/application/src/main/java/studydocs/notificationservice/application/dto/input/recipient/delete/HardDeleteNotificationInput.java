@@ -1,4 +1,4 @@
-package studydocs.notificationservice.application.dto.input.notification.delete;
+package studydocs.notificationservice.application.dto.input.recipient.delete;
 
 import java.util.UUID;
 

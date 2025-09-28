@@ -1,4 +1,4 @@
 package studydocs.notificationservice.infrastructure.inbound.web.dto.request.template;
 
-public record UpdateTemplateSubjectRequest(String newSubject) {
+public record RenameTemplateRequest(String newName) {
 }

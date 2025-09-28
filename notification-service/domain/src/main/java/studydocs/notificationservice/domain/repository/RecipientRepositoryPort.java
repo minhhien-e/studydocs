@@ -21,8 +21,11 @@ public interface RecipientRepositoryPort {
 
     UserNotificationAggregate getByRecipientIdAndNotificationId(UUID recipientId, UUID notificationId);
 
+    UserNotificationAggregate findByRecipientIdAndNotificationIdList(UUID recipientId, List<UUID> s);
+
     void updateDeletedAt(Recipient recipient);
 
     List<Recipient> findAll();
 
+    void restore(List<Recipient> notificationsRestored);
 }

@@ -8,7 +8,7 @@ public interface TemplateRepositoryPort {
 
     Template getByName(TemplateName name);
 
-    void updateName(Template template);
+    void rename(Template template);
 
     void updateSubject(Template template);
 

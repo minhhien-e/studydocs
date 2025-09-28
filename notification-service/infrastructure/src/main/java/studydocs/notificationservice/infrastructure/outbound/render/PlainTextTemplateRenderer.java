@@ -18,6 +18,6 @@ public class PlainTextTemplateRenderer implements TemplateRenderer {
 
     @Override
     public String getTemplateFormat() {
-        return "{{%s}}";
+        return "<<%s>>";
     }
 }

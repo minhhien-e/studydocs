@@ -37,7 +37,7 @@ public class TemplateRepositoryAdapter implements TemplateRepositoryPort {
     }
 
     @Override
-    public void updateName(Template template) {
+    public void rename(Template template) {
         Query query = new Query(Criteria.where("_id").is(template.getId()));
         Update update = new Update().set("name", template.getName().getValue());
         var result = mongoTemplate.updateFirst(query, update, TemplateDocument.class).getModifiedCount();

@@ -3,7 +3,7 @@ package studydocs.notificationservice.infrastructure.inbound.scheduling;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import studydocs.notificationservice.application.usecase.notificaton.delete.CleanOldNotificationsUseCase;
+import studydocs.notificationservice.application.usecase.recipient.delete.CleanOldNotificationsUseCase;
 
 @Component
 @RequiredArgsConstructor

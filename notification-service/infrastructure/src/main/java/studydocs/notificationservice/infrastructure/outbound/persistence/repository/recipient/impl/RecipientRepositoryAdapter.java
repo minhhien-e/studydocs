@@ -14,6 +14,7 @@ import studydocs.notificationservice.shared.exception.infrastructure.ResourceNot
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -50,7 +51,7 @@ public class RecipientRepositoryAdapter implements RecipientRepositoryPort {
     @Override
     public void markAllAsRead(UUID recipientId) {
         var result = mongoTemplate.updateMulti(query(where("recipientId").is(recipientId).and("isDeleted").is(false)), update("isRead", true), RecipientDocument.class).getModifiedCount();
-        if (result == 0) throw new DatabaseUpdateFailureException("đánh dấu đọc");
+        if (result == 0) throw new DatabaseUpdateFailureException("Đánh dấu đọc");
     }
 
     @Override
@@ -67,6 +68,12 @@ public class RecipientRepositoryAdapter implements RecipientRepositoryPort {
     }
 
     @Override
+    public UserNotificationAggregate findByRecipientIdAndNotificationIdList(UUID recipientId, List<UUID> notificationIds) {
+        var recipientDocuments = repository.findAllByRecipientIdAndNotificationIdInAndDeletedAtIs(recipientId, notificationIds, null);
+        return new UserNotificationAggregate(recipientId, recipientDocuments.stream().map(RecipientMapper::toDomain).collect(Collectors.toList()));
+    }
+
+    @Override
     public void updateDeletedAt(Recipient recipient) {
         mongoTemplate.updateFirst(query(where("_id").is(recipient.getId())), update("deletedAt", recipient.getDeletionTime()), RecipientDocument.class);
     }
@@ -74,6 +81,14 @@ public class RecipientRepositoryAdapter implements RecipientRepositoryPort {
     @Override
     public List<Recipient> findAll() {
         return repository.findAll().stream().map(RecipientMapper::toDomain).toList();
+    }
+
+    @Override
+    public void restore(List<Recipient> notificationsRestored) {
+        var updateResult = mongoTemplate.updateMulti(query(where("_id").in(notificationsRestored.stream().map(Recipient::getId).toList())), update("deletedAt", null), RecipientDocument.class);
+        if (updateResult.getModifiedCount() == 0) {
+            throw new DatabaseUpdateFailureException("Khôi phục thông báo");
+        }
     }
 
 

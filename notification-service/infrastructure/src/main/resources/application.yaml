@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8082
 spring:
   config:
     name: notification-service
@@ -30,6 +30,11 @@ spring:
     mongodb:
       uri: mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}
       uuid-representation: standard
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081
 rabbitmq:
   exchange: exchange.notification
   queue:
@@ -41,3 +46,8 @@ rabbitmq:
         name: queue.notification.push.document.upload
         routing-key:
           - notification.push.upload.document
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+

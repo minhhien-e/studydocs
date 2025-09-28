@@ -2,6 +2,7 @@ package studydocs.notificationservice.infrastructure.inbound.web.rest.template;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import studydocs.notificationservice.application.dto.input.template.read.GetAllTemplateInput;
 import studydocs.notificationservice.application.dto.input.template.read.GetTemplateByChannelInput;
@@ -15,6 +16,7 @@ import studydocs.notificationservice.infrastructure.inbound.web.dto.response.Tem
 @RestController
 @RequestMapping("/api/v1/templates")
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('notification.template.read')")
 public class ReadTemplateController {
     private final GetTemplateByChannelUseCase getTemplateByChannelUseCase;
     private final GetAllTemplateUseCase getAllTemplateUseCase;

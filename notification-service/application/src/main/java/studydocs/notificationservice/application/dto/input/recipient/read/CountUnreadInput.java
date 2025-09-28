@@ -1,4 +1,4 @@
-package studydocs.notificationservice.application.dto.input.recipient.create;
+package studydocs.notificationservice.application.dto.input.recipient.read;
 
 import lombok.Data;
 

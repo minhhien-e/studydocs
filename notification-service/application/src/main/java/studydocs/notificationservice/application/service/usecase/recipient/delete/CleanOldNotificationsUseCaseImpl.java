@@ -1,8 +1,8 @@
-package studydocs.notificationservice.application.service.usecase.notification.delete;
+package studydocs.notificationservice.application.service.usecase.recipient.delete;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import studydocs.notificationservice.application.usecase.notificaton.delete.CleanOldNotificationsUseCase;
+import studydocs.notificationservice.application.usecase.recipient.delete.CleanOldNotificationsUseCase;
 import studydocs.notificationservice.domain.repository.RecipientRepositoryPort;
 import studydocs.notificationservice.domain.service.NotificationPolicy;
 

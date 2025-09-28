@@ -3,6 +3,7 @@ package studydocs.notificationservice.infrastructure.inbound.web.rest.template;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import studydocs.notificationservice.infrastructure.inbound.web.dto.response.Api
 public class CreateTemplateController {
     private final AddTemplateUseCase addTemplateUseCase;
 
+    @PreAuthorize("hasAuthority('notification.template.add')")
     @PostMapping
     public ResponseEntity<?> add(@RequestBody AddTemplateRequest request) {
         var inputModel = new AddTemplateInput(request.name(), request.channel(), request.subjectTemplate(), request.bodyTemplate(), request.description());

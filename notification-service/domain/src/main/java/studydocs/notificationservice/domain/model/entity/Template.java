@@ -45,29 +45,29 @@ public class Template {
         this.updatedTime = new TemplateUpdatedTime(updatedAt, creationTime);
     }
 
-    public void updateName(TemplateName newName) {
+    public void rename(TemplateName newName) {
         if (!this.name.equals(newName)) {
             this.name = newName;
             this.updatedTime = new TemplateUpdatedTime(LocalDateTime.now(), creationTime);
         } else throw new NameAlreadyExistsException(newName.getValue());
     }
 
-    public void updateChannel(NotificationChannel newChannel) {
+    public void editChannel(NotificationChannel newChannel) {
         this.channel = newChannel;
         this.updatedTime = new TemplateUpdatedTime(LocalDateTime.now(), creationTime);
     }
 
-    public void updateSubject(TemplateSubject newSubject) {
+    public void editSubject(TemplateSubject newSubject) {
         this.subjectTemplate = newSubject;
         this.updatedTime = new TemplateUpdatedTime(LocalDateTime.now(), creationTime);
     }
 
-    public void updateBody(TemplateBody newBody) {
+    public void editBody(TemplateBody newBody) {
         this.bodyTemplate = newBody;
         this.updatedTime = new TemplateUpdatedTime(LocalDateTime.now(), creationTime);
     }
 
-    public void updateDescription(String newDescription) {
+    public void editDescription(String newDescription) {
         this.description = newDescription;
         this.updatedTime = new TemplateUpdatedTime(LocalDateTime.now(), creationTime);
     }
