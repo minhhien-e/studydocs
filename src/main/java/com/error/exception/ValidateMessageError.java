@@ -1,4 +1,4 @@
-package com.domain.exception;
+package com.error.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

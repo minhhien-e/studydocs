@@ -2,6 +2,8 @@ package com.infrastructure.repository;
 
 import com.domain.entity.UserEntity;
 import com.domain.repository.UserRepository;
+import com.error.ErrorCode;
+import com.error.exception.ExceptionMessage;
 import io.github.resilience4j.core.functions.Either;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -41,19 +43,22 @@ public class UserMongoRepository implements UserRepository {
     }
 
     @Override
-    public CompletionStage<Either<String, UserEntity>> save(UserEntity user) {
+    public CompletionStage<Either<ExceptionMessage, UserEntity>> save(UserEntity user) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 UserEntity saved = mongoTemplate.save(user);
                 return Either.right(saved);
             } catch (Exception e) {
-                return Either.left("Error saving user: " + e.getMessage());
+                return Either.left(new ExceptionMessage(
+                        ErrorCode.INTERNAL_SERVER_ERROR,
+                        "Lỗi khi lưu người dùng vào MongoDB: " + e.getMessage()
+                ));
             }
         });
     }
 
     @Override
-    public CompletionStage<Either<String, Void>> updateUser(UserEntity user) {
+    public CompletionStage<Either<ExceptionMessage, Void>> updateUser(UserEntity user) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 Query query = new Query(Criteria.where("id").is(user.getId()));
@@ -70,20 +75,26 @@ public class UserMongoRepository implements UserRepository {
                 mongoTemplate.updateFirst(query, update, UserEntity.class);
                 return Either.right(null);
             } catch (Exception e) {
-                return Either.left("Error updating user: " + e.getMessage());
+                return Either.left(new ExceptionMessage(
+                        ErrorCode.INTERNAL_SERVER_ERROR,
+                        "Lỗi khi cập nhật người dùng: " + e.getMessage()
+                ));
             }
         });
     }
 
     @Override
-    public CompletionStage<Either<String, Void>> deleteById(String id) {
+    public CompletionStage<Either<ExceptionMessage, Void>> deleteById(String id) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 Query query = new Query(Criteria.where("id").is(id));
                 mongoTemplate.remove(query, UserEntity.class);
                 return Either.right(null);
             } catch (Exception e) {
-                return Either.left("Error deleting user: " + e.getMessage());
+                return Either.left( new ExceptionMessage(
+                        ErrorCode.INTERNAL_SERVER_ERROR,
+                        "Lỗi khi xóa người dùng có ID: " + id + " - " + e.getMessage()
+                ));
             }
         });
     }

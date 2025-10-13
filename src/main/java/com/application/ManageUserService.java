@@ -1,7 +1,7 @@
 package com.application;
 
 import com.domain.dto.UserDTO;
-import com.domain.exception.ExceptionMessage;
+import com.error.exception.ExceptionMessage;
 import com.domain.result.OperationResult;
 import io.github.resilience4j.core.functions.Either;
 

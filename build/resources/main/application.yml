@@ -1,8 +1,25 @@
 server:
-  port: 8081
+  port: ${SERVER_PORT:8081}
 
 spring:
+  application:
+    name: user-service
+
   data:
     mongodb:
-      uri: mongodb+srv://user1:12345@user.hzlz13a.mongodb.net/?retryWrites=true&w=majority&appName=User
-      database: userDB
+      uri: mongodb+srv://${MONGO_USER}:${MONGO_PASS}@user.hzlz13a.mongodb.net/?retryWrites=true&w=majority&appName=User
+      database: ${MONGO_DATABASE}
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    virtual-host: ${RABBITMQ_VHOST}
+    ssl:
+      enabled: ${RABBITMQ_SSL_ENABLED:true}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

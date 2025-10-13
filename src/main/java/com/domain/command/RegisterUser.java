@@ -5,7 +5,6 @@ import lombok.Value;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-
 @Value(staticConstructor = "commandOf")
 public class RegisterUser implements UserCommand {
     String fullName;

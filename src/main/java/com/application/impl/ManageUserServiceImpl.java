@@ -1,22 +1,24 @@
 package com.application.impl;
 
 import com.application.ManageUserService;
-import com.application.bus.UserCommandBus;
+import com.application.bus.SimpleUserCommandBus;
 import com.domain.command.GetUserById;
 import com.domain.command.RegisterUser;
 import com.domain.command.UpdateUser;
 import com.domain.dto.UserDTO;
-import com.domain.exception.ExceptionMessage;
+import com.error.exception.ExceptionMessage;
 import com.domain.result.OperationResult;
 import io.github.resilience4j.core.functions.Either;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletionStage;
 
 @RequiredArgsConstructor
+@Service
 public class ManageUserServiceImpl implements ManageUserService {
 
-    private final UserCommandBus commandBus; // abstraction để gửi command đi
+    private final SimpleUserCommandBus commandBus; // abstraction để gửi command đi
 
     @Override
     public CompletionStage<Either<ExceptionMessage, OperationResult>> registerUser(UserDTO userDTO) {

@@ -19,16 +19,18 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	// Spring Security (nếu có xác thực)
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
-
+// env
+	implementation 'me.paulschwarz:spring-dotenv:4.0.0'
 	// Spring Boot Actuator
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
 //	// Spring Cloud (Eureka client)
-//	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
 	// Validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-
+//	rabbit mq
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'

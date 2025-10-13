@@ -36,7 +36,7 @@ class UserMongoRepositoryTest {
                 "Nguyen Van A",
                 "nguyenvana",
                 "a@example.com",
-                56789,
+                "56789",
                 "avatar.png",
                 "Male",
                 LocalDate.of(1990, 1, 1),

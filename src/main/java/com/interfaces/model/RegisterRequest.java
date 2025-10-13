@@ -16,7 +16,7 @@ public class RegisterRequest {
         private String username;
         private String email;
         @Positive
-        private long phoneNumber;
+        private String phoneNumber;
         private String avatarUrl;
         private String gender;
         private LocalDate dateOfBirth;

@@ -1,7 +1,7 @@
 package com.interfaces.model;
 
 
-import com.domain.exception.ValidateMessageError;
+import com.error.exception.ValidateMessageError;
 import lombok.Data;
 
 import java.util.Set;

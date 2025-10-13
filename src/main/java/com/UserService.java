@@ -1,8 +1,9 @@
 package com;
 
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
+@EnableRabbit
 @SpringBootApplication
 public class UserService {
     public static void main(String[] args) {
@@ -13,7 +14,6 @@ public class UserService {
 //
 //    Cập nhật profile
 //
-//    Quản lý role/permission của user (authorization cho business logic)
 //
 //    Quản lý cài đặt người dùng (notification, ngôn ngữ, timezone…)
 //
