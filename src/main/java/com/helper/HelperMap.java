@@ -2,6 +2,7 @@ package com.helper;
 
 import com.domain.dto.UserDTO;
 import com.domain.entity.UserEntity;
+import com.interfaces.model.RegisterRequest;
 
 public enum HelperMap {
 
@@ -43,5 +44,17 @@ public enum HelperMap {
                 dto.getDateOfBirth(),
                 dto.getAddress()
         );
+    }
+    public UserDTO registerRequesttoUserDTO(RegisterRequest request) {
+       return UserDTO.builder()
+                .fullName(request.getFullName())
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .phoneNumber(request.getPhoneNumber())
+                .avatarUrl(request.getAvatarUrl())
+                .gender(request.getGender())
+                .dateOfBirth(request.getDateOfBirth())
+                .address(request.getAddress())
+                .build();
     }
 }

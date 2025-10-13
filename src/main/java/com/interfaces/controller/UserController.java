@@ -1,13 +1,12 @@
 package com.interfaces.controller;
 
 import com.application.ManageUserService;
-import com.application.impl.ManageUserServiceImpl;
 import com.domain.dto.UserDTO;
 import com.error.exception.ExceptionMessage;
 import com.domain.result.OperationResult;
+import com.helper.HelperMap;
 import com.interfaces.model.ApiResponse;
 import com.interfaces.model.RegisterRequest;
-import com.interfaces.model.UserMapper;
 
 import io.github.resilience4j.core.functions.Either;
 import org.slf4j.Logger;
@@ -27,7 +26,7 @@ public class UserController {
 
     private final ManageUserService manageUserService;
 
-    public UserController(ManageUserServiceImpl manageUserService) {
+    public UserController(ManageUserService manageUserService) {
         this.manageUserService = manageUserService;
     }
 
@@ -40,7 +39,7 @@ public class UserController {
         return () -> {
             LOG.info("[traceId: {}] Đã nhận request register", traceId);
 
-            UserDTO user = UserMapper.toDTO(request);
+            UserDTO user = HelperMap.INSTANCE.registerRequesttoUserDTO(request);
 
             CompletionStage<Either<ExceptionMessage, OperationResult>> promise =
                     manageUserService.registerUser(user);
@@ -72,7 +71,7 @@ public class UserController {
         return () -> {
             LOG.info("[traceId: {}] Đã nhận request update {}", traceId, request);
 
-            UserDTO userDTO = UserMapper.toDTO(request);
+            UserDTO userDTO =  HelperMap.INSTANCE.registerRequesttoUserDTO(request);
 
             CompletionStage<Either<ExceptionMessage, OperationResult>> promise = manageUserService.updateUser(userDTO);
             return promise.thenApply(result -> result.fold(
