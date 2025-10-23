@@ -19,10 +19,10 @@ import java.time.LocalDateTime;
 @Data
 public class ErrorResponse {
     private LocalDateTime timestamp; // Thời điểm xảy ra lỗi
-    private int status;             // HTTP status code (400, 401, 403, etc.)
-    private String error;           // Loại lỗi (Lỗi xác thực, Lỗi phân quyền, etc.)
-    private String message;         // Message mô tả lỗi
-    private String path;            // API endpoint gặp lỗi
+    private int status;             //etc.)
+    private String message;         // Message mô tả lỗi HTTP status code (400, 401, 403, etc.)
+    private String error;           // Loại lỗi (Lỗi xác thực, Lỗi phân quyền, 
+    private String path;           // API endpoint gặp lỗi
     private AuthErrorCode errorCode;       // Mã lỗi để client có thể handle (optional)
 
     /**

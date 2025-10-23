@@ -1,68 +1,70 @@
 package com.example.authservice.exception;
 
-/**
- * Enum định nghĩa các mã lỗi chuẩn cho authentication service
- * Mỗi error code bao gồm:
- * - Mã lỗi duy nhất (VD: AUTH001)
- * - Message mô tả lỗi
- * 
- * Cách đặt tên mã lỗi:
- * - AUTH: Prefix cho authentication service
- * - XXX: Số thứ tự của lỗi (001-999)
- */
 public enum AuthErrorCode {
-    // Nhóm lỗi xác thực người dùng (001-019)
-    INVALID_CREDENTIALS("AUTH001", "Thông tin đăng nhập không chính xác"),
-    ACCOUNT_LOCKED("AUTH002", "Tài khoản đã bị khóa"),
-    ACCOUNT_EXPIRED("AUTH003", "Tài khoản đã hết hạn"),
-    INVALID_TOKEN("AUTH004", "Token không hợp lệ hoặc đã hết hạn"),
-    TOKEN_EXPIRED("AUTH005", "Token đã hết hạn"),
+    // General errors
+    INTERNAL_ERROR("AUTH-001", "Internal server error"),
+    INVALID_REQUEST("AUTH-002", "Invalid request"),
     
-    // Nhóm lỗi phân quyền (020-039)
-    PERMISSION_DENIED("AUTH020", "Không có quyền truy cập tài nguyên này"),
-    ROLE_NOT_FOUND("AUTH021", "Vai trò không tồn tại trong hệ thống"),
-    INSUFFICIENT_PRIVILEGES("AUTH022", "Không đủ quyền để thực hiện hành động này"),
-    INVALID_ROLE("AUTH023", "Vai trò không hợp lệ"),
+    // Authentication errors
+    INVALID_CREDENTIALS("AUTH-101", "Invalid credentials"),
+    INVALID_TOKEN("AUTH-102", "Invalid token"),
+    INVALID_REFRESH_TOKEN("AUTH-103", "Invalid refresh token"),
+    TOKEN_EXPIRED("AUTH-104", "Token expired"),
+    TOKEN_GENERATION_FAILED("AUTH-105", "Failed to generate token"),
     
-    // Nhóm lỗi đăng ký/tạo tài khoản (040-059)
-    EMAIL_EXISTS("AUTH040", "Email đã được sử dụng"),
-    INVALID_EMAIL_FORMAT("AUTH041", "Định dạng email không hợp lệ"),
-    WEAK_PASSWORD("AUTH042", "Mật khẩu không đủ mạnh"),
-    PASSWORD_MISMATCH("AUTH043", "Mật khẩu xác nhận không khớp"),
-    USERNAME_EXISTS("AUTH044", "Tên người dùng đã tồn tại"),
-    REGISTRATION_FAILED("AUTH045", "Đăng ký tài khoản thất bại"),
-    USERNAME_INVALID_FORMAT("AUTH046", "Định dạng tên người dùng không hợp lệ"),
-    USERNAME_TOO_LONG("AUTH047", "Tên người dùng quá dài"),
-    USERNAME_TOO_SHORT("AUTH048", "Tên người dùng quá ngắn"),
-    USERNAME_INVALID_CHARACTERS("AUTH049", "Tên người dùng chứa ký tự không hợp lệ"),
+    // OAuth2 specific errors
+    INVALID_CLIENT("AUTH-201", "Invalid client"),
+    INVALID_GRANT("AUTH-202", "Invalid grant"),
+    INVALID_SCOPE("AUTH-203", "Invalid scope"),
+    UNAUTHORIZED_CLIENT("AUTH-204", "Unauthorized client"),
+    CONSENT_REQUIRED("AUTH-205", "User consent required"),
+    CONSENT_DENIED("AUTH-206", "User denied consent"),
+    INVALID_REDIRECT_URI("AUTH-207", "Invalid redirect URI"),
+    INVALID_STATE("AUTH-208", "Invalid state parameter"),
+    INVALID_CODE_VERIFIER("AUTH-209", "Invalid code verifier"),
+    TOKEN_EXCHANGE_FAILED("AUTH-210", "Failed to exchange code for token"),
+    TOKEN_REFRESH_FAILED("AUTH-211", "Failed to refresh token"),
     
-    // Nhóm lỗi xác thực email (060-079)
-    EMAIL_VERIFICATION_EXPIRED("AUTH060", "Mã xác thực email đã hết hạn"),
-    EMAIL_ALREADY_VERIFIED("AUTH061", "Email đã được xác thực"),
-    EMAIL_VERIFICATION_FAILED("AUTH062", "Xác thực email thất bại"),
+    // Account errors
+    ACCOUNT_LOCKED("AUTH-301", "Account is locked"),
+    ACCOUNT_DISABLED("AUTH-302", "Account is disabled"),
+    ACCOUNT_EXPIRED("AUTH-303", "Account has expired"),
+    USER_NOT_FOUND("AUTH-304", "User not found"),
+    EMAIL_ALREADY_EXISTS("AUTH-305", "Email already exists"),
     
-    // Nhóm lỗi social login (080-099)
-    SOCIAL_LOGIN_FAILED("AUTH080", "Đăng nhập bằng tài khoản social thất bại"),
-    SOCIAL_EMAIL_NOT_VERIFIED("AUTH081", "Email từ tài khoản social chưa được xác thực"),
-    SOCIAL_ACCOUNT_NOT_LINKED("AUTH082", "Tài khoản social chưa được liên kết"),
+    // Social auth errors
+    SOCIAL_ACCOUNT_NOT_LINKED("AUTH-401", "Social account not linked"),
+    SOCIAL_PROVIDER_ERROR("AUTH-402", "Error from social provider"),
+    SOCIAL_GOOGLE_FAILED("AUTH-403", "Failed to retrieve user info from Google"),
+    SOCIAL_TOKEN_EXCHANGE_FAILED("AUTH-404", "Failed to exchange social token"),
+    SOCIAL_EMAIL_NOT_VERIFIED("AUTH-405", "Social email not verified"),
+    SOCIAL_ACCOUNT_EXISTS("AUTH-406", "Account already exists with different provider"),
     
-    // Nhóm lỗi refresh token (100-119)
-    REFRESH_TOKEN_NOT_FOUND("AUTH100", "Refresh token không tồn tại"),
-    REFRESH_TOKEN_EXPIRED("AUTH101", "Refresh token đã hết hạn"),
-    REFRESH_TOKEN_INVALID("AUTH102", "Refresh token không hợp lệ"),
+    // Rate limiting errors
+    TOO_MANY_REQUESTS("AUTH-501", "Too many requests"),
+    TOO_MANY_LOGIN_ATTEMPTS("AUTH-502", "Too many login attempts"),
     
-    // Nhóm lỗi chung (900-999)
-    INVALID_REQUEST("AUTH900", "Yêu cầu không hợp lệ"),
-    INTERNAL_ERROR("AUTH999", "Lỗi hệ thống, vui lòng thử lại sau");
+    // Session errors
+    SESSION_EXPIRED("AUTH-601", "Session has expired"),
+    CONCURRENT_SESSION("AUTH-602", "Account logged in from another device"),
+    INVALID_SESSION("AUTH-603", "Invalid session"),
+    
+    // Registration errors
+    REGISTRATION_FAILED("AUTH-701", "Registration failed");
 
     private final String code;
-    private final String message;
+    private final String defaultMessage;
 
-    AuthErrorCode(String code, String message) {
+    AuthErrorCode(String code, String defaultMessage) {
         this.code = code;
-        this.message = message;
+        this.defaultMessage = defaultMessage;
     }
 
-    public String getCode() { return code; }
-    public String getMessage() { return message; }
-} 
+    public String getCode() {
+        return code;
+    }
+
+    public String getDefaultMessage() {
+        return defaultMessage;
+    }
+}

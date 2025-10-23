@@ -1,8 +1,11 @@
 package com.example.authservice.repository;
 
 import com.example.authservice.model.entity.User;
+import com.example.authservice.model.enums.AuthProvider;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -10,9 +13,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
     /**
      * Tìm user theo email
      * @param email Email cần tìm
-     * @return User nếu tìm thấy
+     * @return Optional<User> chứa user nếu tìm thấy
      */
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
+
+    /**
+     * Tìm user theo username
+     * @param username Username cần tìm
+     * @return Optional<User> chứa user nếu tìm thấy
+     */
+    Optional<User> findByUserName(String username);
 
     /**
      * Kiểm tra email đã tồn tại chưa
@@ -32,7 +42,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * Tìm user theo providerId và provider
      * @param providerId ID từ OAuth provider
      * @param provider Loại provider (GOOGLE, FACEBOOK, etc.)
-     * @return User nếu tìm thấy
+     * @return Optional<User> chứa user nếu tìm thấy
      */
-    User findByProviderIdAndProvider(String providerId, User.AuthProvider provider);
-} 
+    Optional<User> findByProviderIdAndProvider(String providerId, AuthProvider provider);
+}

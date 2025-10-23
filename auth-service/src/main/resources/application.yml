@@ -1,0 +1,118 @@
+# Cấu hình chung của ứng dụng
+spring:
+  application:
+    name: auth-service
+  
+  # Cấu hình Security và OAuth2
+  security:
+    oauth2:
+      # Cấu hình client cho social login
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - openid
+              - profile
+              - email
+      # Cấu hình authorization server
+      authorizationserver:
+        issuer: ${AUTH_SERVER_ISSUER:http://localhost:8080}
+        client:
+          # Cấu hình cho web client
+          web-client:
+            registration:
+              client-id: web-client
+              client-secret: ${WEB_CLIENT_SECRET}
+              client-authentication-methods:
+                - client_secret_basic
+              authorization-grant-types:
+                - authorization_code
+                - refresh_token
+              redirect-uris:
+                - ${CLIENT_REDIRECT_URI:http://127.0.0.1:8080/login/oauth2/code/web-client}
+              scopes:
+                - openid
+                - profile
+            require-authorization-consent: true
+            token:
+              access-token-time-to-live: ${ACCESS_TOKEN_LIFETIME:5m}
+              refresh-token-time-to-live: ${REFRESH_TOKEN_LIFETIME:60m}
+          
+          # Cấu hình cho mobile client
+          mobile-client:
+            registration:
+              client-id: mobile-client
+              client-secret: ${MOBILE_CLIENT_SECRET}
+              client-authentication-methods:
+                - client_secret_basic
+              authorization-grant-types:
+                - authorization_code
+                - refresh_token
+              redirect-uris:
+                - ${MOBILE_REDIRECT_URI:http://127.0.0.1:8080/login/oauth2/code/mobile-client}
+              scopes:
+                - openid
+                - profile
+            require-authorization-consent: true
+            token:
+              access-token-time-to-live: ${ACCESS_TOKEN_LIFETIME:5m}
+              refresh-token-time-to-live: ${REFRESH_TOKEN_LIFETIME:60m}
+
+  # Cấu hình Database
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:auth_service_db}
+    username: ${DB_MYSQL_USERNAME}
+    password: ${DB_MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # Cấu hình connection pool
+#    hikari:armscii8_bin
+#      maximum-pool-size: 10
+#      minimum-idle: 5
+#      idle-timeout: 300000
+  
+  # Cấu hình JPA
+  jpa:
+    hibernate:
+      ddl-auto: none  # Sử dụng Flyway migration thay vì auto-ddl
+    show-sql: false   # Không show SQL trong production
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+  
+  # Cấu hình Flyway migration
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+        
+  # Cấu hình template engine
+  thymeleaf:
+    cache: false  # Disable cache trong development
+
+# Cấu hình Server
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    session:
+      cookie:
+        secure: true
+        same-site: lax
+        http-only: true
+
+# Cấu hình JWT
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:86400000}  # 24 giờ
+  issuer: ${JWT_ISSUER:auth-service}
+  audience: ${JWT_AUDIENCE:studydocs-client}
+
+# Cấu hình Logging
+logging:
+  level:
+    root: ${LOG_LEVEL_ROOT:INFO}
+    org.springframework.security: ${LOG_LEVEL_SECURITY:INFO}
+    com.example.authservice: ${LOG_LEVEL_APP:INFO}
+    org.springframework.web: ${LOG_LEVEL_WEB:INFO}

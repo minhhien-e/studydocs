@@ -1,8 +1,7 @@
 package com.example.authservice.controller;
 
 import com.example.authservice.model.dto.request.LoginRequest;
-import com.example.authservice.model.dto.request.RegisterRequest;
-import com.example.authservice.model.dto.request.SocialLoginRequest;
+import com.example.authservice.model.dto.request.RegisterLocalRequest;
 import com.example.authservice.model.dto.response.TokenResponse;
 import com.example.authservice.model.dto.response.UserResponse;
 import com.example.authservice.service.AuthService;
@@ -10,64 +9,48 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Authentication", description = "API xác thực người dùng")
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication", description = "APIs for authentication and user management")
 public class AuthController {
 
     private final AuthService authService;
 
-    @Operation(summary = "Đăng ký tài khoản mới")
+    @Operation(summary = "Đăng ký tài khoản local")
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
-        UserResponse userResponse = authService.registerLocal(request);
-        return ResponseEntity.ok(userResponse);
+    public ResponseEntity<TokenResponse> registerLocal(@Valid @RequestBody RegisterLocalRequest request) {
+        log.info("Processing local registration for user: {}", request.getEmail());
+        return ResponseEntity.ok(authService.registerLocal(request));
     }
 
-    @Operation(summary = "Đăng nhập")
+    @Operation(summary = "Đăng nhập với tài khoản local")
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest request) {
-        return ResponseEntity.ok(authService.login(request));
+    public ResponseEntity<TokenResponse> loginLocal(@Valid @RequestBody LoginRequest request) {
+        log.info("Processing local login for user: {}", request.getUsername());
+        return ResponseEntity.ok(authService.loginLocal(request));
     }
 
-    @Operation(summary = "Đăng nhập bằng tài khoản social")
-    @PostMapping("/social/login")
-    public ResponseEntity<TokenResponse> socialLogin(@Valid @RequestBody SocialLoginRequest request) {
-        return ResponseEntity.ok(authService.socialLogin(request));
+    @Operation(summary = "Refresh token")
+    @PostMapping("/token/refresh")
+    public ResponseEntity<TokenResponse> refreshToken(
+            @RequestParam("refresh_token") String refreshToken,
+            @RequestParam("client_id") String clientId) {
+        log.info("Processing token refresh for client: {}", clientId);
+        return ResponseEntity.ok(authService.refreshToken(refreshToken, clientId));
     }
 
-    @Operation(summary = "Làm mới token")
-    @PostMapping("/refresh-token")
-    public ResponseEntity<TokenResponse> refreshToken(@RequestParam String refreshToken) {
-        return ResponseEntity.ok(authService.refreshToken(refreshToken));
-    }
-
-    @Operation(summary = "Xác thực email")
-    @GetMapping("/verify-email")
-    public ResponseEntity<Boolean> verifyEmail(@RequestParam String token) {
-        return ResponseEntity.ok(authService.verifyEmail(token));
-    }
-
-    @Operation(summary = "Kiểm tra email tồn tại")
-    @GetMapping("/check-email")
-    public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
-        return ResponseEntity.ok(authService.isEmailExists(email));
-    }
-
-    @Operation(summary = "Đăng xuất")
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String token) {
-        authService.logout(token);
-        return ResponseEntity.ok().build();
-    }
-
-    @Operation(summary = "Lấy thông tin người dùng hiện tại")
+    @Operation(summary = "Lấy thông tin user hiện tại")
     @GetMapping("/me")
-    public ResponseEntity<UserResponse> getCurrentUser() {
-        return ResponseEntity.ok(authService.getCurrentUser());
+    public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal OAuth2User principal) {
+        log.info("Fetching user info for: {}", principal.getName());
+        return ResponseEntity.ok(authService.getCurrentUser(principal.getName()));
     }
-} 
+}

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
  * - Tài khoản bị khóa
  * - Token không hợp lệ/hết hạn
  */
+
 public class AuthenticationException extends BaseException {
     /**
      * Constructor với AuthErrorCode
@@ -16,7 +17,7 @@ public class AuthenticationException extends BaseException {
      * @param errorCode Mã lỗi từ AuthErrorCode
      */
     public AuthenticationException(AuthErrorCode errorCode) {
-        super(errorCode.getMessage(), errorCode.getCode(), HttpStatus.UNAUTHORIZED);
+        super(errorCode.getDefaultMessage(), errorCode, HttpStatus.UNAUTHORIZED);
     }
 
     /**
@@ -26,6 +27,6 @@ public class AuthenticationException extends BaseException {
      * @param customMessage Message tùy chỉnh thay vì dùng message mặc định
      */
     public AuthenticationException(AuthErrorCode errorCode, String customMessage) {
-        super(customMessage, errorCode.getCode(), HttpStatus.UNAUTHORIZED);
+        super(customMessage, errorCode, HttpStatus.UNAUTHORIZED);
     }
 } 

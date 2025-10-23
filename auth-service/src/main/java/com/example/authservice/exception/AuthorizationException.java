@@ -20,6 +20,6 @@ public class AuthorizationException extends BaseException {
      * @param errorCode Mã lỗi từ AuthErrorCode
      */
     public AuthorizationException(AuthErrorCode errorCode) {
-        super(errorCode.getMessage(), errorCode.getCode(), HttpStatus.FORBIDDEN);
+        super(errorCode.getDefaultMessage(), errorCode, HttpStatus.FORBIDDEN);
     }
 } 

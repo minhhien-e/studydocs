@@ -1,9 +1,9 @@
 package com.example.authservice.model.entity;
 
+import com.example.authservice.model.enums.AuthProvider;
+import com.example.authservice.model.enums.UserStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,6 +14,7 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -30,16 +31,18 @@ public class User {
     @Column
     private String password;  // Có thể null cho social login
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AuthProvider provider;
+    private AuthProvider provider = AuthProvider.LOCAL;
 
     @Column(name = "provider_id")
     private String providerId;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserStatus status = UserStatus.ACTIVE;  // Giá trị mặc định
+    private UserStatus status = UserStatus.ACTIVE;
 
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp
@@ -49,7 +52,7 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    // Quan hệ với Role
+    @Builder.Default
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "user_roles",
@@ -60,16 +63,6 @@ public class User {
         }
     )
     private Set<Role> roles = new HashSet<>();
-
-    // Enum cho provider
-    public enum AuthProvider {
-        FACEBOOK, GOOGLE, GITHUB, LOCAL
-    }
-
-    // Enum cho status
-    public enum UserStatus {
-        ACTIVE, BAN, DELETE
-    }
 
     // Các phương thức tiện ích
     @PrePersist
@@ -92,4 +85,4 @@ public class User {
     public void removeRole(Role role) {
         this.roles.remove(role);
     }
-} 
+}
