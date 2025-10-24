@@ -1,1 +1,0 @@
-CREATE DATABASE academic_management;
