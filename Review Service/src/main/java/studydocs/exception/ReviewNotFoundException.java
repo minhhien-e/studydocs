@@ -1,9 +1,16 @@
 package studydocs.exception;
 
-import java.util.UUID;  // Import UUID
+import lombok.Getter;
 
+import java.util.UUID;
+
+@Getter
 public class ReviewNotFoundException extends RuntimeException {
-    public ReviewNotFoundException(UUID id) {  // Nhận UUID object
+    private final int errorCode;
+
+    public ReviewNotFoundException(int errorCode, UUID id) {
         super("Không tìm thấy review có id: " + id);
+        this.errorCode = errorCode;
     }
+
 }

@@ -6,7 +6,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import studydocs.dto.ApiResponse;
+import studydocs.dto.response.ApiResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,13 +17,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ReviewNotFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleReviewNotFound(ReviewNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.error(404, "NOT_FOUND", ex.getMessage()));
+                .body(ApiResponse.error(404, ex.getErrorCode()));
     }
 
     @ExceptionHandler(DocumentValidationException.class)
     public ResponseEntity<ApiResponse<Void>> handleDocumentValidation(DocumentValidationException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(400, "DOCUMENT_ERROR", ex.getMessage()));
+                .body(ApiResponse.error(400, ex.getErrorCode()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -34,12 +34,12 @@ public class GlobalExceptionHandler {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        return ResponseEntity.badRequest().body(ApiResponse.error(400, "VALIDATION_ERROR", "Dữ liệu không hợp lệ", errors));
+        return ResponseEntity.badRequest().body(ApiResponse.error(400, 601, errors));  // 601: VALIDATION_ERROR
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneralException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error(500, "INTERNAL_ERROR", "Đã xảy ra lỗi: " + ex.getMessage()));
+                .body(ApiResponse.error(500, 603));  // 603: SYSTEM_ERROR
     }
 }

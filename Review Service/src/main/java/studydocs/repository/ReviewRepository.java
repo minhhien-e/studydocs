@@ -1,13 +1,13 @@
 package studydocs.repository;
 
-import studydocs.domain.Review;
+import studydocs.model.Review;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
-import java.util.UUID;  // Import UUID
+import java.util.UUID;
 
-public interface ReviewRepository extends MongoRepository<Review, UUID> {  // Key type là UUID
-    List<Review> findByDocumentIdAndIsDeletedFalse(Long documentId);
+public interface ReviewRepository extends MongoRepository<Review, UUID> {
+    List<Review> findByDocumentIdAndIsDeletedFalse(UUID documentId);
 
     @Aggregation(
             pipeline = {
@@ -15,5 +15,5 @@ public interface ReviewRepository extends MongoRepository<Review, UUID> {  // Ke
                     "{ '$group': { '_id': null, 'averageRating': { '$avg': '$rating' } } }"
             }
     )
-    Double findAverageRatingByDocumentId(Long documentId);
+    Double findAverageRatingByDocumentId(UUID documentId);
 }

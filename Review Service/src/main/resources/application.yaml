@@ -1,18 +1,18 @@
 server:
-  port: ${SERVER_PORT:9051}
+  port: 9051
 
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/reviews  # Database tên 'reviews'
-      auto-index-creation: true
+      uri: mongodb://localhost:27017/reviews
+      uuid-representation: standard
 
-document:
-  service:
-    url: http://localhost:9050/documents  # URL của Document Service
+#document:
+#  service:
+#    url: http://localhost:9050/documents
 
-#logging:
-#  level:
+logging:
+  level:
 #    org.springframework: DEBUG
-#    org.springframework.data.mongodb: DEBUG
+    org.springframework.data.mongodb: DEBUG
 #    org.springframework.web: DEBUG

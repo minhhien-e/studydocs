@@ -1,15 +1,15 @@
-package studydocs.dto;
+package studydocs.dto.response;
 
-import studydocs.domain.Review;
+import studydocs.model.Review;
 import lombok.Data;
 
-import java.util.UUID;  // Import UUID
+import java.util.UUID;
 
 @Data
 public class ReviewResponse {
-    private UUID id;  // UUID object
-    private Long documentId;
-    private Long userId;
+    private UUID id;
+    private UUID documentId;
+    private UUID userId;
     private Integer rating;
     private String comment;
     private String createdAt;

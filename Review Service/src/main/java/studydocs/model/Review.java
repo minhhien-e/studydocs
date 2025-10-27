@@ -1,4 +1,4 @@
-package studydocs.domain;
+package studydocs.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,40 +7,33 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.UUID;  // Import UUID
+import java.util.UUID;
 
 @Document(collection = "reviews")
 @Data
 @NoArgsConstructor
 public class Review {
     @Id
-    private UUID id;  // UUID object thay vì String
+    private UUID id;
 
-    @Indexed  // Tạo index để query nhanh trên documentId
-    private Long documentId;  // ID của document được review
+//    @Indexed
+    private UUID documentId;
 
-    @Indexed  // Tạo index để query nhanh trên userId
-    private Long userId;  // ID người dùng tạo review
-
-    private Integer rating;  // Điểm từ 1-5
-
-    private String comment;  // Bình luận
-
+    private UUID userId;
+    private Integer rating;
+    private String comment;
     private Boolean isDeleted = false;
-
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
-
     private LocalDateTime deletedAt;
 
-    public Review(Long documentId, Long userId, Integer rating, String comment) {
+    public Review(UUID documentId, UUID userId, Integer rating, String comment) {
         this.documentId = documentId;
         this.userId = userId;
         this.rating = rating;
         this.comment = comment;
         this.createdAt = LocalDateTime.now();
-        this.id = UUID.randomUUID();  // Generate UUID object
+        this.id = UUID.randomUUID();
     }
 
     public void update(Integer rating, String comment) {

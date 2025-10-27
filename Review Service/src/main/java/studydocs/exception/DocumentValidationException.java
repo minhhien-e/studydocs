@@ -1,7 +1,14 @@
 package studydocs.exception;
 
+import lombok.Getter;
+
+@Getter
 public class DocumentValidationException extends RuntimeException {
-    public DocumentValidationException(String message) {
-        super(message);
+    private final int errorCode;
+
+    public DocumentValidationException(int errorCode) {
+        super("Document không tồn tại hoặc không hợp lệ");
+        this.errorCode = errorCode;
     }
+
 }
