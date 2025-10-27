@@ -3,39 +3,161 @@ package com.example.academicservice.service;
 import com.example.academicservice.dto.request.UniversityCreateRequest;
 import com.example.academicservice.dto.response.UniversityResponse;
 import com.example.academicservice.entity.University;
+import com.example.academicservice.exception.DuplicateResourceException;
+import com.example.academicservice.exception.ResourceNotFoundException;
+import com.example.academicservice.mapper.UniversityMapper;
+import com.example.academicservice.repository.UniversityRepository;
+import com.example.academicservice.service.util.StringUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+/**
+ * Service layer để xử lý business logic cho University entity
+ */
+@Slf4j
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class UniversityService {
 
+    private final UniversityRepository universityRepository;
+    private final UniversityMapper universityMapper;
 
+    /**
+     * Lấy tất cả các trường đại học
+     */
+    @Transactional(readOnly = true)
     public List<UniversityResponse> getAllUniversities() {
-        return null;
+        log.info("Fetching all universities");
+        return universityRepository.findAll().stream()
+                .map(universityMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
+    /**
+     * Lấy thông tin trường đại học theo ID
+     */
+    @Transactional(readOnly = true)
     public UniversityResponse getUniversityById(Long id) {
-        return null;
+        log.info("Fetching university with id: {}", id);
+        University university = universityRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("University", "id", id));
+        return universityMapper.toResponse(university);
     }
 
+    /**
+     * Lấy thông tin trường đại học theo slug
+     */
+    @Transactional(readOnly = true)
     public UniversityResponse getUniversityBySlug(String slug) {
-        return null;
+        log.info("Fetching university with slug: {}", slug);
+        University university = universityRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("University", "slug", slug));
+        return universityMapper.toResponse(university);
     }
 
-    public void deleteUniversityById(Long id) {
-    }
-
-    public void deleteUniversityBySlug(String slug) {
-    }
-
-    public UniversityResponse updateUniversity(Long id, UniversityCreateRequest request) {
-        return null;
-    }
-
+    /**
+     * Tạo mới trường đại học
+     */
     public UniversityResponse createUniversity(UniversityCreateRequest request) {
-        return null;
+        log.info("Creating university with name: {}", request.getName());
+
+        // Kiểm tra slug đã tồn tại chưa
+        String slug = StringUtil.toSlug(request.getName());
+        if (universityRepository.findBySlug(slug).isPresent()) {
+            throw new DuplicateResourceException("Trường đại học với slug: " + slug + " đã tồn tại");
+        }
+
+        // Note: Kiểm tra code đã tồn tại có thể bổ sung thêm repository method nếu cần
+
+        // Convert request sang entity
+        University university = universityMapper.toEntity(request);
+        university.setSlug(slug);
+        university.setIsActive(true);
+
+        // Lưu vào database
+        University savedUniversity = universityRepository.save(university);
+        log.info("University created successfully with id: {}", savedUniversity.getId());
+
+        return universityMapper.toResponse(savedUniversity);
+    }
+
+    /**
+     * Cập nhật thông tin trường đại học theo ID
+     */
+    public UniversityResponse updateUniversity(Long id, UniversityCreateRequest request) {
+        log.info("Updating university with id: {}", id);
+        
+        University university = universityRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("University", "id", id));
+        
+        return updateUniversityInternal(university, request);
+    }
+
+    /**
+     * Cập nhật thông tin trường đại học theo slug
+     */
+    public UniversityResponse updateUniversityBySlug(String slug, UniversityCreateRequest request) {
+        log.info("Updating university with slug: {}", slug);
+        
+        University university = universityRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("University", "slug", slug));
+        
+        return updateUniversityInternal(university, request);
+    }
+
+    /**
+     * Internal method để xử lý logic update chung
+     */
+    private UniversityResponse updateUniversityInternal(University university, UniversityCreateRequest request) {
+        // Kiểm tra slug mới (nếu có thay đổi tên)
+        if (request.getName() != null && !request.getName().equals(university.getName())) {
+            String newSlug = StringUtil.toSlug(request.getName());
+            if (universityRepository.findBySlug(newSlug).isPresent()) {
+                throw new DuplicateResourceException("Slug: " + newSlug + " đã tồn tại");
+            }
+            university.setSlug(newSlug);
+        }
+
+        // Cập nhật thông tin từ request
+        universityMapper.updateEntityFromRequest(request, university);
+
+        // Lưu thay đổi
+        University updatedUniversity = universityRepository.save(university);
+        log.info("University updated successfully with id: {}", updatedUniversity.getId());
+
+        return universityMapper.toResponse(updatedUniversity);
+    }
+
+    /**
+     * Xóa trường đại học theo ID
+     */
+    public void deleteUniversityById(Long id) {
+        log.info("Deleting university with id: {}", id);
+
+        if (!universityRepository.existsById(id)) {
+            throw new ResourceNotFoundException("University", "id", id);
+        }
+
+        universityRepository.deleteById(id);
+        log.info("University deleted successfully with id: {}", id);
+    }
+
+    /**
+     * Xóa trường đại học theo slug
+     */
+    public void deleteUniversityBySlug(String slug) {
+        log.info("Deleting university with slug: {}", slug);
+
+        University university = universityRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("University", "slug", slug));
+
+        universityRepository.delete(university);
+        log.info("University deleted successfully with slug: {}", slug);
     }
 }
