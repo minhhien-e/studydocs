@@ -9,6 +9,7 @@ public class StringUtil {
             return null;
         }
 
+        //dai-hoc-quoc-gia-ha-noi
         // Normalize Vietnamese characters to their base forms
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
 

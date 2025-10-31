@@ -37,6 +37,7 @@ public class UniversityController {
     /**
      * Lấy trường đại học theo slug
      */
+
     @GetMapping("/slug/{slug}")
     public UniversityResponse getUniversityBySlug(@PathVariable String slug) {
         return universityService.getUniversityBySlug(slug);
