@@ -5,7 +5,7 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/reviews
-      uuid-representation: standard
+      uuid-representation: STANDARD
 
 #document:
 #  service:
@@ -13,6 +13,6 @@ spring:
 
 logging:
   level:
-#    org.springframework: DEBUG
+    org.springframework: DEBUG
     org.springframework.data.mongodb: DEBUG
-#    org.springframework.web: DEBUG
+    org.springframework.web: DEBUG

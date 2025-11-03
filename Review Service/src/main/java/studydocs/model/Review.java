@@ -16,7 +16,7 @@ public class Review {
     @Id
     private UUID id;
 
-//    @Indexed
+    @Indexed
     private UUID documentId;
 
     private UUID userId;

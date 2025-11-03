@@ -1,13 +1,14 @@
 package studydocs.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import studydocs.model.Review;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import java.util.List;
 import java.util.UUID;
 
 public interface ReviewRepository extends MongoRepository<Review, UUID> {
-    List<Review> findByDocumentIdAndIsDeletedFalse(UUID documentId);
+    Page<Review> findByDocumentIdAndIsDeletedFalse(UUID documentId, Pageable pageable);
 
     @Aggregation(
             pipeline = {
