@@ -10,7 +10,6 @@ import studydocs.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,13 +18,28 @@ public class ReviewQueryService {
     private final ReviewRepository reviewRepository;
 
     public ReviewResponse getReviewById(UUID id) {
-        Review review = reviewRepository.findById(id)
-                .orElseThrow(() -> new ReviewNotFoundException(600, id));  // REVIEW_NOT_FOUND
+        Review review = reviewRepository.findByIdAndIsDeletedFalse(id)  // Filter deleted
+                .orElseThrow(() -> new ReviewNotFoundException(600, id));
         return new ReviewResponse(review);
+    }
+
+    public Page<ReviewResponse> getAllReviews(Pageable pageable) {
+        Page<Review> reviews = reviewRepository.findByIsDeletedFalse(pageable);
+        return reviews.map(ReviewResponse::new);
     }
 
     public Page<ReviewResponse> getReviewsByDocumentId(UUID documentId, Pageable pageable) {
         Page<Review> reviews = reviewRepository.findByDocumentIdAndIsDeletedFalse(documentId, pageable);
+        return reviews.map(ReviewResponse::new);
+    }
+
+    public Page<ReviewResponse> getReviewsByDocumentIdAndRating(UUID documentId, Integer rating, Pageable pageable) {
+        Page<Review> reviews = reviewRepository.findByDocumentIdAndRatingAndIsDeletedFalse(documentId, rating, pageable);
+        return reviews.map(ReviewResponse::new);
+    }
+
+    public Page<ReviewResponse> getReviewsByUserId(UUID userId, Pageable pageable) {
+        Page<Review> reviews = reviewRepository.findByUserIdAndIsDeletedFalse(userId, pageable);
         return reviews.map(ReviewResponse::new);
     }
 

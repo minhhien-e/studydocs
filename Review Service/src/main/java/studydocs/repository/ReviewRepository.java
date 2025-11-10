@@ -5,6 +5,8 @@ import org.springframework.data.domain.Pageable;
 import studydocs.model.Review;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
+
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ReviewRepository extends MongoRepository<Review, UUID> {
@@ -17,4 +19,8 @@ public interface ReviewRepository extends MongoRepository<Review, UUID> {
             }
     )
     Double findAverageRatingByDocumentId(UUID documentId);
+    Page<Review> findByIsDeletedFalse(Pageable pageable);
+    Page<Review> findByDocumentIdAndRatingAndIsDeletedFalse(UUID documentId, Integer rating, Pageable pageable);
+    Page<Review> findByUserIdAndIsDeletedFalse(UUID userId, Pageable pageable);
+    Optional<Review> findByIdAndIsDeletedFalse(UUID id);
 }

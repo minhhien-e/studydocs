@@ -1,12 +1,11 @@
 package studydocs.service;
 
-import studydocs.model.Review;
 import studydocs.dto.request.CreateReviewRequest;
 import studydocs.dto.response.ReviewResponse;
-import studydocs.exception.DocumentValidationException;
 import studydocs.exception.ReviewNotFoundException;
+import studydocs.model.Review;
 import studydocs.repository.ReviewRepository;
-import studydocs.service.DocumentValidator;
+import studydocs.client.DocumentClient;  // Thay vì DocumentValidator
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,15 +16,13 @@ import java.util.UUID;
 public class ReviewCommandService {
 
     private final ReviewRepository reviewRepository;
-    private final DocumentValidator documentValidator;
+    private final DocumentClient documentClient;  // Updated
 
     public ReviewResponse createReview(CreateReviewRequest req) {
-        documentValidator.validateDocumentId(req.getDocumentId());
+        documentClient.validateDocumentId(req.getDocumentId());  // Gọi client
 
         Review review = new Review(req.getDocumentId(), req.getUserId(), req.getRating(), req.getComment());
         review = reviewRepository.save(review);
-
-        System.out.println("ReviewCommandService: Tạo review id=" + review.getId());
 
         return new ReviewResponse(review);
     }
