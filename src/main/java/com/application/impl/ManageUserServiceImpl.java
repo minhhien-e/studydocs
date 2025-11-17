@@ -2,58 +2,63 @@ package com.application.impl;
 
 import com.application.ManageUserService;
 import com.application.bus.SimpleUserCommandBus;
-import com.domain.command.GetUserById;
-import com.domain.command.RegisterUser;
-import com.domain.command.UpdateUser;
-import com.domain.dto.UserDTO;
-import com.error.exception.ExceptionMessage;
-import com.domain.result.OperationResult;
-import io.github.resilience4j.core.functions.Either;
+import com.domain.command.*;
+import com.helper.HelperMap;
+import com.interfaces.model.ApiResponse;
+import com.interfaces.model.RegisterRequest;
+import com.interfaces.model.UpdateUserRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.concurrent.CompletionStage;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ManageUserServiceImpl implements ManageUserService {
 
-    private final SimpleUserCommandBus commandBus; // abstraction để gửi command đi
+    private final SimpleUserCommandBus commandBus;
 
     @Override
-    public CompletionStage<Either<ExceptionMessage, OperationResult>> registerUser(UserDTO userDTO) {
-        RegisterUser command = RegisterUser.commandOf(
-                userDTO.getFullName(),
-                userDTO.getUsername(),
-                userDTO.getEmail(),
-                userDTO.getPhoneNumber(),
-                userDTO.getAvatarUrl(),
-                userDTO.getGender(),
-                userDTO.getDateOfBirth(),
-                userDTO.getAddress()
-        );
-        return commandBus.send(command);
+    public ApiResponse<?> registerUser(RegisterRequest request, String traceId) {
+        var command = HelperMap.INSTANCE.toRegisterUser(request);
+        var result = commandBus.send(command); // DomainException sẽ được ném nếu lỗi
+        return ApiResponse.success(result, null); // message = null
     }
 
     @Override
-    public CompletionStage<Either<ExceptionMessage, OperationResult>> updateUser(UserDTO userDTO) {
-        UpdateUser command = UpdateUser.commandOf(
-                userDTO.getId(),
-                userDTO.getFullName(),
-                userDTO.getUsername(),
-                userDTO.getEmail(),
-                userDTO.getPhoneNumber(),
-                userDTO.getAvatarUrl(),
-                userDTO.getGender(),
-                userDTO.getDateOfBirth(),
-                userDTO.getAddress()
-        );
-        return commandBus.send(command);
+    public ApiResponse<?> updateUser(UpdateUserRequest request, String traceId) {
+        var command = HelperMap.INSTANCE.toUpdateUser(request, request.getId());
+        var result = commandBus.send(command);
+        return ApiResponse.success(result, null);
     }
 
     @Override
-    public CompletionStage<Either<ExceptionMessage, OperationResult>> getUserById(String id) {
-        GetUserById command = GetUserById.commandOf(id);
-        return commandBus.send(command);
+    public ApiResponse<?> updateImage(String id, MultipartFile file, String traceId) {
+        var command = HelperMap.INSTANCE.toUpdateImage(id, file);
+        var result = commandBus.send(command);
+        return ApiResponse.success(result, null);
+    }
+
+    @Override
+    public ApiResponse<?> getUserById(String id, String traceId) {
+        var command = HelperMap.INSTANCE.toGetUserById(id);
+        var user = commandBus.send(command);
+        return ApiResponse.success(user, null);
+    }
+
+    @Override
+    public ApiResponse<?> isUserPrivate(String userId, String traceId) {
+        var command = HelperMap.INSTANCE.toCheckUserPrivate(userId);
+        var isPrivate = commandBus.send(command);
+        return ApiResponse.success(isPrivate, null);
+    }
+
+    @Override
+    public ApiResponse<?> isUserExists(String userId, String traceId) {
+        var command = HelperMap.INSTANCE.toCheckUserExists(userId);
+        var exists = commandBus.send(command);
+        return ApiResponse.success(exists, null);
     }
 }

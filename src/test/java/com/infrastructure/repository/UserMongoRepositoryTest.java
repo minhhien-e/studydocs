@@ -1,89 +1,97 @@
 package com.infrastructure.repository;
 
-
 import com.domain.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.context.annotation.Import;
+import org.mockito.ArgumentCaptor;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@DataMongoTest
-@Import(UserMongoRepository.class)
 class UserMongoRepositoryTest {
 
-    @Autowired
-    private UserMongoRepository userMongoRepository;
-
-    @Autowired
     private MongoTemplate mongoTemplate;
-
-    private UserEntity userEntity;
+    private UserMongoRepository repository;
 
     @BeforeEach
     void setUp() {
-        mongoTemplate.dropCollection(UserEntity.class);
-
-        userEntity = new UserEntity(
-                "u1",
-                "Nguyen Van A",
-                "nguyenvana",
-                "a@example.com",
-                "56789",
-                "avatar.png",
-                "Male",
-                LocalDate.of(1990, 1, 1),
-                "Hanoi"
-        );
+        mongoTemplate = mock(MongoTemplate.class);
+        repository = new UserMongoRepository(mongoTemplate);
     }
 
     @Test
-    void testSaveAndFindById() throws ExecutionException, InterruptedException {
-        userMongoRepository.save(userEntity).toCompletableFuture().get();
+    void testExistsByUsername_ShouldReturnTrue() {
+        String username = "john";
+        when(mongoTemplate.exists(any(Query.class), eq(UserEntity.class))).thenReturn(true);
 
-        Optional<UserEntity> found =
-                userMongoRepository.findById("u1").toCompletableFuture().get();
+        boolean result = repository.existsByUsername(username);
 
-        assertThat(found).isPresent();
-        assertThat(found.get().getUsername()).isEqualTo("nguyenvana");
+        assertTrue(result);
+        verify(mongoTemplate, times(1)).exists(any(Query.class), eq(UserEntity.class));
     }
 
     @Test
-    void testExistsByUsername() throws ExecutionException, InterruptedException {
-        mongoTemplate.save(userEntity);
+    void testSave_ShouldReturnSavedUser() {
+        UserEntity user = new UserEntity(null, "John Doe", "john", "john@example.com",
+                "123456789", null, "M", LocalDate.of(1990, 1, 1), "Address");
+        when(mongoTemplate.save(user)).thenReturn(new UserEntity("1", "John Doe", "john",
+                "john@example.com", "123456789", null, "M", LocalDate.of(1990,1,1), "Address"));
 
-        Boolean exists =
-                userMongoRepository.existsByUsername("nguyenvana").toCompletableFuture().get();
+        UserEntity saved = repository.save(user);
 
-        assertThat(exists).isTrue();
+        assertNotNull(saved.getId());
+        assertEquals("John Doe", saved.getFullName());
+        verify(mongoTemplate, times(1)).save(user);
     }
 
     @Test
-    void testUpdateUser() throws ExecutionException, InterruptedException {
-        mongoTemplate.save(userEntity);
+    void testUpdateUser_ShouldCallUpdateFirst() {
+        UserEntity user = new UserEntity("1", "John Doe", "john", "john@example.com",
+                "123456789", null, "M", LocalDate.of(1990,1,1), "Address");
 
-        userEntity.setFullName("Nguyen Van B");
-        userMongoRepository.updateUser(userEntity).toCompletableFuture().get();
+        repository.updateUser(user);
 
-        UserEntity updated = mongoTemplate.findById("u1", UserEntity.class);
-        assertThat(updated.getFullName()).isEqualTo("Nguyen Van B");
+        ArgumentCaptor<Query> queryCaptor = ArgumentCaptor.forClass(Query.class);
+        ArgumentCaptor<Update> updateCaptor = ArgumentCaptor.forClass(Update.class);
+
+        verify(mongoTemplate, times(1)).updateFirst(queryCaptor.capture(),
+                updateCaptor.capture(), eq(UserEntity.class));
+
+        assertEquals("1", queryCaptor.getValue().getQueryObject().get("_id")); // Mongo id field mapping
+        assertEquals("John Doe", updateCaptor.getValue().getUpdateObject().get("fullName"));
     }
 
     @Test
-    void testDeleteById() throws ExecutionException, InterruptedException {
-        mongoTemplate.save(userEntity);
+    void testFindById_ShouldReturnUser() {
+        String id = "1";
+        UserEntity user = new UserEntity(id, "John Doe", "john", "john@example.com",
+                "123456789", null, "M", LocalDate.of(1990,1,1), "Address");
 
-        userMongoRepository.deleteById("u1").toCompletableFuture().get();
+        when(mongoTemplate.findById(id, UserEntity.class)).thenReturn(user);
 
-        Optional<UserEntity> found =
-                userMongoRepository.findById("u1").toCompletableFuture().get();
-        assertThat(found).isEmpty();
+        Optional<UserEntity> result = repository.findById(id);
+
+        assertTrue(result.isPresent());
+        assertEquals("John Doe", result.get().getFullName());
+        verify(mongoTemplate, times(1)).findById(id, UserEntity.class);
     }
+
+    @Test
+    void testDeleteById_ShouldCallRemove() {
+        String id = "1";
+
+        repository.deleteById(id);
+
+        ArgumentCaptor<Query> queryCaptor = ArgumentCaptor.forClass(Query.class);
+        verify(mongoTemplate, times(1)).remove(queryCaptor.capture(), eq(UserEntity.class));
+
+        assertEquals("1", queryCaptor.getValue().getQueryObject().get("_id"));
+    }
+
 }

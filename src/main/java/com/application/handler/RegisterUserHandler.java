@@ -1,25 +1,22 @@
 package com.application.handler;
 
 import com.domain.command.RegisterUser;
-import com.domain.result.OperationResult;
+import com.domain.dto.UserDTO;
+import com.domain.entity.UserEntity;
 import com.domain.service.UserDomainService;
-import com.error.exception.ExceptionMessage;
-import io.github.resilience4j.core.functions.Either;
+import com.helper.HelperMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.CompletionStage;
-
 @Component
 @RequiredArgsConstructor
-public class RegisterUserHandler implements CommandHandler<RegisterUser> {
+public class RegisterUserHandler implements CommandHandler<RegisterUser, UserDTO> {
 
     private final UserDomainService userDomainService;
 
     @Override
-    public CompletionStage<Either<ExceptionMessage, OperationResult>> handle(RegisterUser command) {
-        // ✅ Chuyển toàn bộ xử lý logic sang domain service
-        return userDomainService.registerUser(command);
+    public UserDTO handle(RegisterUser command) {
+        return HelperMap.INSTANCE.userToDTO(userDomainService.registerUser(command));
     }
 
     @Override

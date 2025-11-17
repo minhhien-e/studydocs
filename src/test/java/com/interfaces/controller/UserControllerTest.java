@@ -1,24 +1,17 @@
 package com.interfaces.controller;
 
 import com.application.ManageUserService;
-import com.domain.dto.UserDTO;
-import com.domain.result.OperationResult;
-import com.error.exception.ExceptionMessage;
 import com.interfaces.model.ApiResponse;
 import com.interfaces.model.RegisterRequest;
-import io.github.resilience4j.core.functions.Either;
+import com.interfaces.model.UpdateUserRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.http.ResponseEntity;
-
-import java.time.LocalDate;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Callable;
+import org.springframework.mock.web.MockMultipartFile;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 
 class UserControllerTest {
 
@@ -27,93 +20,111 @@ class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        // ✅ mock interface (không ép kiểu sang impl)
         manageUserService = Mockito.mock(ManageUserService.class);
         userController = new UserController(manageUserService);
     }
-    private RegisterRequest buildSampleRequest() {
-        RegisterRequest req = new RegisterRequest();
-        req.setFullName("Lâm Bảo Duy");
-        req.setUsername("duy123");
-        req.setEmail("duy@example.com");
-        req.setPhoneNumber("0987654321");
-        req.setAvatarUrl("https://example.com/avatar.png");
-        req.setGender("Nam");
-        req.setDateOfBirth(LocalDate.of(2003, 10, 10));
-        req.setAddress("Hồ Chí Minh");
-        return req;
-    }
-
 
     @Test
-    void testRegisterUser_Success() throws Exception {
-        // given
-        RegisterRequest request = buildSampleRequest();
+    void testRegister() {
+        RegisterRequest request = new RegisterRequest();
+        request.setFullName("John Doe");
+        request.setUsername("johndoe");
 
+        ApiResponse<?> expectedResponse = ApiResponse.success("User Registered", "Thành công");
 
-        OperationResult successResult = OperationResult.of("User registered",null);
-        Either<ExceptionMessage, OperationResult> either =
-                Either.right(successResult);
+        // fix generic wildcard
+        Mockito.<ApiResponse<?>>when(manageUserService.registerUser(any(RegisterRequest.class), anyString()))
+                .thenReturn(expectedResponse);
 
-        // when
-        Mockito.when(manageUserService.registerUser(any(UserDTO.class)))
-                .thenReturn(CompletableFuture.completedFuture(either));
+        ApiResponse<?> response = userController.register(request, "trace123");
 
-        Callable<CompletionStage<ResponseEntity<?>>> callable =
-                userController.register(request, "trace-001");
-
-        // then
-        ResponseEntity<?> response = callable.call().toCompletableFuture().get();
-        ApiResponse<?> apiResponse = (ApiResponse<?>) response.getBody();
-
-        assertEquals(200, response.getStatusCode().value());
-        assertNotNull(apiResponse);
-        assertEquals("Đăng ký thành công", apiResponse.message());
+        assertNotNull(response);
+        assertEquals("User Registered", response.data());
+        assertEquals("Thành công", response.message());
     }
 
     @Test
-    void testRegisterUser_Fail() throws Exception {
-        // given
-        RegisterRequest request = buildSampleRequest();
+    void testUpdateUser() {
+        UpdateUserRequest request = new UpdateUserRequest();
+        request.setId("user123");
+        request.setFullName("Jane Doe");
 
+        ApiResponse<?> expectedResponse = ApiResponse.success("User Updated", "Thành công");
 
-        ExceptionMessage error = new ExceptionMessage(400,"", "Bad Request", "Email already exists");
-        Either<ExceptionMessage, OperationResult> either =
-                Either.left(error);
+        Mockito.<ApiResponse<?>>when(manageUserService.updateUser(any(UpdateUserRequest.class), anyString()))
+                .thenReturn(expectedResponse);
 
-        Mockito.when(manageUserService.registerUser(any(UserDTO.class)))
-                .thenReturn(CompletableFuture.completedFuture(either));
+        ApiResponse<?> response = userController.update(request, "trace123");
 
-        // when
-        Callable<CompletionStage<ResponseEntity<?>>> callable =
-                userController.register(request, "trace-002");
-
-        ResponseEntity<?> response = callable.call().toCompletableFuture().get();
-        ApiResponse<?> apiResponse = (ApiResponse<?>) response.getBody();
-
-        // then
-        assertEquals(400, response.getStatusCode().value());
-        assertEquals("Email already exists", apiResponse.message());
+        assertNotNull(response);
+        assertEquals("User Updated", response.data());
+        assertEquals("Thành công", response.message());
     }
 
     @Test
-    void testGetUserById_Success() throws Exception {
-        // given
-        OperationResult successResult = OperationResult.of("User found",null);
-        Either<ExceptionMessage, OperationResult> either = Either.right(successResult);
+    void testGetUserByID() {
+        String userId = "user123";
+        ApiResponse<?> expectedResponse = ApiResponse.success("User Data", "Thành công");
 
-        Mockito.when(manageUserService.getUserById("123"))
-                .thenReturn(CompletableFuture.completedFuture(either));
+        Mockito.<ApiResponse<?>>when(manageUserService.getUserById(anyString(), anyString()))
+                .thenReturn(expectedResponse);
 
-        // when
-        Callable<CompletionStage<ResponseEntity<?>>> callable =
-                userController.getUserByID("123", "trace-003");
+        ApiResponse<?> response = userController.getUserByID(userId, "trace123");
 
-        ResponseEntity<?> response = callable.call().toCompletableFuture().get();
-        ApiResponse<?> apiResponse = (ApiResponse<?>) response.getBody();
+        assertNotNull(response);
+        assertEquals("User Data", response.data());
+        assertEquals("Thành công", response.message());
+    }
 
-        // then
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals("Lấy thông tin người dùng thành công", apiResponse.message());
+    @Test
+    void testCheckUserPrivate() {
+        String userId = "user123";
+        ApiResponse<?> expectedResponse = ApiResponse.success(true, "Thành công");
+
+        Mockito.<ApiResponse<?>>when(manageUserService.isUserPrivate(anyString(), anyString()))
+                .thenReturn(expectedResponse);
+
+        ApiResponse<?> response = userController.checkUserPrivate(userId, "trace123");
+
+        assertNotNull(response);
+        assertEquals(true, response.data());
+        assertEquals("Thành công", response.message());
+    }
+
+    @Test
+    void testCheckUserExists() {
+        String userId = "user123";
+        ApiResponse<?> expectedResponse = ApiResponse.success(true, "Thành công");
+
+        Mockito.<ApiResponse<?>>when(manageUserService.isUserExists(anyString(), anyString()))
+                .thenReturn(expectedResponse);
+
+        ApiResponse<?> response = userController.checkUserExists(userId, "trace123");
+
+        assertNotNull(response);
+        assertEquals(true, response.data());
+        assertEquals("Thành công", response.message());
+    }
+
+    @Test
+    void testUpdateImage() {
+        String userId = "user123";
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "avatar.png",
+                "image/png",
+                "dummy".getBytes()
+        );
+
+        ApiResponse<?> expectedResponse = ApiResponse.success("/uploads/avatar.png", "Thành công");
+
+        Mockito.<ApiResponse<?>>when(manageUserService.updateImage(anyString(), any(MockMultipartFile.class), anyString()))
+                .thenReturn(expectedResponse);
+
+        ApiResponse<?> response = userController.updateImage(userId, file, "trace123");
+
+        assertNotNull(response);
+        assertEquals("/uploads/avatar.png", response.data());
+        assertEquals("Thành công", response.message());
     }
 }

@@ -26,5 +26,22 @@ public class UserEntity {
     private LocalDate dateOfBirth;
     private String address;
 
+    private boolean isprivate;
+
+    public UserEntity(String id, String fullName, String username, String email,
+                      String phoneNumber, String avatarUrl, String gender,
+                      LocalDate dateOfBirth, String address) {
+        this.id = id;
+        this.fullName = fullName;
+        this.username = username;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.avatarUrl = avatarUrl;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
+        this.address = address;
+        this.isprivate = false;
+    }
+
 }
 

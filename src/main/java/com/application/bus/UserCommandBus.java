@@ -1,12 +1,22 @@
 package com.application.bus;
 
 import com.domain.command.UserCommand;
-import com.error.exception.ExceptionMessage;
-import com.domain.result.OperationResult;
-import io.github.resilience4j.core.functions.Either;
 
-import java.util.concurrent.CompletionStage;
-
+/**
+ * UserCommandBus đồng bộ.
+ * Gửi command đến handler tương ứng và trả về kết quả trực tiếp.
+ * Nếu có lỗi, handler sẽ ném ExceptionMessage.
+ */
 public interface UserCommandBus {
-    <C extends UserCommand> CompletionStage<Either<ExceptionMessage, OperationResult>> send(C command);
+
+    /**
+     * Gửi command đến handler tương ứng.
+     *
+     * @param command Command cần xử lý.
+     * @param <C> Kiểu command.
+     * @param <R> Kiểu kết quả trả về (UserEntity, Boolean, v.v).
+     * @return Kết quả xử lý command.
+     * @throws com.error.exception.DomainException nếu có lỗi.
+     */
+    <C extends UserCommand, R> R send(C command);
 }

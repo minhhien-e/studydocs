@@ -4,8 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="091de765-1739-410e-9425-dd97c9c9080f" name="Changes" comment="refactor: refactor aplication">
+    <list default="true" id="091de765-1739-410e-9425-dd97c9c9080f" name="Changes" comment="refactor: test controller">
       <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/application/handler/CheckUserExistHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/application/handler/CheckUserPrivateHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/application/handler/UpdateImageHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/domain/command/CheckUserExists.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/domain/command/CheckUserPrivate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/domain/command/UpdateImage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/error/exception/DomainException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/error/exception/InfrastructureException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/error/factory/ExceptionFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/error/factory/InfrastructureExceptionFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/interfaces/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/interfaces/model/UpdateUserRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.13/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.13/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.13/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.13/checksums/sha1-checksums.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.13/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.13/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.13/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.13/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.13/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.13/fileHashes/fileHashes.bin" afterDir="false" />
@@ -13,17 +27,44 @@
       <change beforePath="$PROJECT_DIR$/.gradle/8.13/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.13/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/application/ManageUserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/application/ManageUserService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/application/impl/ManageUserServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/application/impl/ManageUserServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/domain/entity/UserEntity.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/domain/entity/UserEntity.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/domain/service/UserDomainService.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/domain/service/UserDomainService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/interfaces/controller/UserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/interfaces/controller/UserController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/reports/tests/test/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/reports/tests/test/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/output.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/output.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/output.bin.idx" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/output.bin.idx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/results.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/results.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/problems/problems-report.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/reports/problems/problems-report.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/resources/main/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/build/resources/main/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/compileTransaction/stash-dir/HelperMap.class.uniqueId1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/compileTransaction/stash-dir/UserController.class.uniqueId0" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/compileTransaction/stash-dir/UserController.class.uniqueId0" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/compileTransaction/stash-dir/UserDomainService.class.uniqueId2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/compileTransaction/stash-dir/UserMapper.class.uniqueId3" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/tmp/compileTestJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileTestJava/previous-compilation-data.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/application/ManageUserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/application/ManageUserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/application/bus/SimpleUserCommandBus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/application/bus/SimpleUserCommandBus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/application/bus/UserCommandBus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/application/bus/UserCommandBus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/application/handler/CommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/application/handler/CommandHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/application/handler/GetUserByIdHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/application/handler/GetUserByIdHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/application/handler/RegisterUserHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/application/handler/RegisterUserHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/application/handler/UpdateUserHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/application/handler/UpdateUserHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/application/impl/ManageUserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/application/impl/ManageUserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/domain/entity/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/domain/entity/UserEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/domain/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/domain/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/domain/result/OperationResult.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/domain/service/UserDomainService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/domain/service/UserDomainService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/error/ErrorCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/error/ErrorCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/error/exception/ExceptionMessage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/error/exception/ValidateMessageError.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/helper/HelperMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/helper/HelperMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/infrastructure/repository/UserMongoRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/infrastructure/repository/UserMongoRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/interfaces/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/interfaces/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/interfaces/model/UserMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/interfaces/exception/DefaultExceptionHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/interfaces/model/ErrorResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/domain/service/UserDomainServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/domain/service/UserDomainServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/infrastructure/repository/UserMongoRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/infrastructure/repository/UserMongoRepositoryTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/interfaces/controller/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/interfaces/controller/UserControllerTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -101,50 +142,54 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.Build user-service.executor": "Run",
-    "Gradle.Download Sources.executor": "Run",
-    "Gradle.UserControllerTest.executor": "Run",
-    "Gradle.UserControllerTest.testRegisterUser_Fail.executor": "Run",
-    "Gradle.UserDomainServiceTest.executor": "Run",
-    "Gradle.UserMongoRepositoryTest (1).executor": "Run",
-    "Gradle.UserMongoRepositoryTest (2).executor": "Run",
-    "Gradle.UserMongoRepositoryTest (3).executor": "Run",
-    "Gradle.UserMongoRepositoryTest (4).executor": "Run",
-    "Gradle.UserMongoRepositoryTest.executor": "Run",
-    "Gradle.UserMongoRepositoryTest.testSaveAndFindById.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.UserService (1).executor": "Run",
-    "Spring Boot.UserService.executor": "Run",
-    "git-widget-placeholder": "feature/user-service",
-    "last_directory_selection": "D:/MyPropject/Microservice/studydocs/user-service/user-service/src/test/java/infrastructure/repository",
-    "last_opened_file_path": "D:/MyPropject/Microservice/studydocs/user-service/user-service",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "D:/MyPropject/Microservice/studydocs/user-service/user-service/src/main/java/studydocs/user-service/Main.java",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;Gradle.Build user-service.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.UserControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.UserControllerTest.testRegisterUser_Fail.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.UserDomainServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.UserMongoRepositoryTest (1).executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.UserMongoRepositoryTest (2).executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.UserMongoRepositoryTest (3).executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.UserMongoRepositoryTest (4).executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.UserMongoRepositoryTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.UserMongoRepositoryTest.testSaveAndFindById.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.UserService (1).executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.UserService.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/user-service&quot;,
+    &quot;last_directory_selection&quot;: &quot;D:/MyPropject/Microservice/studydocs/user-service/user-service/src/test/java/infrastructure/repository&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/MyPropject/Microservice/studydocs/user-service/user-service&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;D:/MyPropject/Microservice/studydocs/user-service/user-service/src/main/java/studydocs/user-service/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "sqlserver",
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;,
+      &quot;sqlserver&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="interfaces.model" />
@@ -155,7 +200,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.UserControllerTest">
+  <component name="RunManager" selected="Spring Boot.UserService (1)">
     <configuration name="UserControllerTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -397,7 +442,34 @@
       <workItem from="1760068098632" duration="7638000" />
       <workItem from="1760195631189" duration="1192000" />
       <workItem from="1760263040476" duration="1903000" />
-      <workItem from="1760330923936" duration="4160000" />
+      <workItem from="1760330923936" duration="7120000" />
+      <workItem from="1760362127627" duration="1981000" />
+      <workItem from="1760429339023" duration="4075000" />
+      <workItem from="1760510376887" duration="619000" />
+      <workItem from="1760622322819" duration="1267000" />
+      <workItem from="1760694431942" duration="729000" />
+      <workItem from="1760705454668" duration="673000" />
+      <workItem from="1760882228096" duration="6790000" />
+      <workItem from="1760934471199" duration="8033000" />
+      <workItem from="1761039964101" duration="3160000" />
+      <workItem from="1761318046186" duration="596000" />
+      <workItem from="1761395303825" duration="2481000" />
+      <workItem from="1761456561301" duration="1834000" />
+      <workItem from="1761475846934" duration="1518000" />
+      <workItem from="1761543260848" duration="7710000" />
+      <workItem from="1761575781954" duration="725000" />
+      <workItem from="1761915657019" duration="2906000" />
+      <workItem from="1761965219611" duration="3940000" />
+      <workItem from="1762073085128" duration="1354000" />
+      <workItem from="1762177056877" duration="2196000" />
+      <workItem from="1762183101435" duration="598000" />
+      <workItem from="1762514349720" duration="1496000" />
+      <workItem from="1762524121409" duration="2896000" />
+      <workItem from="1762764724971" duration="223000" />
+      <workItem from="1762765101513" duration="3840000" />
+      <workItem from="1763035479710" duration="6586000" />
+      <workItem from="1763193959350" duration="5496000" />
+      <workItem from="1763294616284" duration="1201000" />
     </task>
     <task id="LOCAL-00001" summary="feature: manage user infor (crud)">
       <option name="closed" value="true" />
@@ -431,7 +503,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760347813281</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="refactor: test controller">
+      <option name="closed" value="true" />
+      <created>1760349560194</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1760349560194</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -460,6 +540,7 @@
     <MESSAGE value="feature: manage user infor (crud)" />
     <MESSAGE value="refactor: refactor application and interface" />
     <MESSAGE value="refactor: refactor aplication" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: refactor aplication" />
+    <MESSAGE value="refactor: test controller" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: test controller" />
   </component>
 </project>

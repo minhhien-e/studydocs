@@ -1,108 +1,73 @@
 package com.interfaces.controller;
 
 import com.application.ManageUserService;
-import com.domain.dto.UserDTO;
-import com.error.exception.ExceptionMessage;
-import com.domain.result.OperationResult;
-import com.helper.HelperMap;
 import com.interfaces.model.ApiResponse;
 import com.interfaces.model.RegisterRequest;
-
-import io.github.resilience4j.core.functions.Either;
+import com.interfaces.model.UpdateUserRequest;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionStage;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
-
     private final ManageUserService manageUserService;
 
     public UserController(ManageUserService manageUserService) {
         this.manageUserService = manageUserService;
     }
 
-
     @PostMapping("/register")
-    public Callable<CompletionStage<ResponseEntity<?>>> register(
+    public ApiResponse<?> register(
             @Valid @RequestBody RegisterRequest request,
             @RequestHeader(value = "X-Trace-Id", required = false) String traceId) {
-
-        return () -> {
-            LOG.info("[traceId: {}] Đã nhận request register", traceId);
-
-            UserDTO user = HelperMap.INSTANCE.registerRequesttoUserDTO(request);
-
-            CompletionStage<Either<ExceptionMessage, OperationResult>> promise =
-                    manageUserService.registerUser(user);
-
-            return promise.thenApply(result -> result.fold(
-                    error -> {
-                        LOG.error("[traceId: {}] ❌ Error registering user: status={}, message={}, desc={}",
-                                traceId,
-                                error.getStatusCode(),
-                                error.getMessage(),
-                                error.getDescription());
-                        return ResponseEntity.status(error.getStatusCode())
-                                .body(ApiResponse.error(error.getStatusCode(), error.getMessage(), error.getDescription()));
-                    },
-                    success -> {
-                        LOG.info("[traceId: {}] ✅ Successfully registered user", traceId);
-                        return ResponseEntity.ok(ApiResponse.success(success, "Đăng ký thành công"));
-                    }
-            ));
-        };
+        LOG.info("[traceId: {}] 📩 Nhận request đăng ký người dùng", traceId);
+        return manageUserService.registerUser(request, traceId);
     }
 
-
     @PutMapping("/update")
-    public Callable<CompletionStage<ResponseEntity<?>>> update(
-            @Valid @RequestBody RegisterRequest request,
+    public ApiResponse<?> update(
+            @Valid @RequestBody UpdateUserRequest request,
             @RequestHeader(value = "X-Trace-Id", required = false) String traceId) {
-
-        return () -> {
-            LOG.info("[traceId: {}] Đã nhận request update {}", traceId, request);
-
-            UserDTO userDTO =  HelperMap.INSTANCE.registerRequesttoUserDTO(request);
-
-            CompletionStage<Either<ExceptionMessage, OperationResult>> promise = manageUserService.updateUser(userDTO);
-            return promise.thenApply(result -> result.fold(
-                    error -> ResponseEntity.status(error.getStatusCode())
-                            .body(ApiResponse.error(error.getStatusCode(), error.getMessage(), error.getDescription())),
-                    success -> {
-                        LOG.info("[traceId: {}] ✅ Successfully updated user", traceId);
-                        return ResponseEntity.ok(ApiResponse.success(success, "Cập nhật thành công"));
-                    }
-            ));
-        };
+        LOG.info("[traceId: {}] ✏️ Nhận request cập nhật người dùng", traceId);
+        return manageUserService.updateUser(request, traceId);
     }
 
     @GetMapping("/getUserByID")
-    public Callable<CompletionStage<ResponseEntity<?>>> getUserByID(
+    public ApiResponse<?> getUserByID(
             @RequestParam String id,
             @RequestHeader(value = "X-Trace-Id", required = false) String traceId) {
+        LOG.info("[traceId: {}] 🔍 Nhận request lấy thông tin user id={}", traceId, id);
+        return manageUserService.getUserById(id, traceId);
+    }
 
-        return () -> {
-            LOG.info("[traceId: {}] Đã nhận request getUserByID id={}", traceId, id);
+    @GetMapping("/isPrivate")
+    public ApiResponse<?> checkUserPrivate(
+            @RequestParam String id,
+            @RequestHeader(value = "X-Trace-Id", required = false) String traceId) {
+        LOG.info("[traceId: {}] 🔒 Nhận request kiểm tra trạng thái private id={}", traceId, id);
+        return manageUserService.isUserPrivate(id, traceId);
+    }
 
-            CompletionStage<Either<ExceptionMessage, OperationResult>> promise = manageUserService.getUserById(id);
-            return promise.thenApply(result -> result.fold(
-                    error -> ResponseEntity.status(error.getStatusCode())
-                            .body(ApiResponse.error(error.getStatusCode(), error.getMessage(), error.getDescription())),
-                    success -> {
-                        LOG.info("[traceId: {}] ✅ Successfully fetched user id={}", traceId, id);
-                        return ResponseEntity.ok(ApiResponse.success(success.getData(), "Lấy thông tin người dùng thành công"));
-                    }
-            ));
-        };
+    @GetMapping("/exists")
+    public ApiResponse<?> checkUserExists(
+            @RequestParam String id,
+            @RequestHeader(value = "X-Trace-Id", required = false) String traceId) {
+        LOG.info("[traceId: {}] 🧩 Nhận request kiểm tra user tồn tại id={}", traceId, id);
+        return manageUserService.isUserExists(id, traceId);
+    }
+
+    @PostMapping("/updateImage")
+    public ApiResponse<?> updateImage(
+            @RequestParam String id,
+            @RequestParam("file") MultipartFile file,
+            @RequestHeader(value = "X-Trace-Id", required = false) String traceId) {
+        LOG.info("[traceId: {}] 🖼️ Nhận request cập nhật ảnh user id={}", traceId, id);
+        return manageUserService.updateImage(id, file, traceId);
     }
 }
-

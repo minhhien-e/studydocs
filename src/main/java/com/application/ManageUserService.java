@@ -1,16 +1,21 @@
 package com.application;
 
-import com.domain.dto.UserDTO;
-import com.error.exception.ExceptionMessage;
-import com.domain.result.OperationResult;
-import io.github.resilience4j.core.functions.Either;
-
-import java.util.concurrent.CompletionStage;
+import com.interfaces.model.ApiResponse;
+import com.interfaces.model.RegisterRequest;
+import com.interfaces.model.UpdateUserRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface ManageUserService {
-    CompletionStage<Either<ExceptionMessage, OperationResult>> registerUser(UserDTO userDTO);
 
-    CompletionStage<Either<ExceptionMessage, OperationResult>> updateUser(UserDTO userDTO);
+    ApiResponse<?> registerUser(RegisterRequest request, String traceId);
 
-    CompletionStage<Either<ExceptionMessage, OperationResult>> getUserById(String id);
+    ApiResponse<?> updateUser(UpdateUserRequest request, String traceId);
+
+    ApiResponse<?> getUserById(String id, String traceId);
+
+    ApiResponse<?> isUserPrivate(String userId, String traceId);
+
+    ApiResponse<?> isUserExists(String userId, String traceId);
+
+    ApiResponse<?> updateImage(String id, MultipartFile file, String traceId);
 }

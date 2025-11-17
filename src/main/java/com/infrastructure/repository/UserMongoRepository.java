@@ -2,10 +2,7 @@ package com.infrastructure.repository;
 
 import com.domain.entity.UserEntity;
 import com.domain.repository.UserRepository;
-import com.error.ErrorCode;
-import com.error.exception.ExceptionMessage;
-import io.github.resilience4j.core.functions.Either;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -13,104 +10,92 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
+
+import static com.error.ErrorCode.*;
+import static com.error.factory.InfrastructureExceptionFactory.custom;
+//import static com.error.infrastructure.InfrastructureExceptionFactory.custom;
 
 @Repository
+@RequiredArgsConstructor
 public class UserMongoRepository implements UserRepository {
 
     private final MongoTemplate mongoTemplate;
 
-    @Autowired
-    public UserMongoRepository(MongoTemplate mongoTemplate) {
-        this.mongoTemplate = mongoTemplate;
-    }
-
     @Override
-    public CompletionStage<Boolean> existsByUsername(String username) {
-        return CompletableFuture.supplyAsync(() -> {
+    public boolean existsByUsername(String username) {
+        try {
             Query query = new Query(Criteria.where("username").is(username));
             return mongoTemplate.exists(query, UserEntity.class);
-        });
+        } catch (Throwable t) {
+            throw custom(SAVE_FAILED, "existsByUsername", t);
+        }
     }
 
     @Override
-    public CompletionStage<Boolean> existsByUserId(String id) {
-        return CompletableFuture.supplyAsync(() -> {
+    public boolean existsByUserId(String id) {
+        try {
             Query query = new Query(Criteria.where("id").is(id));
             return mongoTemplate.exists(query, UserEntity.class);
-        });
+        } catch (Throwable t) {
+            throw custom(SAVE_FAILED, "existsByUserId", t);
+        }
     }
 
     @Override
-    public CompletionStage<Either<ExceptionMessage, UserEntity>> save(UserEntity user) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                UserEntity saved = mongoTemplate.save(user);
-                return Either.right(saved);
-            } catch (Exception e) {
-                return Either.left(new ExceptionMessage(
-                        ErrorCode.INTERNAL_SERVER_ERROR,
-                        "Lỗi khi lưu người dùng vào MongoDB: " + e.getMessage()
-                ));
-            }
-        });
+    public UserEntity save(UserEntity user) {
+        try {
+            return mongoTemplate.save(user);
+        } catch (Throwable t) {
+            throw custom(SAVE_FAILED, "save", t);
+        }
     }
 
     @Override
-    public CompletionStage<Either<ExceptionMessage, Void>> updateUser(UserEntity user) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                Query query = new Query(Criteria.where("id").is(user.getId()));
-                Update update = new Update()
-                        .set("fullName", user.getFullName())
-                        .set("username", user.getUsername())
-                        .set("email", user.getEmail())
-                        .set("phoneNumber", user.getPhoneNumber())
-                        .set("avatarUrl", user.getAvatarUrl())
-                        .set("gender", user.getGender())
-                        .set("dateOfBirth", user.getDateOfBirth())
-                        .set("address", user.getAddress());
+    public void updateUser(UserEntity user) {
+        try {
+            Query query = new Query(Criteria.where("id").is(user.getId()));
+            Update update = new Update()
+                    .set("fullName", user.getFullName())
+                    .set("username", user.getUsername())
+                    .set("email", user.getEmail())
+                    .set("phoneNumber", user.getPhoneNumber())
+                    .set("avatarUrl", user.getAvatarUrl())
+                    .set("gender", user.getGender())
+                    .set("dateOfBirth", user.getDateOfBirth())
+                    .set("address", user.getAddress());
 
-                mongoTemplate.updateFirst(query, update, UserEntity.class);
-                return Either.right(null);
-            } catch (Exception e) {
-                return Either.left(new ExceptionMessage(
-                        ErrorCode.INTERNAL_SERVER_ERROR,
-                        "Lỗi khi cập nhật người dùng: " + e.getMessage()
-                ));
-            }
-        });
+            mongoTemplate.updateFirst(query, update, UserEntity.class);
+        } catch (Throwable t) {
+            throw custom(UPDATE_FAILED, "updateUser", t);
+        }
     }
 
     @Override
-    public CompletionStage<Either<ExceptionMessage, Void>> deleteById(String id) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                Query query = new Query(Criteria.where("id").is(id));
-                mongoTemplate.remove(query, UserEntity.class);
-                return Either.right(null);
-            } catch (Exception e) {
-                return Either.left( new ExceptionMessage(
-                        ErrorCode.INTERNAL_SERVER_ERROR,
-                        "Lỗi khi xóa người dùng có ID: " + id + " - " + e.getMessage()
-                ));
-            }
-        });
+    public void deleteById(String id) {
+        try {
+            Query query = new Query(Criteria.where("id").is(id));
+            mongoTemplate.remove(query, UserEntity.class);
+        } catch (Throwable t) {
+            throw custom(DELETE_FAILED, "deleteById", t);
+        }
     }
 
     @Override
-    public CompletionStage<Optional<UserEntity>> findById(String id) {
-        return CompletableFuture.supplyAsync(() ->
-                Optional.ofNullable(mongoTemplate.findById(id, UserEntity.class))
-        );
+    public Optional<UserEntity> findById(String id) {
+        try {
+            return Optional.ofNullable(mongoTemplate.findById(id, UserEntity.class));
+        } catch (Throwable t) {
+            throw custom(SAVE_FAILED, "findById", t);
+        }
     }
 
     @Override
-    public CompletionStage<Optional<UserEntity>> findByUsername(String username) {
-        return CompletableFuture.supplyAsync(() -> {
+    public Optional<UserEntity> findByUsername(String username) {
+        try {
             Query query = new Query(Criteria.where("username").is(username));
             return Optional.ofNullable(mongoTemplate.findOne(query, UserEntity.class));
-        });
+        } catch (Throwable t) {
+            throw custom(SAVE_FAILED, "findByUsername", t);
+        }
     }
 }

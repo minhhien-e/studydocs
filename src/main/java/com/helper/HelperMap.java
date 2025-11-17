@@ -1,8 +1,11 @@
 package com.helper;
 
+import com.domain.command.*;
 import com.domain.dto.UserDTO;
 import com.domain.entity.UserEntity;
 import com.interfaces.model.RegisterRequest;
+import com.interfaces.model.UpdateUserRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 public enum HelperMap {
 
@@ -56,5 +59,46 @@ public enum HelperMap {
                 .dateOfBirth(request.getDateOfBirth())
                 .address(request.getAddress())
                 .build();
+    }
+    public RegisterUser toRegisterUser(RegisterRequest request) {
+        return RegisterUser.commandOf(
+                request.getFullName(),
+                request.getUsername(),
+                request.getEmail(),
+                request.getPhoneNumber(),
+                request.getAvatarUrl(),
+                request.getGender(),
+                request.getDateOfBirth(),
+                request.getAddress()
+        );
+    }
+
+    public UpdateUser toUpdateUser(UpdateUserRequest request, String userId) {
+        return UpdateUser.commandOf(
+                userId,
+                request.getFullName(),
+                request.getUsername(),
+                request.getEmail(),
+                request.getPhoneNumber(),
+                request.getAvatarUrl(),
+                request.getGender(),
+                request.getDateOfBirth(),
+                request.getAddress()
+        );
+    }
+    public UpdateImage toUpdateImage(String userId, MultipartFile file) {
+        return UpdateImage.commandOf(userId, file);
+    }
+
+    public GetUserById toGetUserById(String userId) {
+        return GetUserById.commandOf(userId);
+    }
+
+    public CheckUserPrivate toCheckUserPrivate(String userId) {
+        return CheckUserPrivate.commandOf(userId);
+    }
+
+    public CheckUserExists toCheckUserExists(String userId) {
+        return CheckUserExists.commandOf(userId);
     }
 }

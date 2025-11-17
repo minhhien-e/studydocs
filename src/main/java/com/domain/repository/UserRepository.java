@@ -1,28 +1,58 @@
 package com.domain.repository;
 
 import com.domain.entity.UserEntity;
-import com.error.exception.ExceptionMessage;
-import io.github.resilience4j.core.functions.Either;
 
 import java.util.Optional;
-import java.util.concurrent.CompletionStage;
-
-
 
 public interface UserRepository {
 
-    CompletionStage<Boolean> existsByUsername(String username);
+    /**
+     * Kiểm tra username đã tồn tại chưa
+     * @return true nếu tồn tại, false nếu không
+     */
+    boolean existsByUsername(String username);
 
-    CompletionStage<Boolean> existsByUserId(String id);
+    /**
+     * Kiểm tra userId đã tồn tại chưa
+     * @return true nếu tồn tại, false nếu không
+     */
+    boolean existsByUserId(String id);
 
-    CompletionStage<Either<ExceptionMessage, UserEntity>> save(UserEntity user);
+    /**
+     * Lưu mới user
+     * @param user user entity cần lưu
+     * @return UserEntity đã lưu
+     * @throws ExceptionMessage nếu lưu thất bại
+     */
+    UserEntity save(UserEntity user);
 
-    CompletionStage<Either<ExceptionMessage, Void>> updateUser(UserEntity user);
+    /**
+     * Cập nhật user
+     * @param user user entity cần cập nhật
+     * @throws ExceptionMessage nếu user không tồn tại hoặc cập nhật thất bại
+     */
+    void updateUser(UserEntity user);
 
-    CompletionStage<Either<ExceptionMessage, Void>> deleteById(String id);
+    /**
+     * Xóa user theo id
+     * @param id id của user
+     * @throws ExceptionMessage nếu user không tồn tại hoặc xóa thất bại
+     */
+    void deleteById(String id);
 
-    CompletionStage<Optional<UserEntity>> findById(String id);
+    /**
+     * Tìm user theo id
+     * @param id id của user
+     * @return Optional chứa UserEntity nếu tồn tại, empty nếu không
+     * @throws ExceptionMessage nếu có lỗi truy vấn
+     */
+    Optional<UserEntity> findById(String id);
 
-    CompletionStage<Optional<UserEntity>> findByUsername(String username);
+    /**
+     * Tìm user theo username
+     * @param username username của user
+     * @return Optional chứa UserEntity nếu tồn tại, empty nếu không
+     * @throws ExceptionMessage nếu có lỗi truy vấn
+     */
+    Optional<UserEntity> findByUsername(String username);
 }
-
