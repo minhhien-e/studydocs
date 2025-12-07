@@ -1,0 +1,38 @@
+server:
+  port: 8082
+spring:
+  config:
+    name: notification-service
+#  rabbitmq:
+#    host: ${RABBIT_HOST}
+#    port: ${RABBIT_PORT}
+#    username: ${RABBIT_USERNAME}
+#    password: ${RABBIT_PASSWORD}
+#    virtual-host: ${RABBIT_VIRTUAL_HOST}
+#    ssl:
+#      enabled: true
+  data:
+    mongodb:
+      uri: mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}
+      uuid-representation: standard
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          issuer-uri: http://localhost:8081
+#rabbitmq:
+#  exchange: exchange.notification
+#  queue:
+#    - email:
+#        name: queue.notification.email
+#        routing-key:
+#          - notification.email.send
+#    - push:
+#        name: queue.notification.push.document.upload
+#        routing-key:
+#          - notification.push.upload.document
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+

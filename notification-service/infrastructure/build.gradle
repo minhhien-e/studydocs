@@ -1,0 +1,28 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:3.5.3"
+    }
+}
+
+dependencies {
+    implementation project(':application')
+    implementation project(':domain')
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'com.github.minhhien-e:MediatR:1.0.1'
+    implementation 'com.github.minhhien-e.domain-repository-base:domain-repository-mongo:1.0.6'
+    implementation("me.paulschwarz:spring-dotenv:4.0.0")
+    testImplementation 'org.springframework.security:spring-security-test'
+    compileOnly "org.projectlombok:lombok"
+    annotationProcessor "org.projectlombok:lombok"
+}
