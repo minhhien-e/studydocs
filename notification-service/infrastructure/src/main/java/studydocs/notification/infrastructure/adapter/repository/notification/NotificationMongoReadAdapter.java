@@ -1,4 +1,4 @@
-package studydocs.notification.infrastructure.persistence.repository.notification.impl;
+package studydocs.notification.infrastructure.adapter.repository.notification;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;

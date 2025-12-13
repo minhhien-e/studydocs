@@ -1,7 +1,6 @@
 package studydocs.notification.infrastructure.exception.mapper;
 
 import org.springframework.stereotype.Component;
-import studydocs.notification.application.port.in.provider.CurrentTraceIdProvider;
 import studydocs.notification.domain.enums.DomainErrorCode;
 import studydocs.notification.domain.exception.base.DomainException;
 import studydocs.notification.infrastructure.exception.HttpException;
@@ -21,7 +20,7 @@ public class DomainToHttpExceptionMapper {
                  NOTIFICATION_NOT_SOFT_DELETED, INVALID_NOTIFICATION_CATEGORY,
                  INVALID_NOTIFICATION_CHANNEL, INVALID_TEMPLATE_BODY,
                  INVALID_TEMPLATE_SUBJECT, INVALID_TEMPLATE_NAME,
-                 INVALID_TEMPLATE_DATA, INVALID_PERSONALIZED_DATA,
+                 INVALID_BODY_DATA, INVALID_PERSONALIZED_DATA,
                  INVALID_TEMPLATE_CHANNEL, INVALID_NOTIFICATION_CREATION_TIME,
                  INVALID_NOTIFICATION_DELETION_TIME, INVALID_TEMPLATE_CREATION_TIME,
                  INVALID_TEMPLATE_UPDATE_TIME -> 400;

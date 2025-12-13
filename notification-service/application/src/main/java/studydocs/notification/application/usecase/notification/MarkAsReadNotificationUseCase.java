@@ -5,23 +5,23 @@ import org.springframework.stereotype.Service;
 import studydocs.notification.application.dto.command.notification.MarkAsReadCommand;
 import studydocs.notification.application.port.in.usecase.notification.MarkAsReadNotificationUseCasePort;
 import studydocs.notification.domain.policy.NotificationAccessPolicy;
-import studydocs.notification.domain.repository.NotificationRepository;
-
-import java.util.List;
+import studydocs.notification.domain.repository.NotificationRecipientRepository;
 
 @Service
 @RequiredArgsConstructor
 public class MarkAsReadNotificationUseCase implements MarkAsReadNotificationUseCasePort {
-    private final NotificationRepository notificationRepository;
+    private final NotificationRecipientRepository recipientRepository;
     private final NotificationAccessPolicy notificationPolicy;
 
     @Override
     public Void execute(MarkAsReadCommand params) {
-        var notification = notificationRepository.getById(params.notificationId(), List.of(params.recipientId()));
-        notificationPolicy.checkCanAccess(notification, params.recipientId());
-        notification.readNotification(params.recipientId());
-        notificationRepository.save(notification);
+        var recipient = recipientRepository.getByNotificationIdAndRecipientId(
+                params.notificationId(),
+                params.recipientId()
+        );
+        notificationPolicy.checkCanAccess(recipient, params.recipientId());
+        recipient.markAsRead();
+        recipientRepository.save(recipient);
         return null;
     }
-
 }

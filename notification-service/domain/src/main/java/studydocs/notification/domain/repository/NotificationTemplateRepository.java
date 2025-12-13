@@ -1,9 +1,8 @@
 package studydocs.notification.domain.repository;
 
 import io.github.domain.repository.DomainEntityRepository;
-import studydocs.notification.domain.entity.NotificationTemplate;
+import studydocs.notification.domain.aggregate.NotificationTemplate;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface NotificationTemplateRepository extends DomainEntityRepository<NotificationTemplate> {

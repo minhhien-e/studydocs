@@ -5,24 +5,22 @@ import org.springframework.stereotype.Service;
 import studydocs.notification.application.dto.command.notification.HardDeleteNotificationCommand;
 import studydocs.notification.application.port.in.usecase.notification.HardDeleteNotificationUseCasePort;
 import studydocs.notification.domain.policy.NotificationAccessPolicy;
-import studydocs.notification.domain.repository.NotificationRepository;
-
-import java.util.List;
+import studydocs.notification.domain.repository.NotificationRecipientRepository;
 
 @Service
 @RequiredArgsConstructor
 public class HardDeleteNotificationUseCase implements HardDeleteNotificationUseCasePort {
-    private final NotificationRepository notificationRepository;
+    private final NotificationRecipientRepository recipientRepository;
     private final NotificationAccessPolicy notificationPolicy;
 
     @Override
     public Void execute(HardDeleteNotificationCommand params) {
-
-        var notification = notificationRepository.getById(params.notificationId(), List.of(params.requesterId()));
-        notificationPolicy.checkCanAccess(notification, params.requesterId());
-        notification.hardDeleteRecipient(params.requesterId());
-        notificationRepository.save(notification);
+        var recipient = recipientRepository.getByNotificationIdAndRecipientId(
+                params.notificationId(),
+                params.requesterId()
+        );
+        notificationPolicy.checkCanAccess(recipient, params.requesterId());
+        recipientRepository.deleteByNotificationIdAndRecipientId(recipient.getId(), params.requesterId());
         return null;
     }
-
 }

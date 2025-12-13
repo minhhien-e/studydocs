@@ -2,7 +2,7 @@ package studydocs.notification.infrastructure.mapper;
 
 import studydocs.notification.application.dto.projection.TemplateProjection;
 import studydocs.notification.application.dto.readmodel.TemplateReadModel;
-import studydocs.notification.domain.entity.NotificationTemplate;
+import studydocs.notification.domain.aggregate.NotificationTemplate;
 import studydocs.notification.infrastructure.persistence.entity.NotificationTemplateEntity;
 
 public final class NotificationTemplateMapper {

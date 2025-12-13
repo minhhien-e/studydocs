@@ -3,38 +3,73 @@ package studydocs.notification.application.usecase.notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import studydocs.notification.application.dto.command.notification.AddNotificationCommand;
+import studydocs.notification.application.dto.command.notification.ReceiveNotificationCommand;
+import studydocs.notification.application.port.in.bus.MediatorBusPort;
+import studydocs.notification.application.port.in.renderer.TemplateRenderer;
 import studydocs.notification.application.port.in.usecase.notification.AddNotificationUseCasePort;
 import studydocs.notification.domain.aggregate.Notification;
-import studydocs.notification.domain.entity.NotificationRecipient;
 import studydocs.notification.domain.policy.NotificationSendPolicy;
 import studydocs.notification.domain.repository.NotificationRepository;
+import studydocs.notification.domain.repository.NotificationTemplateRepository;
+
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AddNotificationUseCase implements AddNotificationUseCasePort {
     private final NotificationRepository notificationRepository;
+    private final NotificationTemplateRepository templateRepository;
     private final NotificationSendPolicy notificationSendPolicy;
+    private final TemplateRenderer templateRenderer;
+    private final MediatorBusPort mediatorBus;
 
     @Override
     public Void execute(AddNotificationCommand params) {
         notificationSendPolicy.ensureCanCreate(params.senderId(), params.templateId());
+        
+        // Get template for rendering
+        var template = templateRepository.getById(params.templateId());
+        
+        // Render snapshot subject and body with separate data
+        String snapshotSubject = templateRenderer.render(
+                template.getSubjectTemplate().value(),
+                params.snapshotSubjectData()
+        );
+        String snapshotBody = templateRenderer.render(
+                template.getBodyTemplate().value(),
+                params.snapshotBodyData()
+        );
+        
+        // Create Notification with snapshot
         var notification = Notification.create(
                 params.senderId(),
                 params.templateId(),
                 params.channel(),
                 params.category(),
-                params.templateData()
+                snapshotSubject,
+                snapshotBody
         );
-        if (params.personalizedData() != null && !params.personalizedData().isEmpty()) {
-            notificationSendPolicy.ensureCanSend(params.personalizedData().keySet().stream().toList());
-            params.personalizedData().forEach(
-                    (key, value) -> notification.addRecipient(
-                            NotificationRecipient.create(key, notification.getId(), value)
-                    )
-            );
-        }
         notificationRepository.save(notification);
+        
+        // Dispatch ReceiveNotificationCommand for each recipient
+        if (params.recipients() != null && !params.recipients().isEmpty()) {
+            var recipientIds = params.recipients().stream()
+                    .map(r -> r.recipientId())
+                    .collect(Collectors.toList());
+            notificationSendPolicy.ensureCanSend(recipientIds);
+            
+            params.recipients().forEach(recipient -> {
+                var command = ReceiveNotificationCommand.builder()
+                        .notificationId(notification.getId())
+                        .recipientId(recipient.recipientId())
+                        .subjectData(recipient.subjectData())
+                        .bodyData(recipient.bodyData())
+                        .build();
+                
+                mediatorBus.send(command);
+            });
+        }
+        
         return null;
-
     }
 }

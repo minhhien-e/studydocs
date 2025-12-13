@@ -1,21 +1,21 @@
-package studydocs.notification.infrastructure.persistence.repository.template.impl;
+package studydocs.notification.infrastructure.adapter.repository.template;
 
 import io.github.infrastructure.mongo.repository.base.AbstractEntityMongoRepository;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
-import studydocs.notification.domain.entity.NotificationTemplate;
+import studydocs.notification.domain.aggregate.NotificationTemplate;
 import studydocs.notification.domain.exception.template.NotificationTemplateNotFoundException;
 import studydocs.notification.domain.repository.NotificationTemplateRepository;
 import studydocs.notification.infrastructure.mapper.NotificationTemplateMapper;
 import studydocs.notification.infrastructure.persistence.entity.NotificationTemplateEntity;
-import studydocs.notification.infrastructure.persistence.repository.template.NotificationTemplateMongoRepository;
+import studydocs.notification.infrastructure.persistence.repository.NotificationTemplateMongoDataRepository;
 
 import java.util.UUID;
 
 @Repository
 public class NotificationTemplateMongoRepositoryAdapter extends AbstractEntityMongoRepository<NotificationTemplate, NotificationTemplateEntity> implements NotificationTemplateRepository {
-    private final NotificationTemplateMongoRepository mongoRepository;
-    public NotificationTemplateMongoRepositoryAdapter(MongoTemplate mongoTemplate, NotificationTemplateMongoRepository mongoRepository) {
+    private final NotificationTemplateMongoDataRepository mongoRepository;
+    public NotificationTemplateMongoRepositoryAdapter(MongoTemplate mongoTemplate, NotificationTemplateMongoDataRepository mongoRepository) {
         super(mongoTemplate);
         this.mongoRepository = mongoRepository;
     }

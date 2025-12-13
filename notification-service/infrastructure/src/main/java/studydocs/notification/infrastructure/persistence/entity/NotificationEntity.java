@@ -9,8 +9,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
@@ -23,9 +21,8 @@ public class NotificationEntity extends MongoEntity {
     private UUID senderId;
     private String channel;
     private String category;
-    private Map<String, String> templateData;
+    private String snapshotSubject;
+    private String snapshotBody;
     @CreatedDate
     private LocalDateTime createdAt;
-    private List<NotificationRecipientEntity> notificationRecipients;
-    private NotificationTemplateEntity notificationTemplate;
 }

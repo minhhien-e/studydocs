@@ -1,15 +1,17 @@
-package studydocs.notification.domain.entity;
+package studydocs.notification.domain.aggregate;
 
-import io.github.domain.base.DirtyTracking;
-import io.github.domain.entity.base.DomainEntity;
-import studydocs.notification.domain.exception.template.InvalidDescriptionTemplateException;
+import io.github.domain.aggregate.base.AggregateRoot;
+import studydocs.notification.domain.exception.template.TemplateDescriptionNullOrEmptyException;
+import studydocs.notification.domain.exception.template.TemplateDescriptionTooLongException;
+import studydocs.notification.domain.exception.template.TemplateDescriptionTooShortException;
 import studydocs.notification.domain.vo.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 
-public class NotificationTemplate extends DomainEntity {
+public class NotificationTemplate extends AggregateRoot {
     private TemplateName name;
     private TemplateChannel channel;
     private TemplateSubject subjectTemplate;
@@ -19,12 +21,12 @@ public class NotificationTemplate extends DomainEntity {
     private TemplateUpdateTime updatedAt;
 
     /// Constructor
-    public NotificationTemplate(UUID id) {
-        super(id, new DirtyTracking());
+    private NotificationTemplate(UUID id) {
+        super(id);
     }
 
-    public NotificationTemplate() {
-        super(new DirtyTracking());
+    private NotificationTemplate() {
+        super();
     }
 
     /// Business logic
@@ -56,8 +58,14 @@ public class NotificationTemplate extends DomainEntity {
     }
 
     public void editDescription(String description) {
-        if(description == null) {
-            throw new InvalidDescriptionTemplateException();
+        if (description == null || description.trim().isEmpty()) {
+            throw new TemplateDescriptionNullOrEmptyException();
+        }
+        if (description.length() < 10) {
+            throw new TemplateDescriptionTooShortException();
+        }
+        if (description.length() > 500) {
+            throw new TemplateDescriptionTooLongException();
         }
         this.description = description;
         markChanged("description");
@@ -72,12 +80,16 @@ public class NotificationTemplate extends DomainEntity {
     /// Factory method
     public static NotificationTemplate create(String name, String channel, String subject, String body, String description) {
         NotificationTemplate template = new NotificationTemplate();
-        template.rename(name);
-        template.editChannel(channel);
-        template.editSubject(subject);
-        template.editBody(body);
-        template.description = description;
+        template.name = new TemplateName(name);
+        template.channel = new TemplateChannel(channel);
+        template.subjectTemplate = new TemplateSubject(subject);
+        template.bodyTemplate = new TemplateBody(body);
+        template.description = Optional.ofNullable(description).map(d->{
+            template.editDescription(d);
+            return template.description;
+        }).orElse(null);
         template.createdAt = new TemplateCreationTime(LocalDateTime.now());
+        template.updatedAt = new TemplateUpdateTime(LocalDateTime.now());
         return template;
     }
 
@@ -122,4 +134,3 @@ public class NotificationTemplate extends DomainEntity {
         return updatedAt;
     }
 }
-

@@ -1,4 +1,4 @@
-package studydocs.notification.infrastructure.persistence.repository.user;
+package studydocs.notification.infrastructure.adapter.repository.user;
 
 import org.springframework.stereotype.Repository;
 import studydocs.notification.domain.repository.UserRepository;

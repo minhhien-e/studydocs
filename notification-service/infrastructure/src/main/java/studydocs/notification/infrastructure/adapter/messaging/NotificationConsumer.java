@@ -12,9 +12,5 @@ public class NotificationConsumer {
 
     @RabbitListener(queues = RabbitMQConfig.NOTIFICATION_RECEIVED_QUEUE)
     public void handleNotificationReceived(NotificationReceivedEvent event) {
-        log.info("Received NotificationReceivedEvent from Queue: {}", event);
-        // Business Logic here (e.g., Send Email, Push Notification, etc.)
-        // For now, we just log it.
-        log.info("Processed Notification for Recipient ID: {}", event.recipientId());
     }
 }

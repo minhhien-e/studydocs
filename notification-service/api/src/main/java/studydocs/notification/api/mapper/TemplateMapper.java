@@ -9,37 +9,59 @@ import studydocs.notification.application.dto.query.template.SearchTemplateByNam
 public final class TemplateMapper {
     /// Create
     public static AddTemplateCommand toCommand(AddTemplateRequest request) {
-        return new AddTemplateCommand(request.name(), request.channel(), request.subjectTemplate(), request.bodyTemplate(), request.description());
+        return AddTemplateCommand.builder()
+                .name(request.name())
+                .channel(request.channel())
+                .subjectTemplate(request.subjectTemplate())
+                .bodyTemplate(request.bodyTemplate())
+                .description(request.description())
+                .build();
     }
 
     /// Read
     public static GetAllTemplateQuery toQuery(GetAllTemplateRequest request) {
-        return new GetAllTemplateQuery();
+        return GetAllTemplateQuery.builder().build();
     }
 
     public static GetTemplateByChannelQuery toQuery(GetTemplateByChannelRequest request) {
-        return new GetTemplateByChannelQuery(request.channel());
+        return GetTemplateByChannelQuery.builder()
+                .channel(request.channel())
+                .build();
     }
 
     public static SearchTemplateByNameQuery toQuery(SearchTemplateByNameRequest request) {
-        return new SearchTemplateByNameQuery(request.templateName());
+        return SearchTemplateByNameQuery.builder()
+                .name(request.templateName())
+                .build();
     }
 
     /// Update
     public static EditTemplateBodyCommand toCommand(EditTemplateBodyRequest request) {
-        return new EditTemplateBodyCommand(request.getTemplateId(), request.getNewBody());
+        return EditTemplateBodyCommand.builder()
+                .templateId(request.getTemplateId())
+                .newBody(request.getNewBody())
+                .build();
     }
 
     public static EditTemplateSubjectCommand toCommand(EditTemplateSubjectRequest request) {
-        return new EditTemplateSubjectCommand(request.getTemplateId(), request.getNewSubject());
+        return EditTemplateSubjectCommand.builder()
+                .templateId(request.getTemplateId())
+                .newSubject(request.getNewSubject())
+                .build();
     }
 
     public static EditTemplateDescriptionCommand toCommand(EditTemplateDescriptionRequest request) {
-        return new EditTemplateDescriptionCommand(request.getTemplateId(), request.getNewDescription());
+        return EditTemplateDescriptionCommand.builder()
+                .templateId(request.getTemplateId())
+                .newDescription(request.getNewDescription())
+                .build();
     }
 
     public static RenameTemplateCommand toCommand(RenameTemplateRequest request) {
-        return new RenameTemplateCommand(request.getTemplateId(), request.getNewName());
+        return RenameTemplateCommand.builder()
+                .templateId(request.getTemplateId())
+                .newName(request.getNewName())
+                .build();
     }
     /// Delete
 }

@@ -11,42 +11,84 @@ import java.util.UUID;
 public final class NotificationMapper {
     /// Create
     public static AddNotificationCommand toCommand(UUID userId, AddNotificationRequest request) {
-        return new AddNotificationCommand(userId, request.templateId(), request.channel(), request.category(), request.templateData(), request.personalizedData());
+        var recipients = request.recipients().stream()
+                .map(r -> studydocs.notification.application.dto.command.notification.RecipientData.builder()
+                        .recipientId(r.recipientId())
+                        .subjectData(r.subjectData())
+                        .bodyData(r.bodyData())
+                        .build())
+                .toList();
+        
+        return AddNotificationCommand.builder()
+                .senderId(userId)
+                .templateId(request.templateId())
+                .channel(request.channel())
+                .category(request.category())
+                .snapshotSubjectData(request.snapshotSubjectData())
+                .snapshotBodyData(request.snapshotBodyData())
+                .recipients(recipients)
+                .build();
     }
 
     public static ReceiveNotificationCommand toCommand(UUID userId, ReceiveNotificationRequest request) {
-        return new ReceiveNotificationCommand(userId, request.getNotificationId(), request.getPersonalizedData());
+        return ReceiveNotificationCommand.builder()
+                .recipientId(userId)
+                .notificationId(request.getNotificationId())
+                .subjectData(request.getSubjectData())
+                .bodyData(request.getBodyData())
+                .build();
     }
 
     /// Read
     public static GetNotificationByRecipientIdQuery toQuery(UUID userId, GetNotificationByRecipientIdRequest request) {
         LocalDateTime receivedAt = request.receivedAt() == null ? LocalDateTime.now() : request.receivedAt();
-        return new GetNotificationByRecipientIdQuery(userId, request.isDeleted(), receivedAt, request.limit());
+        return GetNotificationByRecipientIdQuery.builder()
+                .recipientId(userId)
+                .isDeleted(request.isDeleted())
+                .receivedAt(receivedAt)
+                .limit(request.limit())
+                .build();
     }
 
     public static CountUnreadQuery toQuery(UUID userId, CountUnreadNotificationRequest request) {
-        return new CountUnreadQuery(userId);
+        return CountUnreadQuery.builder()
+                .recipientId(userId)
+                .build();
     }
 
     /// Update
     public static MarkAllAsReadCommand toCommand(UUID userId, MarkAllAsReadRequest request) {
-        return new MarkAllAsReadCommand(userId);
+        return MarkAllAsReadCommand.builder()
+                .recipientId(userId)
+                .build();
     }
 
     public static MarkAsReadCommand toCommand(UUID userId, MarkAsReadRequest request) {
-        return new MarkAsReadCommand(request.notificationId(), userId);
+        return MarkAsReadCommand.builder()
+                .notificationId(request.notificationId())
+                .recipientId(userId)
+                .build();
     }
 
     public static RestoreNotificationsCommand toCommand(UUID userId, RestoreNotificationsRequest request) {
-        return new RestoreNotificationsCommand(request.notificationIds(), userId);
+        return RestoreNotificationsCommand.builder()
+                .notificationIds(request.notificationIds())
+                .recipientId(userId)
+                .build();
     }
 
     /// Delete
     public static SoftDeleteNotificationCommand toCommand(UUID userId, SoftDeleteNotificationRequest request) {
-        return new SoftDeleteNotificationCommand(request.notificationId(), userId);
+        return SoftDeleteNotificationCommand.builder()
+                .notificationId(request.notificationId())
+                .requesterId(userId)
+                .build();
     }
 
     public static HardDeleteNotificationCommand toCommand(UUID userId, HardDeleteNotificationRequest request) {
-        return new HardDeleteNotificationCommand(request.notificationId(), userId);
+        return HardDeleteNotificationCommand.builder()
+                .notificationId(request.notificationId())
+                .requesterId(userId)
+                .build();
     }
 }

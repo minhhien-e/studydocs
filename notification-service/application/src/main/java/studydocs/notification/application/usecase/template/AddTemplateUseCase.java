@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import studydocs.notification.application.dto.command.template.AddTemplateCommand;
 import studydocs.notification.application.port.in.usecase.template.AddTemplateUseCasePort;
-import studydocs.notification.domain.entity.NotificationTemplate;
+import studydocs.notification.domain.aggregate.NotificationTemplate;
 import studydocs.notification.domain.repository.NotificationTemplateRepository;
 
 @Service

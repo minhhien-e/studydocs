@@ -7,10 +7,10 @@ import java.util.Map;
 @Component
 public class StringTemplateRendererAdapter implements TemplateRenderer {
     @Override
-    public String render(String templateName, Map<String, String> model) {
-        String result = templateName;
+    public String render(String template, Map<String, String> model) {
+        String result = template;
         for (Map.Entry<String, String> entry : model.entrySet()) {
-            result = result.replace(String.format(getTemplateFormat(),entry.getKey()), entry.getValue().toString());
+            result = result.replace(String.format(getTemplateFormat(),entry.getKey()), entry.getValue());
         }
         return result;
     }

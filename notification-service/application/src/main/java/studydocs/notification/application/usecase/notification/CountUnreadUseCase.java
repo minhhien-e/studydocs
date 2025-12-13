@@ -12,7 +12,6 @@ public class CountUnreadUseCase implements CountUnreadUseCasePort {
     private final NotificationRepository notificationRepository;
     @Override
     public Integer execute(CountUnreadQuery params) {
-        var value = notificationRepository.countUnread(params.recipientId());
-        return value;
+        return notificationRepository.countUnread(params.recipientId());
     }
 }
