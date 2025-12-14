@@ -1,15 +1,18 @@
 package studydocs.notification.application.dto.projection;
 
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.UUID;
+import lombok.Builder;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+@Builder
 public record NotificationRecipientProjection(
         UUID id,
         UUID recipientId,
-        UUID notificationId,
+        String renderedSubject,
+        String renderedBody,
         boolean isRead,
-        Map<String,String> personalizedData,
         LocalDateTime receivedAt,
-        LocalDateTime deletedAt
-) {}
+        LocalDateTime deletedAt,
+        NotificationProjection notification
+) {
+}

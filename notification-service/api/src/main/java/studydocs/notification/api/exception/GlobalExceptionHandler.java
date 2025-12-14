@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import studydocs.notification.api.dto.response.ApiResponse;
+import studydocs.notification.infrastructure.dto.ApiResponse;
 import studydocs.notification.application.port.in.provider.CurrentTraceIdProvider;
 import studydocs.notification.infrastructure.exception.HttpException;
 

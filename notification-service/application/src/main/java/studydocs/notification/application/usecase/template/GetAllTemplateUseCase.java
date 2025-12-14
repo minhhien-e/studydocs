@@ -2,19 +2,20 @@ package studydocs.notification.application.usecase.template;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import studydocs.notification.application.dto.projection.TemplateProjection;
 import studydocs.notification.application.dto.query.template.GetAllTemplateQuery;
-import studydocs.notification.application.dto.readmodel.TemplateReadModel;
 import studydocs.notification.application.port.in.usecase.template.GetAllTemplateUseCasePort;
-import studydocs.notification.application.port.out.repository.NotificationTemplateRepository;
+import studydocs.notification.application.port.out.repository.NotificationTemplateQueries;
 
 import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class GetAllTemplateUseCase implements GetAllTemplateUseCasePort {
-    private final NotificationTemplateRepository notificationTemplateRepository;
+    private final NotificationTemplateQueries templateQueries;
+    
     @Override
-    public List<TemplateReadModel> execute(GetAllTemplateQuery params) {
-        return notificationTemplateRepository.findAll();
+    public List<TemplateProjection> execute(GetAllTemplateQuery params) {
+        return templateQueries.findAll();
     }
 
 }

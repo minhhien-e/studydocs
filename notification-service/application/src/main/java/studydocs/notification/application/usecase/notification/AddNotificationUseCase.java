@@ -12,8 +12,6 @@ import studydocs.notification.domain.policy.NotificationSendPolicy;
 import studydocs.notification.domain.repository.NotificationRepository;
 import studydocs.notification.domain.repository.NotificationTemplateRepository;
 
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class AddNotificationUseCase implements AddNotificationUseCasePort {
@@ -30,7 +28,6 @@ public class AddNotificationUseCase implements AddNotificationUseCasePort {
         // Get template for rendering
         var template = templateRepository.getById(params.templateId());
         
-        // Render snapshot subject and body with separate data
         String snapshotSubject = templateRenderer.render(
                 template.getSubjectTemplate().value(),
                 params.snapshotSubjectData()
@@ -40,7 +37,6 @@ public class AddNotificationUseCase implements AddNotificationUseCasePort {
                 params.snapshotBodyData()
         );
         
-        // Create Notification with snapshot
         var notification = Notification.create(
                 params.senderId(),
                 params.templateId(),
@@ -51,13 +47,7 @@ public class AddNotificationUseCase implements AddNotificationUseCasePort {
         );
         notificationRepository.save(notification);
         
-        // Dispatch ReceiveNotificationCommand for each recipient
         if (params.recipients() != null && !params.recipients().isEmpty()) {
-            var recipientIds = params.recipients().stream()
-                    .map(r -> r.recipientId())
-                    .collect(Collectors.toList());
-            notificationSendPolicy.ensureCanSend(recipientIds);
-            
             params.recipients().forEach(recipient -> {
                 var command = ReceiveNotificationCommand.builder()
                         .notificationId(notification.getId())

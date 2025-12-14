@@ -35,7 +35,12 @@ public enum DomainErrorCode {
     INVALID_NOTIFICATION_SNAPSHOT_BODY(27),
     NOTIFICATION_RECIPIENT_DELETED(28),
 
-    ACCESS_DENIED(24);
+    ACCESS_DENIED(24),
+    
+    // User Notification Profile errors (40-49)
+    USER_NOTIFICATION_PROFILE_NOT_FOUND(40),
+    DUPLICATE_FCM_TOKEN(41),
+    INVALID_FCM_TOKEN(42);
 
     private final Integer value;
 

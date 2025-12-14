@@ -6,7 +6,7 @@ import studydocs.notification.infrastructure.persistence.entity.NotificationTemp
 import java.util.List;
 import java.util.UUID;
 
-public interface NotificationTemplateMongoDataRepository extends MongoRepository<NotificationTemplateEntity, UUID> {
+public interface NotificationTemplateMongoRepository extends MongoRepository<NotificationTemplateEntity, UUID> {
     boolean existsByName(String name);
 
     List<NotificationTemplateEntity> findAllByChannel(String channel);

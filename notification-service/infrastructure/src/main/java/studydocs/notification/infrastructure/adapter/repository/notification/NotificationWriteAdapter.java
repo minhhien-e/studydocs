@@ -1,8 +1,6 @@
 package studydocs.notification.infrastructure.adapter.repository.notification;
 
-import io.github.domain.aggregate.base.AggregateChild;
-import io.github.domain.entity.base.DomainEntity;
-import io.github.infrastructure.mongo.repository.base.AbstractAggregateMongoRepository;
+import io.github.infrastructure.mongo.repository.base.AbstractEntityMongoRepository;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 import studydocs.notification.domain.aggregate.Notification;
@@ -10,17 +8,17 @@ import studydocs.notification.domain.exception.notification.NotificationNotFound
 import studydocs.notification.domain.repository.NotificationRepository;
 import studydocs.notification.infrastructure.mapper.NotificationMapper;
 import studydocs.notification.infrastructure.persistence.entity.NotificationEntity;
-import studydocs.notification.infrastructure.persistence.repository.NotificationMongoDataRepository;
+import studydocs.notification.infrastructure.persistence.repository.NotificationMongoRepository;
 
 import java.util.UUID;
 
 @Repository
-public class NotificationMongoRepositoryAdapter
-        extends AbstractAggregateMongoRepository<Notification, NotificationEntity>
+public class NotificationWriteAdapter
+        extends AbstractEntityMongoRepository<Notification, NotificationEntity>
         implements NotificationRepository {
-    private final NotificationMongoDataRepository mongoDataRepository;
+    private final NotificationMongoRepository mongoDataRepository;
 
-    public NotificationMongoRepositoryAdapter(MongoTemplate mongoTemplate, NotificationMongoDataRepository mongoDataRepository) {
+    public NotificationWriteAdapter(MongoTemplate mongoTemplate, NotificationMongoRepository mongoDataRepository) {
         super(mongoTemplate);
         this.mongoDataRepository = mongoDataRepository;
     }
@@ -40,13 +38,4 @@ public class NotificationMongoRepositoryAdapter
         return NotificationMapper.toEntity(aggregate);
     }
 
-    @Override
-    protected Class<?> getChildEntityClass(AggregateChild child) {
-        return null;
-    }
-
-    @Override
-    protected Object toChildEntity(DomainEntity entity) {
-        return null;
-    }
 }

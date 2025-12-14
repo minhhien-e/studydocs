@@ -10,7 +10,7 @@ import java.util.UUID;
 public record ReceiveNotificationCommand(
         UUID notificationId,
         UUID recipientId,
-        Map<String, String> subjectData,  // Data for rendering subject
-        Map<String, String> bodyData      // Data for rendering body
+        Map<String, String> subjectData,
+        Map<String, String> bodyData
 ) implements Request<Void> {
 }

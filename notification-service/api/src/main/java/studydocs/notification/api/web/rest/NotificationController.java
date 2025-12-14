@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import studydocs.notification.api.dto.request.notification.*;
 import studydocs.notification.api.helper.RequestExecutor;
 import studydocs.notification.api.mapper.NotificationMapper;
+import studydocs.notification.api.mapper.view.NotificationRecipientViewMapper;
 
 import java.util.UUID;
 
@@ -32,7 +33,12 @@ public class NotificationController {
     /// Read
     @GetMapping
     public ResponseEntity<?> getByRecipientId(GetNotificationByRecipientIdRequest request) {
-        return requestExecutor.executeWithCurrentUser(NotificationMapper::toQuery, request, HttpStatus.OK);
+        return requestExecutor.executeWithCurrentUserAndMapView(
+            NotificationMapper::toQuery,
+            request,
+            NotificationRecipientViewMapper::toView,
+            HttpStatus.OK
+        );
     }
 
     @GetMapping("/count-unread")

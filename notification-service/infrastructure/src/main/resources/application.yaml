@@ -31,6 +31,10 @@ spring:
 #        name: queue.notification.push.document.upload
 #        routing-key:
 #          - notification.push.upload.document
+app:
+  remote:
+    user-service:
+      url: ${USER_SERVICE_URL:http://localhost:8082:api/v1/user}
 logging:
   level:
     org.springframework.security: DEBUG

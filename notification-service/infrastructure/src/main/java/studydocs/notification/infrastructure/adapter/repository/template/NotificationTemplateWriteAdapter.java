@@ -8,14 +8,14 @@ import studydocs.notification.domain.exception.template.NotificationTemplateNotF
 import studydocs.notification.domain.repository.NotificationTemplateRepository;
 import studydocs.notification.infrastructure.mapper.NotificationTemplateMapper;
 import studydocs.notification.infrastructure.persistence.entity.NotificationTemplateEntity;
-import studydocs.notification.infrastructure.persistence.repository.NotificationTemplateMongoDataRepository;
+import studydocs.notification.infrastructure.persistence.repository.NotificationTemplateMongoRepository;
 
 import java.util.UUID;
 
 @Repository
-public class NotificationTemplateMongoRepositoryAdapter extends AbstractEntityMongoRepository<NotificationTemplate, NotificationTemplateEntity> implements NotificationTemplateRepository {
-    private final NotificationTemplateMongoDataRepository mongoRepository;
-    public NotificationTemplateMongoRepositoryAdapter(MongoTemplate mongoTemplate, NotificationTemplateMongoDataRepository mongoRepository) {
+public class NotificationTemplateWriteAdapter extends AbstractEntityMongoRepository<NotificationTemplate, NotificationTemplateEntity> implements NotificationTemplateRepository {
+    private final NotificationTemplateMongoRepository mongoRepository;
+    public NotificationTemplateWriteAdapter(MongoTemplate mongoTemplate, NotificationTemplateMongoRepository mongoRepository) {
         super(mongoTemplate);
         this.mongoRepository = mongoRepository;
     }

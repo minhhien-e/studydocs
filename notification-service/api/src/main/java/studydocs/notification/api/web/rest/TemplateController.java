@@ -26,18 +26,33 @@ public class TemplateController {
     @GetMapping("/channel/{channelName}")
     public ResponseEntity<?> getByChannel(@PathVariable("channelName") String channelName) {
         var request = new GetTemplateByChannelRequest(channelName);
-        return requestExecutor.execute(TemplateMapper::toQuery, request, HttpStatus.OK);
+        return requestExecutor.executeAndMapView(
+            TemplateMapper::toQuery,
+            request,
+            studydocs.notification.api.mapper.view.TemplateViewMapper::toView,
+            HttpStatus.OK
+        );
     }
 
     @GetMapping("/search")
     public ResponseEntity<?> searchByName(SearchTemplateByNameRequest request) {
-        return requestExecutor.execute(TemplateMapper::toQuery, request, HttpStatus.OK);
+        return requestExecutor.executeAndMapView(
+            TemplateMapper::toQuery,
+            request,
+            studydocs.notification.api.mapper.view.TemplateViewMapper::toView,
+            HttpStatus.OK
+        );
     }
 
     @GetMapping
     public ResponseEntity<?> getAll() {
         var request = new GetAllTemplateRequest();
-        return requestExecutor.execute(TemplateMapper::toQuery, request, HttpStatus.OK);
+        return requestExecutor.executeAndMapView(
+            TemplateMapper::toQuery,
+            request,
+            studydocs.notification.api.mapper.view.TemplateViewMapper::toView,
+            HttpStatus.OK
+        );
     }
 
     /// Update

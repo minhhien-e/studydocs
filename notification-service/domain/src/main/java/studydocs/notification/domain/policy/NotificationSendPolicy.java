@@ -10,4 +10,6 @@ public interface NotificationSendPolicy {
     );
 
     void ensureCanSend(List<UUID> recipientIds);
+    void ensureCanSend(UUID recipientId);
+
 }

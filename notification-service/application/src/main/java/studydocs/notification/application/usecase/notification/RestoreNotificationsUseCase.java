@@ -2,6 +2,7 @@ package studydocs.notification.application.usecase.notification;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import studydocs.notification.application.dto.command.notification.RestoreNotificationsCommand;
 import studydocs.notification.application.port.in.usecase.notification.RestoreNotificationsUseCasePort;
 import studydocs.notification.domain.policy.NotificationAccessPolicy;
 import studydocs.notification.domain.repository.NotificationRecipientRepository;
@@ -13,7 +14,7 @@ public class RestoreNotificationsUseCase implements RestoreNotificationsUseCaseP
     private final NotificationAccessPolicy notificationPolicy;
 
     @Override
-    public Void execute(RestoreNotificationCommand params) {
+    public Void execute(RestoreNotificationsCommand params) {
         params.notificationIds().forEach(notificationId -> {
             var recipient = recipientRepository.getByNotificationIdAndRecipientId(
                     notificationId,

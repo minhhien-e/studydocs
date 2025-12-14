@@ -1,9 +1,23 @@
 package studydocs.notification.infrastructure.mapper;
 
+import studydocs.notification.application.dto.projection.NotificationProjection;
 import studydocs.notification.domain.aggregate.Notification;
 import studydocs.notification.infrastructure.persistence.entity.NotificationEntity;
 
 public final class NotificationMapper {
+    public static NotificationProjection toProjection(NotificationEntity entity) {
+        return NotificationProjection.builder()
+                .id(entity.getId())
+                .templateId(entity.getTemplateId())
+                .senderId(entity.getSenderId())
+                .channel(entity.getChannel())
+                .category(entity.getCategory())
+                .snapshotSubject(entity.getSnapshotSubject())
+                .snapshotBody(entity.getSnapshotBody())
+                .createdAt(entity.getCreatedAt())
+                .build();
+    }
+
     public static NotificationEntity toEntity(Notification notification) {
         return NotificationEntity.builder()
                 .id(notification.getId())

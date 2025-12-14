@@ -6,7 +6,7 @@ import studydocs.notification.domain.policy.NotificationAccessPolicy;
 import studydocs.notification.domain.policy.NotificationSendPolicy;
 import studydocs.notification.domain.policy.UniqueNotificationTemplatePolicy;
 import studydocs.notification.domain.repository.NotificationTemplateRepository;
-import studydocs.notification.domain.repository.UserRepository;
+import studydocs.notification.domain.repository.UserNotificationProfileRepository;
 import studydocs.notification.domain.service.NotificationAccessPolicyImpl;
 import studydocs.notification.domain.service.NotificationSendPolicyImpl;
 import studydocs.notification.domain.service.UniqueNotificationTemplatePolicyImpl;
@@ -18,7 +18,7 @@ public class DomainPolicyConfig {
         return new NotificationAccessPolicyImpl();
     }
     @Bean
-    public NotificationSendPolicy notificationSendPolicy(UserRepository userRepository, NotificationTemplateRepository notificationTemplateRepository) {
+    public NotificationSendPolicy notificationSendPolicy(UserNotificationProfileRepository userRepository, NotificationTemplateRepository notificationTemplateRepository) {
         return new NotificationSendPolicyImpl(userRepository, notificationTemplateRepository);
     }
     @Bean

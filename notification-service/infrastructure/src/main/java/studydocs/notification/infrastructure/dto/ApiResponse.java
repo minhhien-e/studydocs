@@ -1,4 +1,4 @@
-package studydocs.notification.api.dto.response;
+package studydocs.notification.infrastructure.dto;
 
 
 public record ApiResponse<T>(int statusCode, Integer errorCode, T data, String traceId) {

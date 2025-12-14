@@ -5,5 +5,5 @@ import studydocs.notification.infrastructure.persistence.entity.NotificationEnti
 
 import java.util.UUID;
 
-public interface NotificationMongoDataRepository extends MongoRepository<NotificationEntity, UUID> {
+public interface NotificationMongoRepository extends MongoRepository<NotificationEntity, UUID> {
 }
