@@ -24,7 +24,7 @@ public class SecurityFilterChainConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/reviews/document/**/average-rating").permitAll()
+                        .requestMatchers("/reviews/**").permitAll() // tạm cho tất cả
                         .requestMatchers("/reviews/document/**").permitAll()
                         .anyRequest().authenticated()
                 )

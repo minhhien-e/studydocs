@@ -9,10 +9,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Document(collection = "reviews")
 @Data
 @NoArgsConstructor
+@Document(collection = "reviews")
 public class Review {
+
     @Id
     private UUID id;
 
@@ -20,24 +21,23 @@ public class Review {
     private UUID documentId;
 
     private UUID userId;
-    private Integer rating;
     private String comment;
+
     private Boolean isDeleted = false;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
 
-    public Review(UUID documentId, UUID userId, Integer rating, String comment) {
+    public Review(UUID documentId, UUID userId, String comment) {
+        this.id = UUID.randomUUID();
         this.documentId = documentId;
         this.userId = userId;
-        this.rating = rating;
         this.comment = comment;
         this.createdAt = LocalDateTime.now();
-        this.id = UUID.randomUUID();
     }
 
-    public void update(Integer rating, String comment) {
-        this.rating = rating;
+    public void update(String comment) {
         this.comment = comment;
         this.updatedAt = LocalDateTime.now();
     }

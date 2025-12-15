@@ -7,10 +7,10 @@ import java.util.UUID;
 
 @Data
 public class ReviewResponse {
+
     private UUID id;
     private UUID documentId;
     private UUID userId;
-    private Integer rating;
     private String comment;
     private String createdAt;
 
@@ -18,7 +18,6 @@ public class ReviewResponse {
         this.id = review.getId();
         this.documentId = review.getDocumentId();
         this.userId = review.getUserId();
-        this.rating = review.getRating();
         this.comment = review.getComment();
         this.createdAt = review.getCreatedAt().toString();
     }

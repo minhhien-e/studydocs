@@ -1,109 +1,85 @@
 package studydocs.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import studydocs.dto.response.ApiResponse;
-import studydocs.dto.request.CreateReviewRequest;
-import studydocs.dto.request.UpdateReviewRequest;  // Mới
-import studydocs.dto.response.ReviewResponse;
-import studydocs.service.ReviewCommandService;
-import studydocs.service.ReviewQueryService;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import studydocs.dto.request.CreateReviewRequest;
+import studydocs.dto.request.UpdateReviewRequest;
+import studydocs.dto.response.ApiResponse;
+import studydocs.dto.response.ReviewResponse;
+import studydocs.service.ReviewCommandService;
+import studydocs.service.ReviewQueryService;
+
+import jakarta.validation.Valid;
 
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/reviews")
+@RequestMapping("/api/v1/reviews")
 @RequiredArgsConstructor
 public class ReviewController {
 
-    private final ReviewCommandService reviewCommandService;
-    private final ReviewQueryService reviewQueryService;
+    private final ReviewCommandService commandService;
+    private final ReviewQueryService queryService;
 
     @PreAuthorize("hasRole('write')")
     @PostMapping
     public ResponseEntity<ApiResponse<ReviewResponse>> createReview(@Valid @RequestBody CreateReviewRequest req) {
-        ReviewResponse response = reviewCommandService.createReview(req);
-        return ResponseEntity.ok(ApiResponse.success(200, response));
+        return ResponseEntity.ok(ApiResponse.success(200, commandService.createReview(req)));
     }
 
     @PreAuthorize("hasRole('read')")
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ReviewResponse>> getReviewById(@PathVariable UUID id) {
-        ReviewResponse response = reviewQueryService.getReviewById(id);
-        return ResponseEntity.ok(ApiResponse.success(200, response));
+    public ResponseEntity<ApiResponse<ReviewResponse>> getReview(@PathVariable UUID id) {
+        return ResponseEntity.ok(ApiResponse.success(200, queryService.getReviewById(id)));
     }
 
-    // Lấy tất cả review
     @PreAuthorize("hasRole('read')")
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<ReviewResponse>>> getAllReviews(
+    public ResponseEntity<ApiResponse<Page<ReviewResponse>>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ReviewResponse> responses = reviewQueryService.getAllReviews(pageable);
-        return ResponseEntity.ok(ApiResponse.success(200, responses));
+        return ResponseEntity.ok(ApiResponse.success(200, queryService.getAllReviews(PageRequest.of(page, size))));
     }
 
-    // Lấy review theo documentId
     @PreAuthorize("hasRole('read')")
-    @GetMapping("/document/{documentId}")
-    public ResponseEntity<ApiResponse<Page<ReviewResponse>>> getReviewsByDocumentId(
-            @PathVariable UUID documentId,
+    @GetMapping("/document/{docId}")
+    public ResponseEntity<ApiResponse<Page<ReviewResponse>>> getByDocument(
+            @PathVariable UUID docId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) Integer rating) {
+            @RequestParam(defaultValue = "10") int size) {
 
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ReviewResponse> responses;
-
-        if (rating != null) {
-            responses = reviewQueryService.getReviewsByDocumentIdAndRating(documentId, rating, pageable);
-        } else {
-            responses = reviewQueryService.getReviewsByDocumentId(documentId, pageable);
-        }
-
-        return ResponseEntity.ok(ApiResponse.success(200, responses));
+        return ResponseEntity.ok(ApiResponse.success(200,
+                queryService.getReviewsByDocumentId(docId, PageRequest.of(page, size))));
     }
 
-    // Lấy review theo userId
     @PreAuthorize("hasRole('read')")
     @GetMapping("/user/{userId}")
-    public ResponseEntity<ApiResponse<Page<ReviewResponse>>> getReviewsByUserId(
+    public ResponseEntity<ApiResponse<Page<ReviewResponse>>> getByUser(
             @PathVariable UUID userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ReviewResponse> responses = reviewQueryService.getReviewsByUserId(userId, pageable);
-        return ResponseEntity.ok(ApiResponse.success(200, responses));
-    }
-
-    @GetMapping("/document/{documentId}/average-rating")
-    public ResponseEntity<ApiResponse<Double>> getAverageRating(@PathVariable UUID documentId) {
-        Double average = reviewQueryService.getAverageRatingByDocumentId(documentId);
-        return ResponseEntity.ok(ApiResponse.success(200, average));
+        return ResponseEntity.ok(ApiResponse.success(200,
+                queryService.getReviewsByUserId(userId, PageRequest.of(page, size))));
     }
 
     @PreAuthorize("hasRole('write')")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<ReviewResponse>> updateReview(
+    public ResponseEntity<ApiResponse<ReviewResponse>> update(
             @PathVariable UUID id,
-            @Valid @RequestBody UpdateReviewRequest req) {  // Đổi thành @RequestBody
-
-        ReviewResponse response = reviewCommandService.updateReview(id, req.getRating(), req.getComment());
-        return ResponseEntity.ok(ApiResponse.success(200, response));
+            @Valid @RequestBody UpdateReviewRequest req) {
+        return ResponseEntity.ok(ApiResponse.success(200,
+                commandService.updateReview(id, req.getComment())));
     }
 
     @PreAuthorize("hasRole('delete')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteReview(@PathVariable UUID id) {
-        reviewCommandService.deleteReview(id);
-        return ResponseEntity.ok(ApiResponse.success(200, "Xóa review " + id + " thành công"));
+    public ResponseEntity<ApiResponse<String>> delete(@PathVariable UUID id) {
+        commandService.deleteReview(id);
+        return ResponseEntity.ok(ApiResponse.success(200, "Deleted review: " + id));
     }
 }
