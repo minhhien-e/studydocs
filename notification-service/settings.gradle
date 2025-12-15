@@ -1,8 +1,11 @@
 rootProject.name = 'notification-service'
-include 'api'
-include 'application'
-include 'infrastructure'
-include 'domain'
+include(
+        "api",
+        "application",
+        "infrastructure",
+        "domain"
+)
+
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
