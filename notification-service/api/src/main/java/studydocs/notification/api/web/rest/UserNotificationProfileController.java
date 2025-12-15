@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import studydocs.notification.api.dto.request.userprofile.*;
 import studydocs.notification.api.helper.RequestExecutor;
 import studydocs.notification.api.mapper.UserNotificationProfileMapper;
-import studydocs.notification.api.mapper.view.UserNotificationProfileViewMapper;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,7 +19,7 @@ public class UserNotificationProfileController {
         return requestExecutor.executeWithCurrentUserAndMapView(
                 (userId, request) -> UserNotificationProfileMapper.toQuery(userId),
                 new Object(),
-                UserNotificationProfileViewMapper::toView,
+                UserNotificationProfileMapper::toView,
                 HttpStatus.OK
         );
     }

@@ -2,12 +2,14 @@ package studydocs.notification.api.mapper;
 
 import studydocs.notification.api.dto.request.template.*;
 import studydocs.notification.application.dto.command.template.*;
+import studydocs.notification.application.dto.projection.TemplateProjection;
 import studydocs.notification.application.dto.query.template.GetAllTemplateQuery;
 import studydocs.notification.application.dto.query.template.GetTemplateByChannelQuery;
 import studydocs.notification.application.dto.query.template.SearchTemplateByNameQuery;
+import studydocs.notification.application.dto.view.TemplateView;
 
 public final class TemplateMapper {
-    /// Create
+    /// Command
     public static AddTemplateCommand toCommand(AddTemplateRequest request) {
         return AddTemplateCommand.builder()
                 .name(request.name())
@@ -18,24 +20,6 @@ public final class TemplateMapper {
                 .build();
     }
 
-    /// Read
-    public static GetAllTemplateQuery toQuery(GetAllTemplateRequest request) {
-        return GetAllTemplateQuery.builder().build();
-    }
-
-    public static GetTemplateByChannelQuery toQuery(GetTemplateByChannelRequest request) {
-        return GetTemplateByChannelQuery.builder()
-                .channel(request.channel())
-                .build();
-    }
-
-    public static SearchTemplateByNameQuery toQuery(SearchTemplateByNameRequest request) {
-        return SearchTemplateByNameQuery.builder()
-                .name(request.templateName())
-                .build();
-    }
-
-    /// Update
     public static EditTemplateBodyCommand toCommand(EditTemplateBodyRequest request) {
         return EditTemplateBodyCommand.builder()
                 .templateId(request.getTemplateId())
@@ -63,5 +47,33 @@ public final class TemplateMapper {
                 .newName(request.getNewName())
                 .build();
     }
-    /// Delete
+
+    /// Query
+    public static GetAllTemplateQuery toQuery(GetAllTemplateRequest request) {
+        return GetAllTemplateQuery.builder().build();
+    }
+
+    public static GetTemplateByChannelQuery toQuery(GetTemplateByChannelRequest request) {
+        return GetTemplateByChannelQuery.builder()
+                .channel(request.channel())
+                .build();
+    }
+
+    public static SearchTemplateByNameQuery toQuery(SearchTemplateByNameRequest request) {
+        return SearchTemplateByNameQuery.builder()
+                .name(request.templateName())
+                .build();
+    }
+
+    /// View
+    public static TemplateView toView(TemplateProjection projection) {
+        return new TemplateView(
+                projection.id(),
+                projection.name(),
+                projection.channel(),
+                projection.description(),
+                projection.createdAt(),
+                projection.updatedTime()
+        );
+    }
 }

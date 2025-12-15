@@ -3,9 +3,10 @@ package studydocs.notification.application.usecase.notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import studydocs.notification.application.dto.command.notification.MarkAllAsReadCommand;
-import studydocs.notification.application.port.in.usecase.notification.MarkAllAsReadNotificationUseCasePort;
+import studydocs.notification.application.port.in.usecase.notification.MarkAllAsReadUseCasePort;
 import studydocs.notification.application.port.out.repository.NotificationRecipientQueries;
 import studydocs.notification.domain.policy.NotificationAccessPolicy;
+import studydocs.notification.domain.repository.NotificationRecipientRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,9 +14,9 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class MarkAllAsReadNotificationUseCase implements MarkAllAsReadNotificationUseCasePort {
+public class MarkAllAsReadUseCase implements MarkAllAsReadUseCasePort {
     private final NotificationRecipientQueries notificationQueryRepository;
-    private final studydocs.notification.domain.repository.NotificationRecipientRepository recipientRepository;
+    private final NotificationRecipientRepository recipientRepository;
     private final NotificationAccessPolicy notificationPolicy;
 
     @Override

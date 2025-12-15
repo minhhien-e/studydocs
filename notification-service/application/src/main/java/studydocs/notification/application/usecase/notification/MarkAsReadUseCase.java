@@ -3,13 +3,13 @@ package studydocs.notification.application.usecase.notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import studydocs.notification.application.dto.command.notification.MarkAsReadCommand;
-import studydocs.notification.application.port.in.usecase.notification.MarkAsReadNotificationUseCasePort;
+import studydocs.notification.application.port.in.usecase.notification.MarkAsReadUseCasePort;
 import studydocs.notification.domain.policy.NotificationAccessPolicy;
 import studydocs.notification.domain.repository.NotificationRecipientRepository;
 
 @Service
 @RequiredArgsConstructor
-public class MarkAsReadNotificationUseCase implements MarkAsReadNotificationUseCasePort {
+public class MarkAsReadUseCase implements MarkAsReadUseCasePort {
     private final NotificationRecipientRepository recipientRepository;
     private final NotificationAccessPolicy notificationPolicy;
 

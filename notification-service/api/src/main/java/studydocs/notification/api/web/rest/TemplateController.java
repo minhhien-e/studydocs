@@ -27,20 +27,20 @@ public class TemplateController {
     public ResponseEntity<?> getByChannel(@PathVariable("channelName") String channelName) {
         var request = new GetTemplateByChannelRequest(channelName);
         return requestExecutor.executeAndMapView(
-            TemplateMapper::toQuery,
-            request,
-            studydocs.notification.api.mapper.view.TemplateViewMapper::toView,
-            HttpStatus.OK
+                TemplateMapper::toQuery,
+                request,
+                TemplateMapper::toView,
+                HttpStatus.OK
         );
     }
 
     @GetMapping("/search")
     public ResponseEntity<?> searchByName(SearchTemplateByNameRequest request) {
         return requestExecutor.executeAndMapView(
-            TemplateMapper::toQuery,
-            request,
-            studydocs.notification.api.mapper.view.TemplateViewMapper::toView,
-            HttpStatus.OK
+                TemplateMapper::toQuery,
+                request,
+                TemplateMapper::toView,
+                HttpStatus.OK
         );
     }
 
@@ -48,10 +48,10 @@ public class TemplateController {
     public ResponseEntity<?> getAll() {
         var request = new GetAllTemplateRequest();
         return requestExecutor.executeAndMapView(
-            TemplateMapper::toQuery,
-            request,
-            studydocs.notification.api.mapper.view.TemplateViewMapper::toView,
-            HttpStatus.OK
+                TemplateMapper::toQuery,
+                request,
+                TemplateMapper::toView,
+                HttpStatus.OK
         );
     }
 

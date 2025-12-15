@@ -2,14 +2,16 @@ package studydocs.notification.api.mapper;
 
 import studydocs.notification.api.dto.request.notification.*;
 import studydocs.notification.application.dto.command.notification.*;
+import studydocs.notification.application.dto.projection.NotificationRecipientProjection;
 import studydocs.notification.application.dto.query.notification.CountUnreadQuery;
 import studydocs.notification.application.dto.query.notification.GetNotificationByRecipientIdQuery;
+import studydocs.notification.application.dto.view.NotificationRecipientView;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 public final class NotificationMapper {
-    /// Create
+    /// Command
     public static AddNotificationCommand toCommand(UUID userId, AddNotificationRequest request) {
         var recipients = request.recipients().stream()
                 .map(r -> studydocs.notification.application.dto.command.notification.RecipientData.builder()
@@ -18,7 +20,7 @@ public final class NotificationMapper {
                         .bodyData(r.bodyData())
                         .build())
                 .toList();
-        
+
         return AddNotificationCommand.builder()
                 .senderId(userId)
                 .templateId(request.templateId())
@@ -39,24 +41,6 @@ public final class NotificationMapper {
                 .build();
     }
 
-    /// Read
-    public static GetNotificationByRecipientIdQuery toQuery(UUID userId, GetNotificationByRecipientIdRequest request) {
-        LocalDateTime receivedAt = request.receivedAt() == null ? LocalDateTime.now() : request.receivedAt();
-        return GetNotificationByRecipientIdQuery.builder()
-                .recipientId(userId)
-                .isDeleted(request.isDeleted())
-                .receivedAt(receivedAt)
-                .limit(request.limit())
-                .build();
-    }
-
-    public static CountUnreadQuery toQuery(UUID userId, CountUnreadNotificationRequest request) {
-        return CountUnreadQuery.builder()
-                .recipientId(userId)
-                .build();
-    }
-
-    /// Update
     public static MarkAllAsReadCommand toCommand(UUID userId, MarkAllAsReadRequest request) {
         return MarkAllAsReadCommand.builder()
                 .recipientId(userId)
@@ -77,7 +61,6 @@ public final class NotificationMapper {
                 .build();
     }
 
-    /// Delete
     public static SoftDeleteNotificationCommand toCommand(UUID userId, SoftDeleteNotificationRequest request) {
         return SoftDeleteNotificationCommand.builder()
                 .notificationId(request.notificationId())
@@ -90,5 +73,36 @@ public final class NotificationMapper {
                 .notificationId(request.notificationId())
                 .requesterId(userId)
                 .build();
+    }
+
+    /// Query
+    public static GetNotificationByRecipientIdQuery toQuery(UUID userId, GetNotificationByRecipientIdRequest request) {
+        LocalDateTime receivedAt = request.receivedAt() == null ? LocalDateTime.now() : request.receivedAt();
+        return GetNotificationByRecipientIdQuery.builder()
+                .recipientId(userId)
+                .isDeleted(request.isDeleted())
+                .receivedAt(receivedAt)
+                .limit(request.limit())
+                .build();
+    }
+
+    public static CountUnreadQuery toQuery(UUID userId, CountUnreadNotificationRequest request) {
+        return CountUnreadQuery.builder()
+                .recipientId(userId)
+                .build();
+    }
+
+    /// View
+    public static NotificationRecipientView toView(NotificationRecipientProjection projection) {
+        return new NotificationRecipientView(
+                projection.id(),
+                projection.notification().senderName().orElse(null),
+                projection.renderedSubject(),
+                projection.renderedBody(),
+                projection.notification().type(),
+                projection.isRead(),
+                projection.receivedAt(),
+                projection.deletedAt()
+        );
     }
 }
