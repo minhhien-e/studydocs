@@ -9,7 +9,7 @@ import java.util.UUID;
 public class Notification extends AggregateRoot {
     private UUID templateId;
     private UUID senderId;
-    private NotificationCategory category;
+    private NotificationType type;
     private NotificationChannel channel;
     private NotificationSnapshotSubject snapshotSubject;
     private NotificationSnapshotBody snapshotBody;
@@ -37,7 +37,7 @@ public class Notification extends AggregateRoot {
         notification.senderId = senderId;
         notification.templateId = templateId;
         notification.channel = new NotificationChannel(channel);
-        notification.category = new NotificationCategory(category);
+        notification.type = new NotificationType(category);
         notification.snapshotSubject = new NotificationSnapshotSubject(snapshotSubject);
         notification.snapshotBody = new NotificationSnapshotBody(snapshotBody);
         notification.createdAt = new NotificationCreationTime(LocalDateTime.now());
@@ -56,7 +56,7 @@ public class Notification extends AggregateRoot {
         Notification notification = new Notification(id);
         notification.senderId = senderId;
         notification.templateId = templateId;
-        notification.category = new NotificationCategory(category);
+        notification.type = new NotificationType(category);
         notification.channel = new NotificationChannel(channel);
         notification.snapshotSubject = new NotificationSnapshotSubject(snapshotSubject);
         notification.snapshotBody = new NotificationSnapshotBody(snapshotBody);
@@ -77,8 +77,8 @@ public class Notification extends AggregateRoot {
         return channel;
     }
 
-    public NotificationCategory getCategory() {
-        return category;
+    public NotificationType getType() {
+        return type;
     }
 
     public NotificationCreationTime getCreatedAt() {

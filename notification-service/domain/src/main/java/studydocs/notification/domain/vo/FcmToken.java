@@ -1,9 +1,8 @@
 package studydocs.notification.domain.vo;
 
-import io.github.domain.vo.BaseValueObject;
 import studydocs.notification.domain.exception.userprofile.InvalidFcmTokenException;
 
-public record FcmToken(String value) implements BaseValueObject<String> {
+public record FcmToken(String value) {
     public FcmToken {
         if (value == null || value.isBlank()) {
             throw new InvalidFcmTokenException("token cannot be null or empty");

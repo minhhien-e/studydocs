@@ -20,7 +20,7 @@ public class NotificationEntity extends MongoEntity {
     private UUID templateId;
     private UUID senderId;
     private String channel;
-    private String category;
+    private String type;
     private String snapshotSubject;
     private String snapshotBody;
     @CreatedDate

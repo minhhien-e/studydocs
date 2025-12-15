@@ -1,23 +1,15 @@
 package studydocs.notification.infrastructure.adapter.bus.handler.notification;
 
-import io.github.mediatR.api.RequestHandler;
-import io.github.mediatR.core.BusRequestWrapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import studydocs.notification.application.dto.command.notification.HardDeleteNotificationCommand;
 import studydocs.notification.application.port.in.usecase.notification.HardDeleteNotificationUseCasePort;
+import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-@RequiredArgsConstructor
-public class HardDeleteNotificationCommandHandler implements RequestHandler<BusRequestWrapper<HardDeleteNotificationCommand>, Void> {
-    private final HardDeleteNotificationUseCasePort useCase;
-
-    @Override
-    public Void execute(BusRequestWrapper<HardDeleteNotificationCommand> request) {
-        return useCase.execute(request.request());
-    }
-    @Override
-    public Class<?> getRequestClass() {
-        return HardDeleteNotificationCommand.class;
+public class HardDeleteNotificationCommandHandler 
+    extends AbstractHandler<HardDeleteNotificationCommand, Void, HardDeleteNotificationUseCasePort> {
+    
+    protected HardDeleteNotificationCommandHandler(HardDeleteNotificationUseCasePort useCase) {
+        super(useCase, HardDeleteNotificationCommand.class);
     }
 }

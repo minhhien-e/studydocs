@@ -1,13 +1,12 @@
 package studydocs.notification.domain.service;
 
-import studydocs.notification.domain.exception.recipient.RecipientNotFoundException;
-import studydocs.notification.domain.exception.template.NotificationTemplateNotFoundException;
-import studydocs.notification.domain.exception.recipient.RecipientsNotFoundException;
 import studydocs.notification.domain.exception.notification.SenderNotFoundException;
+import studydocs.notification.domain.exception.recipient.RecipientNotFoundException;
+import studydocs.notification.domain.exception.recipient.RecipientsNotFoundException;
+import studydocs.notification.domain.exception.template.NotificationTemplateNotFoundException;
 import studydocs.notification.domain.policy.NotificationSendPolicy;
 import studydocs.notification.domain.repository.NotificationTemplateRepository;
 import studydocs.notification.domain.repository.UserNotificationProfileRepository;
-import studydocs.notification.domain.repository.UserRepository;
 
 import java.util.List;
 import java.util.UUID;

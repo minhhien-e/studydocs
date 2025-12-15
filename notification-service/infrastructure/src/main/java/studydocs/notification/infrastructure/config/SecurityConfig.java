@@ -18,7 +18,7 @@ public class SecurityConfig {
         // Authorize endpoint
         http.
                 authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests.anyRequest().authenticated());
+                        authorizeRequests.anyRequest().permitAll());
         // Cors
         http.cors(cors -> cors.configurationSource(request-> corsConfiguration));
 

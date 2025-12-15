@@ -1,24 +1,15 @@
 package studydocs.notification.infrastructure.adapter.bus.handler.notification;
 
-import io.github.mediatR.api.RequestHandler;
-import io.github.mediatR.core.BusRequestWrapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import studydocs.notification.application.dto.command.notification.MarkAllAsReadCommand;
-import studydocs.notification.application.port.in.usecase.notification.MarkAllAsReadNotificationUseCasePort;
+import studydocs.notification.application.port.in.usecase.notification.MarkAllAsReadUseCasePort;
+import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-@RequiredArgsConstructor
-public class MarkAllAsReadCommandHandler implements RequestHandler<BusRequestWrapper<MarkAllAsReadCommand>, Void> {
-    private final MarkAllAsReadNotificationUseCasePort useCase;
-
-    @Override
-    public Void execute(BusRequestWrapper<MarkAllAsReadCommand> request) {
-        return useCase.execute(request.request());
-    }
-
-    @Override
-    public Class<?> getRequestClass() {
-        return MarkAllAsReadCommand.class;
+public class MarkAllAsReadCommandHandler 
+    extends AbstractHandler<MarkAllAsReadCommand, Void, MarkAllAsReadUseCasePort> {
+    
+    protected MarkAllAsReadCommandHandler(MarkAllAsReadUseCasePort useCase) {
+        super(useCase, MarkAllAsReadCommand.class);
     }
 }

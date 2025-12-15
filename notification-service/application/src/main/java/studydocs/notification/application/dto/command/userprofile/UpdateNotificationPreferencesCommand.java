@@ -1,6 +1,6 @@
 package studydocs.notification.application.dto.command.userprofile;
 
-import studydocs.notification.application.dto.base.Command;
+import studydocs.notification.application.dto.base.Request;
 
 import java.util.UUID;
 
@@ -9,5 +9,5 @@ public record UpdateNotificationPreferencesCommand(
         boolean pushEnabled,
         boolean emailEnabled,
         boolean smsEnabled
-) implements Command<Void> {
+) implements Request<Void> {
 }

@@ -11,7 +11,7 @@ public final class NotificationMapper {
                 .templateId(entity.getTemplateId())
                 .senderId(entity.getSenderId())
                 .channel(entity.getChannel())
-                .category(entity.getCategory())
+                .type(entity.getType())
                 .snapshotSubject(entity.getSnapshotSubject())
                 .snapshotBody(entity.getSnapshotBody())
                 .createdAt(entity.getCreatedAt())
@@ -25,7 +25,7 @@ public final class NotificationMapper {
                 .senderId(notification.getSenderId())
                 .snapshotSubject(notification.getSnapshotSubject().value())
                 .snapshotBody(notification.getSnapshotBody().value())
-                .category(notification.getCategory().value())
+                .type(notification.getType().value())
                 .channel(notification.getChannel().value())
                 .createdAt(notification.getCreatedAt().value())
                 .build();
@@ -36,7 +36,7 @@ public final class NotificationMapper {
                 entity.getId(),
                 entity.getTemplateId(),
                 entity.getSenderId(),
-                entity.getCategory(),
+                entity.getType(),
                 entity.getChannel(),
                 entity.getSnapshotSubject(),
                 entity.getSnapshotBody(),

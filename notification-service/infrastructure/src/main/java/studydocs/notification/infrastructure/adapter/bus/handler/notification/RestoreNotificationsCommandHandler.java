@@ -1,24 +1,15 @@
 package studydocs.notification.infrastructure.adapter.bus.handler.notification;
 
-import io.github.mediatR.api.RequestHandler;
-import io.github.mediatR.core.BusRequestWrapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import studydocs.notification.application.dto.command.notification.RestoreNotificationsCommand;
 import studydocs.notification.application.port.in.usecase.notification.RestoreNotificationsUseCasePort;
+import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-@RequiredArgsConstructor
-public class RestoreNotificationsCommandHandler implements RequestHandler<BusRequestWrapper<RestoreNotificationsCommand>, Void> {
-    private final RestoreNotificationsUseCasePort useCase;
-
-    @Override
-    public Void execute(BusRequestWrapper<RestoreNotificationsCommand> request) {
-        return useCase.execute(request.request());
-    }
-
-    @Override
-    public Class<?> getRequestClass() {
-        return RestoreNotificationsCommand.class;
+public class RestoreNotificationsCommandHandler 
+    extends AbstractHandler<RestoreNotificationsCommand, Void, RestoreNotificationsUseCasePort> {
+    
+    protected RestoreNotificationsCommandHandler(RestoreNotificationsUseCasePort useCase) {
+        super(useCase, RestoreNotificationsCommand.class);
     }
 }

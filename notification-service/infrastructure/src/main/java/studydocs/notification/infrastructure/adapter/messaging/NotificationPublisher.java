@@ -13,14 +13,14 @@ import studydocs.notification.infrastructure.config.RabbitMQConfig;
 @Slf4j
 public class NotificationPublisher implements NotificationMessagePort {
 
-    private final AmqpTemplate rabbitTemplate;
+//    private final AmqpTemplate rabbitTemplate;
 
     @Override
     public void publish(NotificationReceivedEvent event) {
-        rabbitTemplate.convertAndSend(
-                RabbitMQConfig.NOTIFICATION_EXCHANGE,
-                RabbitMQConfig.NOTIFICATION_RECEIVED_ROUTING_KEY,
-                event
-        );
+//        rabbitTemplate.convertAndSend(
+//                RabbitMQConfig.NOTIFICATION_EXCHANGE,
+//                RabbitMQConfig.NOTIFICATION_RECEIVED_ROUTING_KEY,
+//                event
+//        );
     }
 }

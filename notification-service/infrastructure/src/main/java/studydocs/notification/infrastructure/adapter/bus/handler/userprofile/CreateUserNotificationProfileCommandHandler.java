@@ -1,24 +1,15 @@
 package studydocs.notification.infrastructure.adapter.bus.handler.userprofile;
 
-import io.github.mediatR.api.RequestHandler;
-import io.github.mediatR.core.BusRequestWrapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import studydocs.notification.application.dto.command.userprofile.CreateUserNotificationProfileCommand;
 import studydocs.notification.application.port.in.usecase.userprofile.CreateUserNotificationProfileUseCasePort;
+import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-@RequiredArgsConstructor
-public class CreateUserNotificationProfileCommandHandler implements RequestHandler<BusRequestWrapper<CreateUserNotificationProfileCommand>, Void> {
-    private final CreateUserNotificationProfileUseCasePort useCase;
-
-    @Override
-    public Void execute(BusRequestWrapper<CreateUserNotificationProfileCommand> request) {
-        return useCase.execute(request.request());
-    }
-
-    @Override
-    public Class<?> getRequestClass() {
-        return CreateUserNotificationProfileCommand.class;
+public class CreateUserNotificationProfileCommandHandler 
+    extends AbstractHandler<CreateUserNotificationProfileCommand, Void, CreateUserNotificationProfileUseCasePort> {
+    
+    protected CreateUserNotificationProfileCommandHandler(CreateUserNotificationProfileUseCasePort useCase) {
+        super(useCase, CreateUserNotificationProfileCommand.class);
     }
 }

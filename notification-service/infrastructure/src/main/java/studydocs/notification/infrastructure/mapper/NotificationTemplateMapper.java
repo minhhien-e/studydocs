@@ -1,7 +1,6 @@
 package studydocs.notification.infrastructure.mapper;
 
 import studydocs.notification.application.dto.projection.TemplateProjection;
-import studydocs.notification.application.dto.readmodel.TemplateReadModel;
 import studydocs.notification.domain.aggregate.NotificationTemplate;
 import studydocs.notification.infrastructure.persistence.entity.NotificationTemplateEntity;
 
@@ -17,17 +16,6 @@ public final class NotificationTemplateMapper {
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );
-    }
-
-    public static TemplateReadModel toReadModel(NotificationTemplateEntity entity) {
-        return new TemplateReadModel(entity.getId(),
-                entity.getName(),
-                entity.getChannel(),
-                entity.getSubjectTemplate(),
-                entity.getBodyTemplate(),
-                entity.getDescription(),
-                entity.getCreatedAt(),
-                entity.getUpdatedAt());
     }
 
     public static NotificationTemplateEntity toEntity(NotificationTemplate domainEntity) {

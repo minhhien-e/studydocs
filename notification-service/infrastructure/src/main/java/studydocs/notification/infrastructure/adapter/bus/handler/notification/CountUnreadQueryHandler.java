@@ -1,24 +1,15 @@
 package studydocs.notification.infrastructure.adapter.bus.handler.notification;
 
-import io.github.mediatR.api.RequestHandler;
-import io.github.mediatR.core.BusRequestWrapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import studydocs.notification.application.dto.query.notification.CountUnreadQuery;
 import studydocs.notification.application.port.in.usecase.notification.CountUnreadUseCasePort;
+import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-@RequiredArgsConstructor
-public class CountUnreadQueryHandler implements RequestHandler<BusRequestWrapper<CountUnreadQuery>, Integer> {
-    private final CountUnreadUseCasePort useCase;
-
-    @Override
-    public Integer execute(BusRequestWrapper<CountUnreadQuery> request) {
-        return useCase.execute(request.request());
-    }
-
-    @Override
-    public Class<?> getRequestClass() {
-        return CountUnreadQuery.class;
+public class CountUnreadQueryHandler 
+    extends AbstractHandler<CountUnreadQuery, Integer, CountUnreadUseCasePort> {
+    
+    protected CountUnreadQueryHandler(CountUnreadUseCasePort useCase) {
+        super(useCase, CountUnreadQuery.class);
     }
 }
