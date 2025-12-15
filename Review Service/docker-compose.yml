@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: review-mongo
+    restart: unless-stopped
+    ports:
+      - "${MONGO_PORT}:27017"
+    volumes:
+      - mongo-data:/data/db
+    command: --quiet
+
+  review-service:
+    build: .
+    container_name: review-service
+    restart: unless-stopped
+    ports:
+      - "${REVIEW_SERVICE_PORT}:${SERVER_PORT}"
+    environment:
+      SERVER_PORT: ${SERVER_PORT}
+      SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}
+      DOCUMENT_SERVICE_URL: ${DOCUMENT_SERVICE_URL}
+      SECURITY_OAUTH2_JWT_ISSUER_URI: ${SECURITY_OAUTH2_JWT_ISSUER_URI}
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK}
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_DATA_MONGODB: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_DATA_MONGODB}
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data:
