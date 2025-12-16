@@ -1,4 +1,9 @@
 package studydocs.notification.application.dto.projection;
 
-public class UserProjection {
+import lombok.Builder;
+
+import java.util.UUID;
+
+@Builder
+public record UserProjection(UUID id, String name) {
 }

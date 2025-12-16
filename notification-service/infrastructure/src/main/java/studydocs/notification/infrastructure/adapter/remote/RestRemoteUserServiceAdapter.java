@@ -5,19 +5,28 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import studydocs.notification.application.dto.view.UserView;
+import studydocs.notification.application.port.in.provider.CurrentUserProviderPort;
 import studydocs.notification.application.port.out.remote.RemoteUserServicePort;
+import studydocs.notification.domain.exception.AccessDeniedException;
 import studydocs.notification.infrastructure.dto.ApiResponse;
 import studydocs.notification.infrastructure.utils.RemoteApiCaller;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class RestRemoteUserServiceAdapter implements RemoteUserServicePort {
     private final RemoteApiCaller remoteApiCaller;
+    private final CurrentUserProviderPort currentUserProviderPort;
     @Value("${app.remote.user-service.url}")
     private String userServiceUrl;
 
     @Override
-    public UserView getById() {
+    public UserView getById(UUID id) {
+        var currentId = currentUserProviderPort.getCurrentUserId();
+        if (!currentId.equals(id)) {
+            throw new AccessDeniedException(id, currentId);
+        }
         ParameterizedTypeReference<ApiResponse<UserView>> responseType = new ParameterizedTypeReference<>() {
         };
         return remoteApiCaller.getForEntity(userServiceUrl, responseType);

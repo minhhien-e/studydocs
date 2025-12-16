@@ -42,6 +42,7 @@ public enum DomainErrorCode {
     DUPLICATE_FCM_TOKEN(41),
     INVALID_FCM_TOKEN(42);
 
+
     private final Integer value;
 
     DomainErrorCode(Integer value) {

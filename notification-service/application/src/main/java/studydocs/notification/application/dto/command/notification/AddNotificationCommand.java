@@ -16,5 +16,5 @@ public record AddNotificationCommand(
         Map<String, String> snapshotSubjectData,
         Map<String, String> snapshotBodyData,
         List<RecipientData> recipients
-) implements Request<Void> {
+) implements Request<UUID> {
 }

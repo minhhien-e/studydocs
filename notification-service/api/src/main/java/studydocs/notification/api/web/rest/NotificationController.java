@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import studydocs.notification.api.dto.request.notification.*;
 import studydocs.notification.api.helper.RequestExecutor;
 import studydocs.notification.api.mapper.NotificationMapper;
+import studydocs.notification.application.port.in.provider.CurrentTraceIdProvider;
+import studydocs.notification.application.port.in.provider.CurrentUserProviderPort;
+import studydocs.notification.application.service.orchestrator.CreateAndDistributeNotificationOrchestrator;
+import studydocs.notification.infrastructure.dto.ApiResponse;
 
 import java.util.UUID;
 
@@ -16,11 +20,17 @@ import java.util.UUID;
 @RequestMapping("/api/v1/notifications")
 public class NotificationController {
     private final RequestExecutor requestExecutor;
+    private final CurrentUserProviderPort currentUserProvider;
+    private final CurrentTraceIdProvider currentTraceIdProvider;
+    private final CreateAndDistributeNotificationOrchestrator createAndDistributeNotificationOrchestrator;
 
     /// Create
     @PostMapping
     public ResponseEntity<?> addNotification(@RequestBody AddNotificationRequest request) {
-        return requestExecutor.executeWithCurrentUser(NotificationMapper::toCommand, request, HttpStatus.OK);
+        var command = NotificationMapper.toCommand(currentUserProvider.getCurrentUserId(), request);
+        createAndDistributeNotificationOrchestrator.handle(command);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(null, currentTraceIdProvider.getCurrentTraceId()));
     }
 
     @PostMapping("/{notificationId}/receive")

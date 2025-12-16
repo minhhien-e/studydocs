@@ -12,7 +12,6 @@ import studydocs.notification.infrastructure.exception.mapper.DomainToHttpExcept
 
 @Component
 @RequiredArgsConstructor
-@Transactional
 public class CustomBusAdapter implements MediatorBusPort {
     private final DomainToHttpExceptionMapper exceptionMapper;
     private final Bus bus;
