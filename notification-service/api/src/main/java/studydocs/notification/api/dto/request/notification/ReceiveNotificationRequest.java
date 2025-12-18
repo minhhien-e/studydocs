@@ -10,6 +10,4 @@ import java.util.UUID;
 public class ReceiveNotificationRequest {
     @JsonIgnore
     private UUID notificationId;
-    private Map<String, String> subjectData;
-    private Map<String, String> bodyData;
 }

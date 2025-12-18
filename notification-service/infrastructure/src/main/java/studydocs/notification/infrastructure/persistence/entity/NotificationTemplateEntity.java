@@ -1,6 +1,6 @@
 package studydocs.notification.infrastructure.persistence.entity;
 
-import io.github.infrastructure.mongo.entity.base.MongoEntity;
+import io.github.infrastructure.mongo.entity.base.AggregateEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-public class NotificationTemplateEntity extends MongoEntity {
+public class NotificationTemplateEntity extends AggregateEntity {
     @Indexed(unique = true)
     private String name;
     private String channel;

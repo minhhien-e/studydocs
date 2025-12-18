@@ -1,6 +1,8 @@
 package studydocs.notification.domain.aggregate;
 
 import io.github.domain.aggregate.base.AggregateRoot;
+import io.github.domain.enums.DomainStatus;
+import studydocs.notification.domain.event.NotificationReceivedEvent;
 import studydocs.notification.domain.exception.notification.CannotMarkDeletedNotificationAsReadException;
 import studydocs.notification.domain.exception.notification.CannotMarkDeletedNotificationAsUnreadException;
 import studydocs.notification.domain.exception.notification.NotificationAlreadySoftDeletedException;
@@ -83,6 +85,7 @@ public class NotificationRecipient extends AggregateRoot {
         recipient.renderedSubject = renderedSubject;
         recipient.renderedBody = renderedBody;
         recipient.receptionTime = new NotificationReceptionTime(LocalDateTime.now());
+        recipient.addDomainEvent(new NotificationReceivedEvent(notificationId, recipient.getId()));
         return recipient;
     }
 

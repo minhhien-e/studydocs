@@ -12,7 +12,7 @@ public interface NotificationRecipientMongoRepository extends MongoRepository<No
 
     List<NotificationRecipientEntity> findByRecipientId(UUID recipientId);
 
-    boolean deleteByNotificationIdAndRecipientId(UUID notificationId, UUID recipientId);
+    long deleteByNotificationIdAndRecipientId(UUID notificationId, UUID recipientId);
 
     Integer countByRecipientIdAndIsRead(UUID recipientId, Boolean isRead);
 

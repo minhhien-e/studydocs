@@ -1,6 +1,6 @@
 package studydocs.notification.infrastructure.persistence.entity;
 
-import io.github.infrastructure.mongo.entity.base.MongoEntity;
+import io.github.infrastructure.mongo.entity.base.AggregateEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.UUID;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-public class NotificationRecipientEntity extends MongoEntity {
+public class NotificationRecipientEntity extends AggregateEntity {
     private UUID notificationId;
     private UUID recipientId;
     private String renderedSubject;

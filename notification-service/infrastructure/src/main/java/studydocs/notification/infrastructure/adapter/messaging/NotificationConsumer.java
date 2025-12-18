@@ -12,5 +12,6 @@ public class NotificationConsumer {
 
     @RabbitListener(queues = RabbitMQConfig.NOTIFICATION_RECEIVED_QUEUE)
     public void handleNotificationReceived(NotificationReceivedEvent event) {
+        log.info("Received notification: {}", event);
     }
 }

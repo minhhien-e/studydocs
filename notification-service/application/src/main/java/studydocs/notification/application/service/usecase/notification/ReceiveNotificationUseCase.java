@@ -2,7 +2,6 @@ package studydocs.notification.application.service.usecase.notification;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import studydocs.notification.application.dto.command.notification.ReceiveNotificationCommand;
 import studydocs.notification.application.port.in.renderer.TemplateRenderer;
 import studydocs.notification.application.port.in.usecase.notification.ReceiveNotificationUseCasePort;
@@ -13,7 +12,6 @@ import studydocs.notification.domain.repository.NotificationRepository;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ReceiveNotificationUseCase implements ReceiveNotificationUseCasePort {
     private final NotificationRepository notificationRepository;
     private final NotificationRecipientRepository recipientRepository;
@@ -26,14 +24,9 @@ public class ReceiveNotificationUseCase implements ReceiveNotificationUseCasePor
         
         var notification = notificationRepository.getById(params.notificationId());
 
-        String renderedSubject = templateRenderer.render(
-                notification.getSnapshotSubject().value(),
-                params.subjectData()
-        );
-        String renderedBody = templateRenderer.render(
-                notification.getSnapshotBody().value(),
-                params.bodyData()
-        );
+        String renderedSubject ="";
+        String renderedBody = "";
+
         
         var recipient = NotificationRecipient.create(
                 params.notificationId(),

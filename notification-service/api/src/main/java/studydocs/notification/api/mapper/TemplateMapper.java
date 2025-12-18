@@ -72,6 +72,8 @@ public final class TemplateMapper {
                 projection.name(),
                 projection.channel(),
                 projection.description(),
+                projection.subjectTemplate(),
+                projection.bodyTemplate(),
                 projection.createdAt(),
                 projection.updatedTime()
         );

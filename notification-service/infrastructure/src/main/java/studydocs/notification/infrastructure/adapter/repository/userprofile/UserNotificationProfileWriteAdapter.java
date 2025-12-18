@@ -1,7 +1,11 @@
 package studydocs.notification.infrastructure.adapter.repository.userprofile;
 
-import io.github.infrastructure.mongo.repository.base.AbstractEntityMongoRepository;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import io.github.domain.aggregate.base.AggregateChild;
+import io.github.domain.entity.base.DomainEntity;
+import io.github.domain.port.DomainEventSerializer;
+import io.github.infrastructure.mongo.entity.base.MongoEntity;
+import io.github.infrastructure.mongo.helper.MongoEntityWriter;
+import io.github.infrastructure.mongo.repository.base.AbstractAggregateMongoRepository;
 import org.springframework.stereotype.Repository;
 import studydocs.notification.domain.aggregate.UserNotificationProfile;
 import studydocs.notification.domain.exception.userprofile.UserNotificationProfileNotFoundException;
@@ -16,16 +20,17 @@ import java.util.UUID;
 
 @Repository
 public class UserNotificationProfileWriteAdapter 
-        extends AbstractEntityMongoRepository<UserNotificationProfile, UserNotificationProfileEntity>
+        extends AbstractAggregateMongoRepository<UserNotificationProfile, UserNotificationProfileEntity>
         implements UserNotificationProfileRepository {
     
     private final UserNotificationProfileMongoRepository mongoRepository;
-    
+
     public UserNotificationProfileWriteAdapter(
-            MongoTemplate mongoTemplate,
-            UserNotificationProfileMongoRepository mongoRepository
+            UserNotificationProfileMongoRepository mongoRepository,
+            MongoEntityWriter mongoEntityWriter,
+            DomainEventSerializer domainEventSerializer
     ) {
-        super(mongoTemplate);
+        super(mongoEntityWriter,domainEventSerializer);
         this.mongoRepository = mongoRepository;
     }
     
@@ -54,5 +59,15 @@ public class UserNotificationProfileWriteAdapter
     @Override
     public UserNotificationProfileEntity toEntity(UserNotificationProfile domainEntity) {
         return UserNotificationProfileMapper.toEntity(domainEntity);
+    }
+
+    @Override
+    protected Class<?> getChildEntityClass(AggregateChild aggregateChild) {
+        return null;
+    }
+
+    @Override
+    protected MongoEntity toChildEntity(DomainEntity domainEntity) {
+        return null;
     }
 }

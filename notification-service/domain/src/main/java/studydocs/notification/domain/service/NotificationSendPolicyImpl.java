@@ -22,6 +22,7 @@ public class NotificationSendPolicyImpl implements NotificationSendPolicy {
 
     @Override
     public void ensureCanCreate(UUID senderId, UUID templateId) {
+        System.out.println(templateId);
         if (!userRepository.existsByUserId(senderId)) {
             throw new SenderNotFoundException(senderId);
         }

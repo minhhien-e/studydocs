@@ -12,7 +12,7 @@ public record AddNotificationCommand(
         UUID senderId,
         UUID templateId,
         String channel,
-        String category,
+        String type,
         Map<String, String> snapshotSubjectData,
         Map<String, String> snapshotBodyData,
         List<RecipientData> recipients

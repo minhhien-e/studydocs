@@ -1,5 +1,6 @@
 package studydocs.notification.infrastructure.persistence.entity;
 
+import io.github.infrastructure.mongo.entity.base.AggregateEntity;
 import io.github.infrastructure.mongo.entity.base.MongoEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,16 +12,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * MongoDB entity for user notification profiles.
- * Stores notification delivery preferences and endpoints.
- */
 @EqualsAndHashCode(callSuper = true)
 @Document(collection = "user_notification_profiles")
 @Data
 @SuperBuilder
 @NoArgsConstructor
-public class UserNotificationProfileEntity extends MongoEntity {
+public class UserNotificationProfileEntity extends AggregateEntity {
     @Indexed(unique = true)
     private UUID userId;
     

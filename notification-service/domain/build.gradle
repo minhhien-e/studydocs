@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
 }
 dependencies {
-    api 'com.github.minhhien-e.domain-repository-base:domain-repository-core:1.0.1'
+    api 'com.github.minhhien-e.foundation-domain:foundation-domain-core:1.0.2'
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'

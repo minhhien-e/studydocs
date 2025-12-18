@@ -2,14 +2,12 @@ package studydocs.notification.application.service.usecase.userprofile;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import studydocs.notification.application.dto.command.userprofile.UpdateEmailCommand;
 import studydocs.notification.application.port.in.usecase.userprofile.UpdateEmailUseCasePort;
 import studydocs.notification.domain.repository.UserNotificationProfileRepository;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class UpdateEmailUseCase implements UpdateEmailUseCasePort {
     private final UserNotificationProfileRepository repository;
 

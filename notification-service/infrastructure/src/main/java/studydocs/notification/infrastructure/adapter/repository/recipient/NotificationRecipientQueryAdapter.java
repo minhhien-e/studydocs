@@ -38,7 +38,7 @@ public class NotificationRecipientQueryAdapter implements NotificationRecipientQ
     public List<NotificationRecipientProjection> getByRecipientId(UUID recipientId, boolean deleted, LocalDateTime lastSeenReceiveAt, int limit) {
         MatchOperation matchRecipient = Aggregation.match(Criteria.where("recipientId").is(recipientId)
                 .andOperator(deleted ? Criteria.where("deletedAt").ne(null) : Criteria.where("deletedAt").isNull(),
-                        Criteria.where("receivedAt").gte(lastSeenReceiveAt)));
+                        Criteria.where("receivedAt").lt(lastSeenReceiveAt)));
         LookupOperation lookupOperation = Aggregation.lookup("notifications", "notificationId", "_id", "notification");
         LimitOperation limitOperation = Aggregation.limit(limit);
         SortOperation sortReceiveAt = Aggregation.sort(Sort.Direction.DESC, "receivedAt");
@@ -84,12 +84,12 @@ public class NotificationRecipientQueryAdapter implements NotificationRecipientQ
             Consumer<Criteria> extraCriteria
     ) {
         Criteria criteria = Criteria.where("recipientId").is(recipientId)
-                .and("receivedAt").gt(lastSeenReceivedAt);
+                .and("receivedAt").lt(lastSeenReceivedAt);
 
         extraCriteria.accept(criteria);
 
         Query query = new Query(criteria)
-                .with(Sort.by(Sort.Direction.ASC, "receivedAt"))
+                .with(Sort.by(Sort.Direction.DESC, "receivedAt"))
                 .limit(batchSize);
 
         query.fields().include("notificationId");

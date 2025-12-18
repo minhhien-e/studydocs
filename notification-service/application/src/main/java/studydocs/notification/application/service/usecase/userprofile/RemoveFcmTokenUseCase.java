@@ -2,14 +2,12 @@ package studydocs.notification.application.service.usecase.userprofile;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import studydocs.notification.application.dto.command.userprofile.RemoveFcmTokenCommand;
 import studydocs.notification.application.port.in.usecase.userprofile.RemoveFcmTokenUseCasePort;
 import studydocs.notification.domain.repository.UserNotificationProfileRepository;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class RemoveFcmTokenUseCase implements RemoveFcmTokenUseCasePort {
     private final UserNotificationProfileRepository repository;
 

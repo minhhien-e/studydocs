@@ -2,7 +2,6 @@ package studydocs.notification.application.service.usecase.notification;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import studydocs.notification.application.dto.command.notification.HardDeleteNotificationCommand;
 import studydocs.notification.application.port.in.usecase.notification.HardDeleteNotificationUseCasePort;
 import studydocs.notification.domain.policy.NotificationAccessPolicy;
@@ -10,7 +9,6 @@ import studydocs.notification.domain.repository.NotificationRecipientRepository;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class HardDeleteNotificationUseCase implements HardDeleteNotificationUseCasePort {
     private final NotificationRecipientRepository recipientRepository;
     private final NotificationAccessPolicy notificationPolicy;
@@ -22,7 +20,7 @@ public class HardDeleteNotificationUseCase implements HardDeleteNotificationUseC
                 params.requesterId()
         );
         notificationPolicy.checkCanAccess(recipient, params.requesterId());
-        recipientRepository.deleteByNotificationIdAndRecipientId(recipient.getId(), params.requesterId());
+        recipientRepository.deleteByNotificationIdAndRecipientId(recipient.getNotificationId(), params.requesterId());
         return null;
     }
 }

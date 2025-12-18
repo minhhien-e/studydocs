@@ -9,7 +9,7 @@ import java.util.UUID;
 public record CreateNotificationCommand(UUID senderId,
                                         UUID templateId,
                                         String channel,
-                                        String category,
+                                        String type,
                                         Map<String, String> snapshotSubjectData,
                                         Map<String, String> snapshotBodyData) implements Request<UUID> {
 }

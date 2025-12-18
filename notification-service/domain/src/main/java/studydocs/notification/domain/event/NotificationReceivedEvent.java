@@ -4,7 +4,6 @@ import io.github.domain.base.DomainEvent;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 public record NotificationReceivedEvent(
         UUID eventId,
         LocalDateTime occurredOn,

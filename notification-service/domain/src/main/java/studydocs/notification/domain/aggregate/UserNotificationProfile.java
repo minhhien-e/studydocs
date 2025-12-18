@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class UserNotificationProfile extends AggregateRoot {
-    private UUID userId;  // Reference to user in User bounded context
+    private UUID userId;
 
     private List<FcmToken> fcmTokens;
     private String emailAddress;
@@ -106,7 +106,7 @@ public class UserNotificationProfile extends AggregateRoot {
         var profile = new UserNotificationProfile(id);
         profile.userId = userId;
         profile.fcmTokens = fcmTokens != null
-                ? fcmTokens.stream().map(FcmToken::new).toList()
+                ? new ArrayList<>(fcmTokens.stream().map(FcmToken::new).toList())
                 : new ArrayList<>();
         profile.emailAddress = email;
         profile.phoneNumber = phone;

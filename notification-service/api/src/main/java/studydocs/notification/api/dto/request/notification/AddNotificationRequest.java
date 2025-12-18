@@ -7,7 +7,7 @@ import java.util.UUID;
 public record AddNotificationRequest(
         UUID templateId,
         String channel,
-        String category,
+        String type,
         Map<String, String> snapshotSubjectData,
         Map<String, String> snapshotBodyData,
         List<RecipientDataRequest> recipients

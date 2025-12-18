@@ -2,7 +2,6 @@ package studydocs.notification.application.service.usecase.template;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import studydocs.notification.application.dto.command.template.RenameTemplateCommand;
 import studydocs.notification.application.port.in.usecase.template.RenameTemplateUseCasePort;
 import studydocs.notification.domain.policy.UniqueNotificationTemplatePolicy;
@@ -10,7 +9,6 @@ import studydocs.notification.domain.repository.NotificationTemplateRepository;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class RenameTemplateUseCase implements RenameTemplateUseCasePort {
     private final NotificationTemplateRepository notificationTemplateRepository;
     private final UniqueNotificationTemplatePolicy uniqueNotificationTemplatePolicy;

@@ -14,10 +14,8 @@ public final class NotificationMapper {
     /// Command
     public static AddNotificationCommand toCommand(UUID userId, AddNotificationRequest request) {
         var recipients = request.recipients().stream()
-                .map(r -> studydocs.notification.application.dto.command.notification.RecipientData.builder()
+                .map(r -> RecipientData.builder()
                         .recipientId(r.recipientId())
-                        .subjectData(r.subjectData())
-                        .bodyData(r.bodyData())
                         .build())
                 .toList();
 
@@ -25,7 +23,7 @@ public final class NotificationMapper {
                 .senderId(userId)
                 .templateId(request.templateId())
                 .channel(request.channel())
-                .category(request.category())
+                .type(request.type())
                 .snapshotSubjectData(request.snapshotSubjectData())
                 .snapshotBodyData(request.snapshotBodyData())
                 .recipients(recipients)
@@ -36,8 +34,6 @@ public final class NotificationMapper {
         return ReceiveNotificationCommand.builder()
                 .recipientId(userId)
                 .notificationId(request.getNotificationId())
-                .subjectData(request.getSubjectData())
-                .bodyData(request.getBodyData())
                 .build();
     }
 
@@ -77,7 +73,7 @@ public final class NotificationMapper {
 
     /// Query
     public static GetNotificationByRecipientIdQuery toQuery(UUID userId, GetNotificationByRecipientIdRequest request) {
-        LocalDateTime receivedAt = request.receivedAt() == null ? LocalDateTime.now() : request.receivedAt();
+        LocalDateTime receivedAt = request.nextCursor() == null ? LocalDateTime.now() : request.nextCursor();
         return GetNotificationByRecipientIdQuery.builder()
                 .recipientId(userId)
                 .isDeleted(request.isDeleted())
@@ -95,14 +91,14 @@ public final class NotificationMapper {
     /// View
     public static NotificationRecipientView toView(NotificationRecipientProjection projection) {
         return new NotificationRecipientView(
-                projection.id(),
-                projection.notification().senderName().orElse(null),
-                projection.renderedSubject(),
-                projection.renderedBody(),
-                projection.notification().type(),
+                projection.getId(),
+                projection.getNotification().getSenderName(),
+                projection.getRenderedSubject(),
+                projection.getRenderedBody(),
+                projection.getNotification().getType(),
                 projection.isRead(),
-                projection.receivedAt(),
-                projection.deletedAt()
+                projection.getReceivedAt(),
+                projection.getDeletedAt()
         );
     }
 }

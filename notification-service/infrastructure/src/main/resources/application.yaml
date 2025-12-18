@@ -23,7 +23,7 @@ spring:
 app:
   remote:
     user-service:
-      url: ${USER_SERVICE_URL:http://localhost:8082:api/v1/users}
+      url: ${USER_SERVICE_URL:http://localhost:8082/api/v1/users}
 logging:
   level:
     org.springframework.security: DEBUG

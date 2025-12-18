@@ -2,7 +2,6 @@ package studydocs.notification.application.service.usecase.userprofile;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import studydocs.notification.application.dto.command.userprofile.CreateUserNotificationProfileCommand;
 import studydocs.notification.application.port.in.usecase.userprofile.CreateUserNotificationProfileUseCasePort;
 import studydocs.notification.domain.aggregate.UserNotificationProfile;
@@ -10,7 +9,6 @@ import studydocs.notification.domain.repository.UserNotificationProfileRepositor
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CreateUserNotificationProfileUseCase implements CreateUserNotificationProfileUseCasePort {
     private final UserNotificationProfileRepository repository;
 
