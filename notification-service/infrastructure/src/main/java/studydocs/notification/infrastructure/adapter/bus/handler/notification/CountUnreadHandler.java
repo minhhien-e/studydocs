@@ -6,10 +6,10 @@ import studydocs.notification.application.port.in.usecase.notification.CountUnre
 import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-public class CountUnreadQueryHandler 
+public class CountUnreadHandler
     extends AbstractHandler<CountUnreadQuery, Integer, CountUnreadUseCasePort> {
     
-    protected CountUnreadQueryHandler(CountUnreadUseCasePort useCase) {
+    protected CountUnreadHandler(CountUnreadUseCasePort useCase) {
         super(useCase, CountUnreadQuery.class);
     }
 }

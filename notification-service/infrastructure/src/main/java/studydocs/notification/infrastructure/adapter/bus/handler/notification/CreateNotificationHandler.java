@@ -8,8 +8,8 @@ import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHa
 import java.util.UUID;
 
 @Component
-public class CreateNotificationCommandHandler extends AbstractHandler<CreateNotificationCommand, UUID, CreateNotificationUseCasePort> {
-    protected CreateNotificationCommandHandler(CreateNotificationUseCasePort useCase) {
+public class CreateNotificationHandler extends AbstractHandler<CreateNotificationCommand, UUID, CreateNotificationUseCasePort> {
+    protected CreateNotificationHandler(CreateNotificationUseCasePort useCase) {
         super(useCase, CreateNotificationCommand.class);
     }
 }

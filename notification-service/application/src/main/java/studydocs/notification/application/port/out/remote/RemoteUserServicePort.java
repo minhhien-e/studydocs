@@ -1,9 +1,9 @@
 package studydocs.notification.application.port.out.remote;
 
-import studydocs.notification.application.dto.view.UserView;
+import studydocs.notification.application.dto.projection.UserProjection;
 
 import java.util.UUID;
 
 public interface RemoteUserServicePort {
-    UserView getById(UUID id);
+    UserProjection getById(UUID id);
 }

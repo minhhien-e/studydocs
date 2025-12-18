@@ -7,10 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Spring Data MongoDB repository for UserNotificationProfileEntity.
- */
-public interface UserNotificationProfileMongoRepository 
+public interface UserNotificationProfileMongoRepository
         extends MongoRepository<UserNotificationProfileEntity, UUID> {
     
     Optional<UserNotificationProfileEntity> findByUserId(UUID userId);

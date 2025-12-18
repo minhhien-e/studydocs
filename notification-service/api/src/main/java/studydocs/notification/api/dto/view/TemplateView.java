@@ -1,4 +1,4 @@
-package studydocs.notification.application.dto.view;
+package studydocs.notification.api.dto.view;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
