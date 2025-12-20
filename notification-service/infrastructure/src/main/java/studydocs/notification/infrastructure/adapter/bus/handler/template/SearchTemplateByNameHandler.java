@@ -9,10 +9,10 @@ import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHa
 import java.util.List;
 
 @Component
-public class SearchTemplateByNameQueryHandler 
+public class SearchTemplateByNameHandler
     extends AbstractHandler<SearchTemplateByNameQuery, List<TemplateProjection>, SearchTemplateByNameUseCasePort> {
     
-    protected SearchTemplateByNameQueryHandler(SearchTemplateByNameUseCasePort useCase) {
+    protected SearchTemplateByNameHandler(SearchTemplateByNameUseCasePort useCase) {
         super(useCase, SearchTemplateByNameQuery.class);
     }
 }

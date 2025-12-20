@@ -6,10 +6,10 @@ import studydocs.notification.application.port.in.usecase.template.EditTemplateD
 import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-public class EditTemplateDescriptionCommandHandler 
+public class EditTemplateDescriptionHandler
     extends AbstractHandler<EditTemplateDescriptionCommand, Void, EditTemplateDescriptionUseCasePort> {
     
-    protected EditTemplateDescriptionCommandHandler(EditTemplateDescriptionUseCasePort useCase) {
+    protected EditTemplateDescriptionHandler(EditTemplateDescriptionUseCasePort useCase) {
         super(useCase, EditTemplateDescriptionCommand.class);
     }
 }

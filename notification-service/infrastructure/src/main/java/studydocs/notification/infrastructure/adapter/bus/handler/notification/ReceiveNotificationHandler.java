@@ -6,10 +6,10 @@ import studydocs.notification.application.port.in.usecase.notification.ReceiveNo
 import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-public class ReceiveNotificationCommandHandler 
+public class ReceiveNotificationHandler
     extends AbstractHandler<ReceiveNotificationCommand, Void, ReceiveNotificationUseCasePort> {
     
-    protected ReceiveNotificationCommandHandler(ReceiveNotificationUseCasePort useCase) {
+    protected ReceiveNotificationHandler(ReceiveNotificationUseCasePort useCase) {
         super(useCase, ReceiveNotificationCommand.class);
     }
 }

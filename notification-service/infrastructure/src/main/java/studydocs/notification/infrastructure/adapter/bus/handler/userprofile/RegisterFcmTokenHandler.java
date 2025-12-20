@@ -6,10 +6,10 @@ import studydocs.notification.application.port.in.usecase.userprofile.RegisterFc
 import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-public class RegisterFcmTokenCommandHandler 
+public class RegisterFcmTokenHandler
     extends AbstractHandler<RegisterFcmTokenCommand, Void, RegisterFcmTokenUseCasePort> {
     
-    protected RegisterFcmTokenCommandHandler(RegisterFcmTokenUseCasePort useCase) {
+    protected RegisterFcmTokenHandler(RegisterFcmTokenUseCasePort useCase) {
         super(useCase, RegisterFcmTokenCommand.class);
     }
 }

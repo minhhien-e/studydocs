@@ -6,10 +6,10 @@ import studydocs.notification.application.port.in.usecase.template.RenameTemplat
 import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-public class RenameTemplateCommandHandler 
+public class RenameTemplateHandler
     extends AbstractHandler<RenameTemplateCommand, Void, RenameTemplateUseCasePort> {
     
-    protected RenameTemplateCommandHandler(RenameTemplateUseCasePort useCase) {
+    protected RenameTemplateHandler(RenameTemplateUseCasePort useCase) {
         super(useCase, RenameTemplateCommand.class);
     }
 }

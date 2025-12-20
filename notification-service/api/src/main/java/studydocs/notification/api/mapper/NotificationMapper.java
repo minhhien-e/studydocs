@@ -1,11 +1,14 @@
 package studydocs.notification.api.mapper;
 
 import studydocs.notification.api.dto.request.notification.*;
+import studydocs.notification.api.dto.view.NotificationMetadataView;
 import studydocs.notification.application.dto.command.notification.*;
+import studydocs.notification.application.dto.projection.NotificationMetadataProjection;
 import studydocs.notification.application.dto.projection.NotificationRecipientProjection;
 import studydocs.notification.application.dto.query.notification.CountUnreadQuery;
 import studydocs.notification.application.dto.query.notification.GetNotificationByRecipientIdQuery;
-import studydocs.notification.application.dto.view.NotificationRecipientView;
+import studydocs.notification.api.dto.view.NotificationRecipientView;
+import studydocs.notification.application.dto.query.notification.GetNotificationMetadataQuery;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -88,6 +91,10 @@ public final class NotificationMapper {
                 .build();
     }
 
+    public static GetNotificationMetadataQuery toQuery(GetNotificationMetadataRequest request) {
+        return new GetNotificationMetadataQuery();
+    }
+
     /// View
     public static NotificationRecipientView toView(NotificationRecipientProjection projection) {
         return new NotificationRecipientView(
@@ -100,5 +107,8 @@ public final class NotificationMapper {
                 projection.getReceivedAt(),
                 projection.getDeletedAt()
         );
+    }
+    public static NotificationMetadataView toView(NotificationMetadataProjection projection){
+        return new NotificationMetadataView(projection.groupName(),projection.items());
     }
 }

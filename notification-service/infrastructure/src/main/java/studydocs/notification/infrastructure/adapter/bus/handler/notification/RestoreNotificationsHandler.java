@@ -6,10 +6,10 @@ import studydocs.notification.application.port.in.usecase.notification.RestoreNo
 import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-public class RestoreNotificationsCommandHandler 
+public class RestoreNotificationsHandler
     extends AbstractHandler<RestoreNotificationsCommand, Void, RestoreNotificationsUseCasePort> {
     
-    protected RestoreNotificationsCommandHandler(RestoreNotificationsUseCasePort useCase) {
+    protected RestoreNotificationsHandler(RestoreNotificationsUseCasePort useCase) {
         super(useCase, RestoreNotificationsCommand.class);
     }
 }

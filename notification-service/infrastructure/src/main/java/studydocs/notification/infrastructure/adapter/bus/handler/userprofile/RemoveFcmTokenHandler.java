@@ -6,10 +6,10 @@ import studydocs.notification.application.port.in.usecase.userprofile.RemoveFcmT
 import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-public class RemoveFcmTokenCommandHandler 
+public class RemoveFcmTokenHandler
     extends AbstractHandler<RemoveFcmTokenCommand, Void, RemoveFcmTokenUseCasePort> {
     
-    protected RemoveFcmTokenCommandHandler(RemoveFcmTokenUseCasePort useCase) {
+    protected RemoveFcmTokenHandler(RemoveFcmTokenUseCasePort useCase) {
         super(useCase, RemoveFcmTokenCommand.class);
     }
 }

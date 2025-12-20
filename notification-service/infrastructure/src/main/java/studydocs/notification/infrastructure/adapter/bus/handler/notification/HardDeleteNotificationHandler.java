@@ -6,10 +6,10 @@ import studydocs.notification.application.port.in.usecase.notification.HardDelet
 import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-public class HardDeleteNotificationCommandHandler 
+public class HardDeleteNotificationHandler
     extends AbstractHandler<HardDeleteNotificationCommand, Void, HardDeleteNotificationUseCasePort> {
     
-    protected HardDeleteNotificationCommandHandler(HardDeleteNotificationUseCasePort useCase) {
+    protected HardDeleteNotificationHandler(HardDeleteNotificationUseCasePort useCase) {
         super(useCase, HardDeleteNotificationCommand.class);
     }
 }

@@ -7,10 +7,10 @@ import studydocs.notification.application.port.in.usecase.userprofile.GetUserNot
 import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-public class GetUserNotificationProfileQueryHandler 
+public class GetUserNotificationProfileHandler
     extends AbstractHandler<GetUserNotificationProfileQuery, UserNotificationProfileProjection, GetUserNotificationProfileUseCasePort> {
     
-    protected GetUserNotificationProfileQueryHandler(GetUserNotificationProfileUseCasePort useCase) {
+    protected GetUserNotificationProfileHandler(GetUserNotificationProfileUseCasePort useCase) {
         super(useCase, GetUserNotificationProfileQuery.class);
     }
 }

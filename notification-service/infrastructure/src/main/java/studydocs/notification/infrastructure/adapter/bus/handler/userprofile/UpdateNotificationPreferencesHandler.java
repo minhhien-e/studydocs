@@ -6,10 +6,10 @@ import studydocs.notification.application.port.in.usecase.userprofile.UpdateNoti
 import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-public class UpdateNotificationPreferencesCommandHandler 
+public class UpdateNotificationPreferencesHandler
     extends AbstractHandler<UpdateNotificationPreferencesCommand, Void, UpdateNotificationPreferencesUseCasePort> {
     
-    protected UpdateNotificationPreferencesCommandHandler(UpdateNotificationPreferencesUseCasePort useCase) {
+    protected UpdateNotificationPreferencesHandler(UpdateNotificationPreferencesUseCasePort useCase) {
         super(useCase, UpdateNotificationPreferencesCommand.class);
     }
 }

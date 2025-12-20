@@ -6,10 +6,10 @@ import studydocs.notification.application.port.in.usecase.notification.MarkAllAs
 import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-public class MarkAllAsReadCommandHandler 
+public class MarkAllAsReadHandler
     extends AbstractHandler<MarkAllAsReadCommand, Void, MarkAllAsReadUseCasePort> {
     
-    protected MarkAllAsReadCommandHandler(MarkAllAsReadUseCasePort useCase) {
+    protected MarkAllAsReadHandler(MarkAllAsReadUseCasePort useCase) {
         super(useCase, MarkAllAsReadCommand.class);
     }
 }

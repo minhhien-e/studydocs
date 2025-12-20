@@ -8,10 +8,10 @@ import studydocs.notification.application.port.in.usecase.notification.GetNotifi
 import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-public class GetNotificationByRecipientIdQueryHandler 
+public class GetNotificationByRecipientIdHandler
     extends AbstractHandler<GetNotificationByRecipientIdQuery, CursorPaginationResult<NotificationRecipientProjection>, GetNotificationByRecipientIdUseCasePort> {
     
-    protected GetNotificationByRecipientIdQueryHandler(GetNotificationByRecipientIdUseCasePort useCase) {
+    protected GetNotificationByRecipientIdHandler(GetNotificationByRecipientIdUseCasePort useCase) {
         super(useCase, GetNotificationByRecipientIdQuery.class);
     }
 }

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import studydocs.notification.application.dto.projection.UserProjection;
 import studydocs.notification.application.port.out.remote.RemoteUserServicePort;
 import studydocs.notification.application.port.out.repository.UserQueries;
-import studydocs.notification.infrastructure.mapper.UserMapper;
 
 import java.util.UUID;
 
@@ -16,6 +15,6 @@ public class UserReadAdapter implements UserQueries {
 
     @Override
     public UserProjection getById(UUID id) {
-        return UserMapper.toProjection(remoteUserServicePort.getById(id));
+        return remoteUserServicePort.getById(id);
     }
 }

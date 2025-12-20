@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import studydocs.notification.api.dto.request.notification.*;
 import studydocs.notification.api.helper.RequestExecutor;
 import studydocs.notification.api.mapper.NotificationMapper;
+import studydocs.notification.application.dto.projection.NotificationRecipientProjection;
 import studydocs.notification.application.port.in.provider.CurrentTraceIdProvider;
 import studydocs.notification.application.port.in.provider.CurrentUserProviderPort;
 import studydocs.notification.application.service.orchestrator.CreateAndDistributeNotificationOrchestrator;
@@ -45,7 +46,7 @@ public class NotificationController {
         return requestExecutor.executeWithCurrentUserAndMapView(
                 NotificationMapper::toQuery,
                 request,
-                NotificationMapper::toView,
+                projection->NotificationMapper.toView((NotificationRecipientProjection) projection),
                 HttpStatus.OK
         );
     }

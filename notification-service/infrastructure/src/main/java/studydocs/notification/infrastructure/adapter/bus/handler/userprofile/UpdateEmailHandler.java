@@ -6,10 +6,10 @@ import studydocs.notification.application.port.in.usecase.userprofile.UpdateEmai
 import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-public class UpdateEmailCommandHandler 
+public class UpdateEmailHandler
     extends AbstractHandler<UpdateEmailCommand, Void, UpdateEmailUseCasePort> {
     
-    protected UpdateEmailCommandHandler(UpdateEmailUseCasePort useCase) {
+    protected UpdateEmailHandler(UpdateEmailUseCasePort useCase) {
         super(useCase, UpdateEmailCommand.class);
     }
 }

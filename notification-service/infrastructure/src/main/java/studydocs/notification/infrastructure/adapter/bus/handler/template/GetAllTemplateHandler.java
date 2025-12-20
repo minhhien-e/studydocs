@@ -9,10 +9,10 @@ import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHa
 import java.util.List;
 
 @Component
-public class GetAllTemplateQueryHandler 
+public class GetAllTemplateHandler
     extends AbstractHandler<GetAllTemplateQuery, List<TemplateProjection>, GetAllTemplateUseCasePort> {
     
-    protected GetAllTemplateQueryHandler(GetAllTemplateUseCasePort useCase) {
+    protected GetAllTemplateHandler(GetAllTemplateUseCasePort useCase) {
         super(useCase, GetAllTemplateQuery.class);
     }
 }

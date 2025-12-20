@@ -4,8 +4,8 @@ import studydocs.notification.api.dto.request.userprofile.*;
 import studydocs.notification.application.dto.command.userprofile.*;
 import studydocs.notification.application.dto.projection.UserNotificationProfileProjection;
 import studydocs.notification.application.dto.query.userprofile.GetUserNotificationProfileQuery;
-import studydocs.notification.application.dto.view.NotificationPreferences;
-import studydocs.notification.application.dto.view.UserNotificationProfileView;
+import studydocs.notification.api.dto.view.NotificationPreferences;
+import studydocs.notification.api.dto.view.UserNotificationProfileView;
 
 import java.util.UUID;
 

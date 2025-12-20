@@ -6,10 +6,10 @@ import studydocs.notification.application.port.in.usecase.userprofile.UpdatePhon
 import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHandler;
 
 @Component
-public class UpdatePhoneNumberCommandHandler 
+public class UpdatePhoneNumberHandler
     extends AbstractHandler<UpdatePhoneNumberCommand, Void, UpdatePhoneNumberUseCasePort> {
     
-    protected UpdatePhoneNumberCommandHandler(UpdatePhoneNumberUseCasePort useCase) {
+    protected UpdatePhoneNumberHandler(UpdatePhoneNumberUseCasePort useCase) {
         super(useCase, UpdatePhoneNumberCommand.class);
     }
 }

@@ -6,7 +6,7 @@ import studydocs.notification.application.dto.projection.TemplateProjection;
 import studydocs.notification.application.dto.query.template.GetAllTemplateQuery;
 import studydocs.notification.application.dto.query.template.GetTemplateByChannelQuery;
 import studydocs.notification.application.dto.query.template.SearchTemplateByNameQuery;
-import studydocs.notification.application.dto.view.TemplateView;
+import studydocs.notification.api.dto.view.TemplateView;
 
 public final class TemplateMapper {
     /// Command
