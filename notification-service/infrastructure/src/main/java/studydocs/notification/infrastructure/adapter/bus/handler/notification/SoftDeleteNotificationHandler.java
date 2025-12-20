@@ -7,7 +7,7 @@ import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHa
 
 @Component
 public class SoftDeleteNotificationHandler
-    extends AbstractHandler<SoftDeleteNotificationCommand, Void, SoftDeleteNotificationUseCasePort> {
+    extends AbstractHandler<SoftDeleteNotificationCommand, Void> {
     
     protected SoftDeleteNotificationHandler(SoftDeleteNotificationUseCasePort useCase) {
         super(useCase, SoftDeleteNotificationCommand.class);

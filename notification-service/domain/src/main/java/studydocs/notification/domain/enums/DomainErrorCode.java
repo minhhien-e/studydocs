@@ -1,54 +1,63 @@
 package studydocs.notification.domain.enums;
 
-
 public enum DomainErrorCode {
 
-    NOTIFICATION_NOT_FOUND(1),
-    INVALID_NOTIFICATION_STATUS(2),
-    NOTIFICATION_ALREADY_SOFT_DELETED(3),
-    NOTIFICATION_NOT_SOFT_DELETED(4),
-    INVALID_NOTIFICATION_TYPE(5),
-    INVALID_NOTIFICATION_CHANNEL(6),
-    SEND_FAILED(7),
-    INVALID_NOTIFICATION_CREATION_TIME(8),
-    INVALID_NOTIFICATION_DELETION_TIME(9),
+    /* ===================== NOT FOUND ===================== */
+    NOTIFICATION_NOT_FOUND(1, DomainErrorCategory.NOT_FOUND),
+    TEMPLATE_NOT_FOUND(10, DomainErrorCategory.NOT_FOUND),
+    RECIPIENT_NOT_FOUND(20, DomainErrorCategory.NOT_FOUND),
+    RECIPIENTS_NOT_FOUND(21, DomainErrorCategory.NOT_FOUND),
+    SENDER_NOT_FOUND(22, DomainErrorCategory.NOT_FOUND),
+    USER_NOTIFICATION_PROFILE_NOT_FOUND(40, DomainErrorCategory.NOT_FOUND),
 
-    TEMPLATE_NOT_FOUND(10),
-    TEMPLATE_ALREADY_EXISTS(11),
-    INVALID_TEMPLATE_NAME(12),
-    INVALID_TEMPLATE_SUBJECT(13),
-    INVALID_TEMPLATE_BODY(14),
-    INVALID_TEMPLATE_DESCRIPTION(15),
-    TEMPLATE_DESCRIPTION_NULL_OR_EMPTY(29),
-    TEMPLATE_DESCRIPTION_TOO_SHORT(30),
-    TEMPLATE_DESCRIPTION_TOO_LONG(31),
-    INVALID_BODY_DATA(16),
-    INVALID_TEMPLATE_CHANNEL(17),
-    INVALID_TEMPLATE_CREATION_TIME(18),
-    INVALID_TEMPLATE_UPDATE_TIME(19),
+    /* ===================== VALIDATION ===================== */
+    INVALID_NOTIFICATION_STATUS(2, DomainErrorCategory.VALIDATION),
+    INVALID_NOTIFICATION_TYPE(5, DomainErrorCategory.VALIDATION),
+    INVALID_NOTIFICATION_CHANNEL(6, DomainErrorCategory.VALIDATION),
+    INVALID_NOTIFICATION_CREATION_TIME(8, DomainErrorCategory.VALIDATION),
+    INVALID_NOTIFICATION_DELETION_TIME(9, DomainErrorCategory.VALIDATION),
 
-    RECIPIENT_NOT_FOUND(20),
-    RECIPIENTS_NOT_FOUND(21),
-    SENDER_NOT_FOUND(22),
-    INVALID_PERSONALIZED_DATA(23),
-    INVALID_NOTIFICATION_SNAPSHOT_SUBJECT(26),
-    INVALID_NOTIFICATION_SNAPSHOT_BODY(27),
-    NOTIFICATION_RECIPIENT_DELETED(28),
+    INVALID_TEMPLATE_NAME(12, DomainErrorCategory.VALIDATION),
+    INVALID_TEMPLATE_SUBJECT(13, DomainErrorCategory.VALIDATION),
+    INVALID_TEMPLATE_BODY(14, DomainErrorCategory.VALIDATION),
+    INVALID_TEMPLATE_DESCRIPTION(15, DomainErrorCategory.VALIDATION),
+    TEMPLATE_DESCRIPTION_NULL_OR_EMPTY(29, DomainErrorCategory.VALIDATION),
+    TEMPLATE_DESCRIPTION_TOO_SHORT(30, DomainErrorCategory.VALIDATION),
+    TEMPLATE_DESCRIPTION_TOO_LONG(31, DomainErrorCategory.VALIDATION),
+    INVALID_TEMPLATE_CHANNEL(17, DomainErrorCategory.VALIDATION),
+    INVALID_TEMPLATE_CREATION_TIME(18, DomainErrorCategory.VALIDATION),
+    INVALID_TEMPLATE_UPDATE_TIME(19, DomainErrorCategory.VALIDATION),
 
-    ACCESS_DENIED(24),
-    
-    // User Notification Profile errors (40-49)
-    USER_NOTIFICATION_PROFILE_NOT_FOUND(40),
-    DUPLICATE_FCM_TOKEN(41),
-    INVALID_FCM_TOKEN(42);
+    INVALID_BODY_DATA(16, DomainErrorCategory.VALIDATION),
+    INVALID_PERSONALIZED_DATA(23, DomainErrorCategory.VALIDATION),
+    INVALID_NOTIFICATION_SNAPSHOT_SUBJECT(26, DomainErrorCategory.VALIDATION),
+    INVALID_NOTIFICATION_SNAPSHOT_BODY(27, DomainErrorCategory.VALIDATION),
 
+    INVALID_FCM_TOKEN(42, DomainErrorCategory.VALIDATION),
+
+    /* ===================== CONFLICT ===================== */
+    TEMPLATE_ALREADY_EXISTS(11, DomainErrorCategory.CONFLICT),
+    DUPLICATE_FCM_TOKEN(41, DomainErrorCategory.CONFLICT),
+    NOTIFICATION_ALREADY_SOFT_DELETED(3, DomainErrorCategory.CONFLICT),
+    NOTIFICATION_NOT_SOFT_DELETED(4, DomainErrorCategory.CONFLICT),
+    NOTIFICATION_RECIPIENT_DELETED(28, DomainErrorCategory.CONFLICT),
+
+    /* ===================== FORBIDDEN ===================== */
+    ACCESS_DENIED(24, DomainErrorCategory.FORBIDDEN);
 
     private final Integer value;
+    private final DomainErrorCategory category;
 
-    DomainErrorCode(Integer value) {
+    DomainErrorCode(Integer value, DomainErrorCategory category) {
         this.value = value;
+        this.category = category;
     }
+
     public Integer getValue() {
         return value;
+    }
+
+    public DomainErrorCategory getCategory() {
+        return category;
     }
 }

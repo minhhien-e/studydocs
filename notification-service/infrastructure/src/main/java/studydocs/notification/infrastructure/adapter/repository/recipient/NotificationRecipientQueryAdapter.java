@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import studydocs.notification.application.dto.projection.NotificationRecipientProjection;
 import studydocs.notification.application.port.out.repository.NotificationRecipientQueries;
+import studydocs.notification.infrastructure.exception.NotificationRecipientNotFoundException;
+import studydocs.notification.infrastructure.mapper.NotificationRecipientMapper;
 import studydocs.notification.infrastructure.persistence.entity.NotificationRecipientEntity;
 import studydocs.notification.infrastructure.persistence.repository.NotificationRecipientMongoRepository;
 
@@ -46,6 +48,14 @@ public class NotificationRecipientQueryAdapter implements NotificationRecipientQ
         Aggregation aggregation = Aggregation.newAggregation(matchRecipient, sortReceiveAt, limitOperation, lookupOperation, unwindOperation);
         return mongoTemplate.aggregate(aggregation, "notification_recipients", NotificationRecipientProjection.class)
                 .getMappedResults();
+    }
+
+    @Override
+    public NotificationRecipientProjection getById(UUID id) {
+        return mongoRepository.findById(id).map(
+                        NotificationRecipientMapper::toProjection
+                )
+                .orElseThrow(() -> new NotificationRecipientNotFoundException(id));
     }
 
     @Override

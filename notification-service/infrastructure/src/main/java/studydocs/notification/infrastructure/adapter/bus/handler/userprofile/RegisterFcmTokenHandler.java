@@ -7,7 +7,7 @@ import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHa
 
 @Component
 public class RegisterFcmTokenHandler
-    extends AbstractHandler<RegisterFcmTokenCommand, Void, RegisterFcmTokenUseCasePort> {
+    extends AbstractHandler<RegisterFcmTokenCommand, Void> {
     
     protected RegisterFcmTokenHandler(RegisterFcmTokenUseCasePort useCase) {
         super(useCase, RegisterFcmTokenCommand.class);

@@ -7,7 +7,7 @@ import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHa
 
 @Component
 public class UpdatePhoneNumberHandler
-    extends AbstractHandler<UpdatePhoneNumberCommand, Void, UpdatePhoneNumberUseCasePort> {
+    extends AbstractHandler<UpdatePhoneNumberCommand, Void> {
     
     protected UpdatePhoneNumberHandler(UpdatePhoneNumberUseCasePort useCase) {
         super(useCase, UpdatePhoneNumberCommand.class);

@@ -10,7 +10,7 @@ import java.util.List;
 
 @Component
 public class GetTemplateByChannelHandler
-    extends AbstractHandler<GetTemplateByChannelQuery, List<TemplateProjection>, GetTemplateByChannelUseCasePort> {
+    extends AbstractHandler<GetTemplateByChannelQuery, List<TemplateProjection>> {
     
     protected GetTemplateByChannelHandler(GetTemplateByChannelUseCasePort useCase) {
         super(useCase, GetTemplateByChannelQuery.class);

@@ -7,7 +7,7 @@ import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHa
 
 @Component
 public class EditTemplateBodyHandler
-    extends AbstractHandler<EditTemplateBodyCommand, Void, EditTemplateBodyUseCasePort> {
+    extends AbstractHandler<EditTemplateBodyCommand, Void> {
     
     protected EditTemplateBodyHandler(EditTemplateBodyUseCasePort useCase) {
         super(useCase, EditTemplateBodyCommand.class);

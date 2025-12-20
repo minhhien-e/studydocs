@@ -1,11 +1,9 @@
-package studydocs.notification.api.boostrap;
+package studydocs.notificationservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages = {
-        "studydocs.notification.api","studydocs.notification.infrastructure","studydocs.notification.application"
-})
+@SpringBootApplication
 public class NotificationServiceApplication {
 
     public static void main(String[] args) {

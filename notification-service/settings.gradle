@@ -3,7 +3,8 @@ include(
         "api",
         "application",
         "infrastructure",
-        "domain"
+        "domain",
+        "bootstrap"
 )
 
 dependencyResolutionManagement {

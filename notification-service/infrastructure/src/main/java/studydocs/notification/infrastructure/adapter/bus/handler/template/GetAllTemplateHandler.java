@@ -10,7 +10,7 @@ import java.util.List;
 
 @Component
 public class GetAllTemplateHandler
-    extends AbstractHandler<GetAllTemplateQuery, List<TemplateProjection>, GetAllTemplateUseCasePort> {
+    extends AbstractHandler<GetAllTemplateQuery, List<TemplateProjection>> {
     
     protected GetAllTemplateHandler(GetAllTemplateUseCasePort useCase) {
         super(useCase, GetAllTemplateQuery.class);

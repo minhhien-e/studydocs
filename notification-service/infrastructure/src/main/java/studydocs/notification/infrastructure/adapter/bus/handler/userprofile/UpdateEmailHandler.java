@@ -7,7 +7,7 @@ import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHa
 
 @Component
 public class UpdateEmailHandler
-    extends AbstractHandler<UpdateEmailCommand, Void, UpdateEmailUseCasePort> {
+    extends AbstractHandler<UpdateEmailCommand, Void> {
     
     protected UpdateEmailHandler(UpdateEmailUseCasePort useCase) {
         super(useCase, UpdateEmailCommand.class);

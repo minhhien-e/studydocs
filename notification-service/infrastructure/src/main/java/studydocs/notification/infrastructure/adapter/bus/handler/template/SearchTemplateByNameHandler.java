@@ -10,7 +10,7 @@ import java.util.List;
 
 @Component
 public class SearchTemplateByNameHandler
-    extends AbstractHandler<SearchTemplateByNameQuery, List<TemplateProjection>, SearchTemplateByNameUseCasePort> {
+    extends AbstractHandler<SearchTemplateByNameQuery, List<TemplateProjection>> {
     
     protected SearchTemplateByNameHandler(SearchTemplateByNameUseCasePort useCase) {
         super(useCase, SearchTemplateByNameQuery.class);

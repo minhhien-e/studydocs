@@ -7,7 +7,7 @@ import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHa
 
 @Component
 public class MarkAsReadHandler
-    extends AbstractHandler<MarkAsReadCommand, Void, MarkAsReadUseCasePort> {
+    extends AbstractHandler<MarkAsReadCommand, Void> {
     
     protected MarkAsReadHandler(MarkAsReadUseCasePort useCase) {
         super(useCase, MarkAsReadCommand.class);

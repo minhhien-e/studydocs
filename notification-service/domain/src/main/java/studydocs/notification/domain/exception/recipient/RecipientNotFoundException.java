@@ -7,6 +7,6 @@ import java.util.UUID;
 
 public class RecipientNotFoundException extends DomainException {
     public RecipientNotFoundException(UUID recipientId) {
-        super("Notification recipient not found with id: " + recipientId, DomainErrorCode.RECIPIENT_NOT_FOUND);
+        super("Recipient not found with id: " + recipientId, DomainErrorCode.RECIPIENT_NOT_FOUND);
     }
 }

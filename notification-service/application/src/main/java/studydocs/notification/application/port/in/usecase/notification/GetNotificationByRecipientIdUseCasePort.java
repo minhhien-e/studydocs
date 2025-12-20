@@ -1,7 +1,6 @@
 package studydocs.notification.application.port.in.usecase.notification;
 
 import studydocs.notification.application.dto.projection.NotificationRecipientProjection;
-import studydocs.notification.application.dto.view.NotificationRecipientView;
 
 import studydocs.notification.application.dto.base.CursorPaginationResult;
 import studydocs.notification.application.dto.query.notification.GetNotificationByRecipientIdQuery;

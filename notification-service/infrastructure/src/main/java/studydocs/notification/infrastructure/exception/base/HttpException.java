@@ -1,4 +1,4 @@
-package studydocs.notification.infrastructure.exception;
+package studydocs.notification.infrastructure.exception.base;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

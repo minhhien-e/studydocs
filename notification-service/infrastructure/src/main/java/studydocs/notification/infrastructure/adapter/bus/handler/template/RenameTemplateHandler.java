@@ -7,7 +7,7 @@ import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHa
 
 @Component
 public class RenameTemplateHandler
-    extends AbstractHandler<RenameTemplateCommand, Void, RenameTemplateUseCasePort> {
+    extends AbstractHandler<RenameTemplateCommand, Void> {
     
     protected RenameTemplateHandler(RenameTemplateUseCasePort useCase) {
         super(useCase, RenameTemplateCommand.class);

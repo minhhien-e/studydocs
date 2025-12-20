@@ -7,7 +7,7 @@ import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHa
 
 @Component
 public class CreateUserNotificationProfileHandler
-    extends AbstractHandler<CreateUserNotificationProfileCommand, Void, CreateUserNotificationProfileUseCasePort> {
+    extends AbstractHandler<CreateUserNotificationProfileCommand, Void> {
     
     protected CreateUserNotificationProfileHandler(CreateUserNotificationProfileUseCasePort useCase) {
         super(useCase, CreateUserNotificationProfileCommand.class);

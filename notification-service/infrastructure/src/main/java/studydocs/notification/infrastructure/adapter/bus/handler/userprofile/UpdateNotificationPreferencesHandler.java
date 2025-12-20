@@ -7,7 +7,7 @@ import studydocs.notification.infrastructure.adapter.bus.handler.base.AbstractHa
 
 @Component
 public class UpdateNotificationPreferencesHandler
-    extends AbstractHandler<UpdateNotificationPreferencesCommand, Void, UpdateNotificationPreferencesUseCasePort> {
+    extends AbstractHandler<UpdateNotificationPreferencesCommand, Void> {
     
     protected UpdateNotificationPreferencesHandler(UpdateNotificationPreferencesUseCasePort useCase) {
         super(useCase, UpdateNotificationPreferencesCommand.class);

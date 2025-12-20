@@ -4,23 +4,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Component;
-import studydocs.notification.application.port.out.messaging.NotificationMessagePort;
-import studydocs.notification.domain.event.NotificationReceivedEvent;
+import studydocs.notification.application.dto.payload.NotificationReceivePayload;
+import studydocs.notification.application.port.out.messaging.PublishNotificationEventPort;
 import studydocs.notification.infrastructure.config.RabbitMQConfig;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class NotificationPublisher implements NotificationMessagePort {
+public class RabbitNotificationEventEventPublisher implements PublishNotificationEventPort {
 
     private final AmqpTemplate rabbitTemplate;
 
     @Override
-    public void publish(NotificationReceivedEvent event) {
+    public void publish(NotificationReceivePayload payload) {
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.NOTIFICATION_EXCHANGE,
                 RabbitMQConfig.NOTIFICATION_RECEIVED_ROUTING_KEY,
-                event
+                payload
         );
     }
 }
