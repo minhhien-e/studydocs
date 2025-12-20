@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
@@ -21,7 +20,6 @@ public class UserNotificationProfileEntity extends AggregateEntity {
     @Indexed(unique = true)
     private UUID userId;
     
-    private List<String> fcmTokens;
     private String emailAddress;
     private String phoneNumber;
     

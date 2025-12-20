@@ -11,7 +11,7 @@ import studydocs.notification.application.dto.projection.NotificationRecipientPr
 import studydocs.notification.application.port.in.provider.CurrentTraceIdProvider;
 import studydocs.notification.application.port.in.provider.CurrentUserProviderPort;
 import studydocs.notification.application.service.orchestrator.CreateAndDistributeNotificationOrchestrator;
-import studydocs.notification.infrastructure.dto.ApiResponse;
+import studydocs.notification.shared.web.ApiResponse;
 
 import java.util.UUID;
 

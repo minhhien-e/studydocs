@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import studydocs.notification.application.port.in.renderer.TemplateRenderer;
 
 import java.util.Map;
+
 @Component
 public class StringTemplateRendererAdapter implements TemplateRenderer {
     @Override
@@ -17,6 +18,6 @@ public class StringTemplateRendererAdapter implements TemplateRenderer {
 
     @Override
     public String getTemplateFormat() {
-        return "{%s}";
+        return "{{%s}}";
     }
 }

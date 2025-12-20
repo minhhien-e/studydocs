@@ -1,6 +1,7 @@
 package studydocs.notification.infrastructure.exception;
 
-import studydocs.notification.infrastructure.exception.base.HttpException;
+
+import studydocs.notification.shared.web.HttpException;
 
 public class RemoteException extends HttpException {
     public RemoteException(int statusCode, Integer errorCode) {

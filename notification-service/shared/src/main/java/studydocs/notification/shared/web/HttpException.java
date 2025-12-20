@@ -1,10 +1,6 @@
-package studydocs.notification.infrastructure.exception.base;
+package studydocs.notification.shared.web;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
 public class HttpException extends RuntimeException {
     private final int statusCode;
     private final Integer errorCode;
@@ -13,5 +9,13 @@ public class HttpException extends RuntimeException {
         super(message);
         this.statusCode = statusCode;
         this.errorCode = errorCode;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public Integer getErrorCode() {
+        return errorCode;
     }
 }

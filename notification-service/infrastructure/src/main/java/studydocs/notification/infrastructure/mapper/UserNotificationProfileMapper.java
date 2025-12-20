@@ -9,7 +9,6 @@ public final class UserNotificationProfileMapper {
         return UserNotificationProfileEntity.builder()
                 .id(domain.getId())
                 .userId(domain.getUserId())
-                .fcmTokens(domain.getFcmTokens())
                 .emailAddress(domain.getEmailAddress())
                 .phoneNumber(domain.getPhoneNumber())
                 .pushEnabled(domain.isPushEnabled())
@@ -22,25 +21,11 @@ public final class UserNotificationProfileMapper {
         return UserNotificationProfile.reconstruct(
                 entity.getId(),
                 entity.getUserId(),
-                entity.getFcmTokens(),
                 entity.getEmailAddress(),
                 entity.getPhoneNumber(),
                 entity.isPushEnabled(),
                 entity.isEmailEnabled(),
                 entity.isSmsEnabled()
         );
-    }
-    
-    public static studydocs.notification.application.dto.projection.UserNotificationProfileProjection toProjection(UserNotificationProfileEntity entity) {
-        return studydocs.notification.application.dto.projection.UserNotificationProfileProjection.builder()
-                .id(entity.getId())
-                .userId(entity.getUserId())
-                .fcmTokens(entity.getFcmTokens())
-                .emailAddress(entity.getEmailAddress())
-                .phoneNumber(entity.getPhoneNumber())
-                .pushEnabled(entity.isPushEnabled())
-                .emailEnabled(entity.isEmailEnabled())
-                .smsEnabled(entity.isSmsEnabled())
-                .build();
     }
 }

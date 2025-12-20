@@ -8,10 +8,10 @@ import studydocs.notification.application.dto.projection.UserProjection;
 import studydocs.notification.application.port.in.provider.CurrentUserProviderPort;
 import studydocs.notification.application.port.out.remote.RemoteUserServicePort;
 import studydocs.notification.domain.exception.AccessDeniedException;
-import studydocs.notification.infrastructure.dto.ApiResponse;
 import studydocs.notification.infrastructure.dto.integration.UserIntegration;
 import studydocs.notification.infrastructure.mapper.UserMapper;
 import studydocs.notification.infrastructure.utils.RemoteApiCaller;
+import studydocs.notification.shared.web.ApiResponse;
 
 import java.util.UUID;
 

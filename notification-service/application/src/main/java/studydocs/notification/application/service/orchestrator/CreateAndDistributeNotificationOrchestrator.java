@@ -26,7 +26,7 @@ public class CreateAndDistributeNotificationOrchestrator {
         command.recipients().forEach(recipient -> bus.send(
                 ReceiveNotificationCommand.builder()
                         .notificationId(notificationId)
-                        .recipientId(recipient.recipientId())
+                        .recipientData(recipient)
                         .build()
         ));
     }

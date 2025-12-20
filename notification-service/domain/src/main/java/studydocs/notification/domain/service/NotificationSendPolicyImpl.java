@@ -38,6 +38,7 @@ public class NotificationSendPolicyImpl implements NotificationSendPolicy {
             throw new RecipientsNotFoundException(recipientIds);
         }
     }
+
     @Override
     public void ensureCanSend(UUID recipientId) {
         if (!userRepository.existsByUserId(recipientId)) {

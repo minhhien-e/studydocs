@@ -2,15 +2,16 @@ package studydocs.notification.api.mapper;
 
 import studydocs.notification.api.dto.request.notification.*;
 import studydocs.notification.api.dto.view.NotificationMetadataView;
+import studydocs.notification.api.dto.view.NotificationRecipientView;
 import studydocs.notification.application.dto.command.notification.*;
 import studydocs.notification.application.dto.projection.NotificationMetadataProjection;
 import studydocs.notification.application.dto.projection.NotificationRecipientProjection;
 import studydocs.notification.application.dto.query.notification.CountUnreadQuery;
 import studydocs.notification.application.dto.query.notification.GetNotificationByRecipientIdQuery;
-import studydocs.notification.api.dto.view.NotificationRecipientView;
 import studydocs.notification.application.dto.query.notification.GetNotificationMetadataQuery;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 public final class NotificationMapper {
@@ -19,6 +20,7 @@ public final class NotificationMapper {
         var recipients = request.recipients().stream()
                 .map(r -> RecipientData.builder()
                         .recipientId(r.recipientId())
+                        .context(r.context())
                         .build())
                 .toList();
 
@@ -35,7 +37,10 @@ public final class NotificationMapper {
 
     public static ReceiveNotificationCommand toCommand(UUID userId, ReceiveNotificationRequest request) {
         return ReceiveNotificationCommand.builder()
-                .recipientId(userId)
+                .recipientData(RecipientData.builder()
+                        .recipientId(userId)
+                        .context(Optional.ofNullable(request.getContext()))
+                        .build())
                 .notificationId(request.getNotificationId())
                 .build();
     }

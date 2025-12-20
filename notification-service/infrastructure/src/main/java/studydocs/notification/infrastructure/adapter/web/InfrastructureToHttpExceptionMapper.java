@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import studydocs.notification.infrastructure.enums.HttpErrorCategoryMapping;
 import studydocs.notification.infrastructure.enums.InfrastructureErrorCode;
-import studydocs.notification.infrastructure.exception.base.HttpException;
 import studydocs.notification.infrastructure.exception.base.InfrastructureException;
+import studydocs.notification.shared.web.HttpException;
 
 @Component
 public class InfrastructureToHttpExceptionMapper {

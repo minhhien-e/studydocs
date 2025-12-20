@@ -4,7 +4,8 @@ include(
         "application",
         "infrastructure",
         "domain",
-        "bootstrap"
+        "bootstrap",
+        'shared'
 )
 
 dependencyResolutionManagement {

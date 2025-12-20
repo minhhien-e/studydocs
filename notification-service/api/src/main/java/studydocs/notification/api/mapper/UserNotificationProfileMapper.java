@@ -36,8 +36,8 @@ public final class UserNotificationProfileMapper {
         return new RegisterFcmTokenCommand(userId, request.getFcmToken());
     }
 
-    public static RemoveFcmTokenCommand toCommand(UUID userId, RemoveFcmTokenRequest request) {
-        return new RemoveFcmTokenCommand(userId, request.getFcmToken());
+    public static RemoveFcmTokenCommand toCommand(RemoveFcmTokenRequest request) {
+        return new RemoveFcmTokenCommand( request.getFcmToken());
     }
 
     public static UpdateNotificationPreferencesCommand toCommand(UUID userId, UpdateNotificationPreferencesRequest request) {

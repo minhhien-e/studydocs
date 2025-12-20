@@ -4,16 +4,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import studydocs.notification.application.port.in.provider.NotificationDataProvider;
+import studydocs.notification.application.dto.payload.UserDataProvidePayload;
+import studydocs.notification.application.port.out.provider.NotificationDataProvider;
 import studydocs.notification.application.port.out.remote.RemoteUserServicePort;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class UserNotificationDataProvider implements NotificationDataProvider {
+public class UserNotificationDataProvider implements NotificationDataProvider<UserDataProvidePayload> {
     private final RemoteUserServicePort remoteUserServicePort;
     private final ObjectMapper objectMapper;
 
@@ -28,8 +28,8 @@ public class UserNotificationDataProvider implements NotificationDataProvider {
     }
 
     @Override
-    public Map<String, Object> getData(UUID recipientId) {
-        var user = remoteUserServicePort.getById(recipientId);
+    public Map<String, Object> getData(UserDataProvidePayload payload) {
+        var user = remoteUserServicePort.getById(payload.recipientId());
         if (user == null) {
             return Map.of();
         }

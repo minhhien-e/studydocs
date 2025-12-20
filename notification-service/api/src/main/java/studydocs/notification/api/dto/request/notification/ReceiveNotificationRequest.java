@@ -10,4 +10,5 @@ import java.util.UUID;
 public class ReceiveNotificationRequest {
     @JsonIgnore
     private UUID notificationId;
+    private Map<String, Object> context;
 }

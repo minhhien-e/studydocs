@@ -1,4 +1,4 @@
-package studydocs.notification.infrastructure.dto;
+package studydocs.notification.shared.web;
 
 
 public record ApiResponse<T>(int statusCode, Integer errorCode, T data, String traceId) {

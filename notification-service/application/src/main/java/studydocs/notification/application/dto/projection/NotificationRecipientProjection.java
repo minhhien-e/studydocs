@@ -13,7 +13,7 @@ public class NotificationRecipientProjection {
     private UUID recipientId;
     private String renderedSubject;
     private String renderedBody;
-    private Boolean isRead;
+    private boolean isRead;
     private LocalDateTime receivedAt;
     private LocalDateTime deletedAt;
     private NotificationProjection notification;

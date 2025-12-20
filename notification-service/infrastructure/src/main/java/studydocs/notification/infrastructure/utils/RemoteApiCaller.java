@@ -7,8 +7,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import studydocs.notification.infrastructure.dto.ApiResponse;
 import studydocs.notification.infrastructure.exception.RemoteException;
+import studydocs.notification.shared.web.ApiResponse;
 
 
 @Component

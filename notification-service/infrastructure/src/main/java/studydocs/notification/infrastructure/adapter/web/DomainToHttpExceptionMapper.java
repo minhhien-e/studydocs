@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import studydocs.notification.domain.enums.DomainErrorCode;
 import studydocs.notification.domain.exception.base.DomainException;
 import studydocs.notification.infrastructure.enums.HttpErrorCategoryMapping;
-import studydocs.notification.infrastructure.exception.base.HttpException;
+import studydocs.notification.shared.web.HttpException;
 
 @Component
 public class DomainToHttpExceptionMapper {

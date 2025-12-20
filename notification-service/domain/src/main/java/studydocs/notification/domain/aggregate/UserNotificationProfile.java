@@ -1,17 +1,13 @@
 package studydocs.notification.domain.aggregate;
 
 import io.github.domain.aggregate.base.AggregateRoot;
-import studydocs.notification.domain.exception.userprofile.DuplicateFcmTokenException;
-import studydocs.notification.domain.vo.FcmToken;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class UserNotificationProfile extends AggregateRoot {
     private UUID userId;
 
-    private List<FcmToken> fcmTokens;
     private String emailAddress;
     private String phoneNumber;
 
@@ -28,24 +24,6 @@ public class UserNotificationProfile extends AggregateRoot {
     }
 
     /// Business Logic
-
-    public void registerFcmToken(String tokenValue) {
-        var token = new FcmToken(tokenValue);
-
-        if (fcmTokens.stream().anyMatch(t -> t.value().equals(tokenValue))) {
-            throw new DuplicateFcmTokenException(tokenValue);
-        }
-
-        this.fcmTokens.add(token);
-        markChanged("fcmTokens");
-    }
-
-    public void removeFcmToken(String tokenValue) {
-        boolean removed = this.fcmTokens.removeIf(t -> t.value().equals(tokenValue));
-        if (removed) {
-            markChanged("fcmTokens");
-        }
-    }
 
     public void updateEmail(String email) {
         this.emailAddress = email;
@@ -83,8 +61,6 @@ public class UserNotificationProfile extends AggregateRoot {
         profile.userId = userId;
         profile.emailAddress = email;
         profile.phoneNumber = phoneNumber;
-        profile.fcmTokens = new ArrayList<>();
-
         // Default preferences - all enabled
         profile.pushEnabled = true;
         profile.emailEnabled = true;
@@ -96,7 +72,6 @@ public class UserNotificationProfile extends AggregateRoot {
     public static UserNotificationProfile reconstruct(
             UUID id,
             UUID userId,
-            List<String> fcmTokens,
             String email,
             String phone,
             boolean pushEnabled,
@@ -105,9 +80,6 @@ public class UserNotificationProfile extends AggregateRoot {
     ) {
         var profile = new UserNotificationProfile(id);
         profile.userId = userId;
-        profile.fcmTokens = fcmTokens != null
-                ? new ArrayList<>(fcmTokens.stream().map(FcmToken::new).toList())
-                : new ArrayList<>();
         profile.emailAddress = email;
         profile.phoneNumber = phone;
         profile.pushEnabled = pushEnabled;
@@ -121,10 +93,6 @@ public class UserNotificationProfile extends AggregateRoot {
 
     public UUID getUserId() {
         return userId;
-    }
-
-    public List<String> getFcmTokens() {
-        return fcmTokens.stream().map(FcmToken::value).toList();
     }
 
     public String getEmailAddress() {

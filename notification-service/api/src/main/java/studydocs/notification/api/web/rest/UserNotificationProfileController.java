@@ -62,7 +62,7 @@ public class UserNotificationProfileController {
 
     @DeleteMapping("/fcm-tokens")
     public ResponseEntity<?> removeFcmToken(@RequestBody RemoveFcmTokenRequest request) {
-        return requestExecutor.executeWithCurrentUser(
+        return requestExecutor.execute(
                 UserNotificationProfileMapper::toCommand,
                 request,
                 HttpStatus.OK

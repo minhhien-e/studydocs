@@ -9,7 +9,7 @@ import studydocs.notification.application.dto.base.Request;
 import studydocs.notification.application.port.in.bus.MediatorBusPort;
 import studydocs.notification.application.port.in.provider.CurrentTraceIdProvider;
 import studydocs.notification.application.port.in.provider.CurrentUserProviderPort;
-import studydocs.notification.infrastructure.dto.ApiResponse;
+import studydocs.notification.shared.web.ApiResponse;
 
 import java.util.List;
 import java.util.UUID;

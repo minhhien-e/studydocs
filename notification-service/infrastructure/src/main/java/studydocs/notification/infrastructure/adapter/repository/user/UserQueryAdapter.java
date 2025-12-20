@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
-public class UserReadAdapter implements UserQueries {
+public class UserQueryAdapter implements UserQueries {
     private final RemoteUserServicePort remoteUserServicePort;
 
     @Override

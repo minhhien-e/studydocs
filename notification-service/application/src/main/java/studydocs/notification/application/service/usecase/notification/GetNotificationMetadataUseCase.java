@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import studydocs.notification.application.dto.projection.NotificationMetadataProjection;
 import studydocs.notification.application.dto.query.notification.GetNotificationMetadataQuery;
-import studydocs.notification.application.port.in.provider.NotificationDataProvider;
+import studydocs.notification.application.port.out.provider.NotificationDataProvider;
 import studydocs.notification.application.port.in.usecase.notification.GetNotificationMetadataUseCasePort;
 
 import java.util.List;

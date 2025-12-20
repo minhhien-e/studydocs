@@ -10,20 +10,23 @@ dependencyManagement {
 }
 
 dependencies {
+    implementation project(':shared')
     implementation project(':application')
     implementation project(':domain')
 
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation "org.springframework.boot:spring-boot-starter-web"
-    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'com.google.firebase:firebase-admin:9.7.0'
+    implementation 'com.google.api-client:google-api-client-jackson2:2.6.0'
+    implementation 'com.google.api-client:google-api-client:2.6.0'
+
     implementation 'com.github.minhhien-e:MediatR:1.0.0'
     implementation 'com.github.minhhien-e.foundation-domain:foundation-domain-mongo:1.0.2'
     implementation("me.paulschwarz:spring-dotenv:4.0.0")
-    testImplementation 'org.springframework.security:spring-security-test'
     compileOnly "org.projectlombok:lombok"
     annotationProcessor "org.projectlombok:lombok"
 }

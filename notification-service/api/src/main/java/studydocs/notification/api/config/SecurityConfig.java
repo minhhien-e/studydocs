@@ -1,4 +1,4 @@
-package studydocs.notification.infrastructure.config;
+package studydocs.notification.api.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -3,17 +3,18 @@ package studydocs.notification.application.service.usecase.notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import studydocs.notification.application.dto.command.notification.ReceiveNotificationCommand;
-import studydocs.notification.application.port.in.provider.NotificationDataProvider;
+import studydocs.notification.application.dto.payload.UserDataProvidePayload;
+import studydocs.notification.application.dto.payload.base.DataProvidePayload;
 import studydocs.notification.application.port.in.renderer.TemplateRenderer;
 import studydocs.notification.application.port.in.usecase.notification.ReceiveNotificationUseCasePort;
+import studydocs.notification.application.service.builder.NotificationContentBuilder;
+import studydocs.notification.application.service.builder.data.NotificationContent;
 import studydocs.notification.domain.aggregate.NotificationRecipient;
 import studydocs.notification.domain.policy.NotificationSendPolicy;
 import studydocs.notification.domain.repository.NotificationRecipientRepository;
 import studydocs.notification.domain.repository.NotificationRepository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -21,37 +22,39 @@ public class ReceiveNotificationUseCase implements ReceiveNotificationUseCasePor
     private final NotificationRepository notificationRepository;
     private final NotificationRecipientRepository recipientRepository;
     private final NotificationSendPolicy notificationSendPolicy;
-    private final TemplateRenderer templateRenderer;
-    private final List<NotificationDataProvider> dataProviders;
+    private final NotificationContentBuilder notificationContentBuilder;
+    private final TemplateRenderer renderer;
 
     @Override
     public Void execute(ReceiveNotificationCommand params) {
-        notificationSendPolicy.ensureCanSend(params.recipientId());
-        
+        notificationSendPolicy.ensureCanSend(params.recipientData().recipientId());
+
         var notification = notificationRepository.getById(params.notificationId());
 
-        String subjectTemplate = notification.getSnapshotSubject().value();
-        String bodyTemplate = notification.getSnapshotBody().value();
-        String combinedTemplate = subjectTemplate + bodyTemplate;
+        var modelKeys = renderer.getModelKeys(notification.getSnapshotSubject().value() + notification.getSnapshotBody().value());
 
-        Map<String, String> model = new HashMap<>();
-        for (NotificationDataProvider provider : dataProviders) {
-            if (provider.isNeeded(combinedTemplate)) {
-                Map<String, Object> data = provider.getData(params.recipientId());
-                data.forEach((key, value) -> model.put(key, String.valueOf(value)));
-            }
+        var notificationContent = new NotificationContent(notification.getSnapshotSubject().value(),
+                notification.getSnapshotBody().value());
+
+        for (var modelKey : modelKeys) {
+            notificationContent = notificationContentBuilder.build(notificationContent.subject(),
+                    notificationContent.body(), Objects.requireNonNull(createPayload(params, modelKey)));
         }
-
-        String renderedSubject = templateRenderer.render(subjectTemplate, model);
-        String renderedBody = templateRenderer.render(bodyTemplate, model);
 
         var recipient = NotificationRecipient.create(
                 params.notificationId(),
-                params.recipientId(),
-                renderedSubject,
-                renderedBody
+                params.recipientData().recipientId(),
+                notificationContent.subject(),
+                notificationContent.body()
         );
         recipientRepository.save(recipient);
+        return null;
+    }
+
+    private DataProvidePayload createPayload(ReceiveNotificationCommand param, String modelKey) {
+        if (modelKey.startsWith("user.")) {
+            return new UserDataProvidePayload(param.recipientData().recipientId());
+        }
         return null;
     }
 }

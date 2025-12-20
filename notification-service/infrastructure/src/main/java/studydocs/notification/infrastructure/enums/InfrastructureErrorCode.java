@@ -1,5 +1,8 @@
 package studydocs.notification.infrastructure.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum InfrastructureErrorCode {
     NOTIFICATION_RECIPIENT_NOT_FOUND(43, InfrastructureErrorCategory.NOT_FOUND),
     SEND_FAILED(7, InfrastructureErrorCategory.SYSTEM);
@@ -11,11 +14,4 @@ public enum InfrastructureErrorCode {
         this.category = category;
     }
 
-    public Integer getValue() {
-        return value;
-    }
-
-    public InfrastructureErrorCategory getCategory() {
-        return category;
-    }
 }
