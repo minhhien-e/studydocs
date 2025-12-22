@@ -21,16 +21,16 @@ public class SendNotificationUseCase implements SendNotificationUseCasePort {
     private final NotificationRecipientQueries notificationRecipientQueries;
     private final NotificationQueries notificationQueries;
     private final UserNotificationProfileQueries userNotificationProfileQueries;
-    private final Map<String, NotificationSenderPort> senders;
+    private final Map<String, NotificationSenderPort> notificationSenderMap;
 
     public Void execute(SendNotificationCommand command) {
-        var recipient = notificationRecipientQueries.getById(command.recipientId());
+        var recipient = notificationRecipientQueries.getById(command.notificationRecipientId());
         var notification = notificationQueries.getById(command.notificationId());
-        var profile = userNotificationProfileQueries.getByUserId(command.recipientId());
+        var profile = userNotificationProfileQueries.getByUserId(recipient.getRecipientId());
         NotificationChannel channel = NotificationChannel.valueOf(notification.getChannel());
         var destinations = destinations(channel, profile);
         var payload = new NotificationSendPayload(recipient.getRenderedSubject(), recipient.getRenderedBody(), destinations);
-        senders.get(notification.getChannel()).send(payload);
+        notificationSenderMap.get(notification.getChannel()).send(payload);
         return null;
     }
 

@@ -10,7 +10,7 @@ import studydocs.notification.api.mapper.UserNotificationProfileMapper;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users/notification-profile")
+@RequestMapping("/api/v1/notifications/user-profiles")
 public class UserNotificationProfileController {
     private final RequestExecutor requestExecutor;
 

@@ -8,7 +8,6 @@ import studydocs.notification.application.dto.payload.UserDataProvidePayload;
 import studydocs.notification.application.port.out.provider.NotificationDataProvider;
 import studydocs.notification.application.port.out.remote.RemoteUserServicePort;
 
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 

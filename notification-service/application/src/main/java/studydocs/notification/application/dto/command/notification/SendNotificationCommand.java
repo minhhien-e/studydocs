@@ -4,5 +4,5 @@ import studydocs.notification.application.dto.base.Request;
 
 import java.util.UUID;
 
-public record SendNotificationCommand(UUID notificationId, UUID recipientId) implements Request<Void> {
+public record SendNotificationCommand(UUID notificationId, UUID notificationRecipientId) implements Request<Void> {
 }

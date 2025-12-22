@@ -5,7 +5,8 @@ include(
         "infrastructure",
         "domain",
         "bootstrap",
-        'shared'
+        'shared',
+        'demo'
 )
 
 dependencyResolutionManagement {
