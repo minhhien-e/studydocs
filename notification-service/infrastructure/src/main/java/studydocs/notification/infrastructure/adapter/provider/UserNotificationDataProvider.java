@@ -8,6 +8,7 @@ import studydocs.notification.application.dto.payload.UserDataProvidePayload;
 import studydocs.notification.application.port.out.provider.NotificationDataProvider;
 import studydocs.notification.application.port.out.remote.RemoteUserServicePort;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,7 @@ public class UserNotificationDataProvider implements NotificationDataProvider<Us
 
     @Override
     public String getSupportPrefix() {
-        return "user";
+        return "$user";
     }
 
     @Override
@@ -38,6 +39,7 @@ public class UserNotificationDataProvider implements NotificationDataProvider<Us
         });
 
         return userData.entrySet().stream()
+                .filter(entry -> entry.getValue() != null)
                 .collect(Collectors.toMap(
                         e -> getSupportPrefix() + "." + e.getKey(),
                         Map.Entry::getValue
@@ -47,8 +49,8 @@ public class UserNotificationDataProvider implements NotificationDataProvider<Us
     @Override
     public Map<String, String> getAvailableMetadata() {
         return Map.of(
-                "user.name", "Tên người nhận",
-                "user.id", "ID người nhận"
+                "$user.name", "Tên người nhận",
+                "$user.id", "ID người nhận"
         );
     }
 }

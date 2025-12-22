@@ -1,7 +1,6 @@
 package studydocs.notification.infrastructure.persistence.entity;
 
 import io.github.infrastructure.mongo.entity.base.AggregateEntity;
-import io.github.infrastructure.mongo.entity.base.MongoEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

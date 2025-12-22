@@ -103,7 +103,7 @@ public final class NotificationMapper {
     /// View
     public static NotificationRecipientView toView(NotificationRecipientProjection projection) {
         return new NotificationRecipientView(
-                projection.getId(),
+                projection.getNotification().getId(),
                 projection.getNotification().getSenderName(),
                 projection.getRenderedSubject(),
                 projection.getRenderedBody(),
