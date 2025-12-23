@@ -10,6 +10,7 @@ public record TemplateProjection(
         String subjectTemplate,
         String bodyTemplate,
         String description,
+        String type,
         LocalDateTime createdAt,
         LocalDateTime updatedTime
 ) {}

@@ -5,5 +5,6 @@ public record AddTemplateRequest(
         String channel,
         String subjectTemplate,
         String bodyTemplate,
-        String description) {
+        String description,
+        String type) {
 }

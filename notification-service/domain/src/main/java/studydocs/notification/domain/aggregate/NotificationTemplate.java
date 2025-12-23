@@ -19,10 +19,11 @@ public class NotificationTemplate extends AggregateRoot {
     private String description;
     private TemplateCreationTime createdAt;
     private TemplateUpdateTime updatedAt;
+    private TemplateType type;
 
     /// Constructor
-    private NotificationTemplate(UUID id) {
-        super(id);
+    private NotificationTemplate(UUID id, Integer version) {
+        super(id, version);
     }
 
     private NotificationTemplate() {
@@ -78,23 +79,24 @@ public class NotificationTemplate extends AggregateRoot {
     }
 
     /// Factory method
-    public static NotificationTemplate create(String name, String channel, String subject, String body, String description) {
+    public static NotificationTemplate create(String name, String channel, String subject, String body, String description, String type) {
         NotificationTemplate template = new NotificationTemplate();
         template.name = new TemplateName(name);
         template.channel = new TemplateChannel(channel);
         template.subjectTemplate = new TemplateSubject(subject);
         template.bodyTemplate = new TemplateBody(body);
-        template.description = Optional.ofNullable(description).map(d->{
+        template.description = Optional.ofNullable(description).map(d -> {
             template.editDescription(d);
             return template.description;
         }).orElse(null);
         template.createdAt = new TemplateCreationTime(LocalDateTime.now());
         template.updatedAt = new TemplateUpdateTime(LocalDateTime.now());
+        template.type = new TemplateType(type);
         return template;
     }
 
-    public static NotificationTemplate reconstruct(UUID id, String name, String channel, String subject, String body, String description, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        NotificationTemplate template = new NotificationTemplate(id);
+    public static NotificationTemplate reconstruct(UUID id, Integer version, String name, String channel, String subject, String body, String description, LocalDateTime createdAt, LocalDateTime updatedAt, String type) {
+        NotificationTemplate template = new NotificationTemplate(id,version);
         template.name = new TemplateName(name);
         template.channel = new TemplateChannel(channel);
         template.subjectTemplate = new TemplateSubject(subject);
@@ -102,6 +104,7 @@ public class NotificationTemplate extends AggregateRoot {
         template.description = description;
         template.createdAt = new TemplateCreationTime(createdAt);
         template.updatedAt = new TemplateUpdateTime(updatedAt);
+        template.type = new TemplateType(type);
         return template;
     }
 
@@ -132,5 +135,9 @@ public class NotificationTemplate extends AggregateRoot {
 
     public TemplateUpdateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public TemplateType getType() {
+        return type;
     }
 }

@@ -11,6 +11,5 @@ public interface NotificationRecipientQueries {
     Long countByRecipientId(UUID recipientId, boolean deleted);
     List<NotificationRecipientProjection> getByRecipientId(UUID recipientId, boolean deleted, LocalDateTime lastSeenReceiveAt, int limit);
     List<UUID> getUnreadNotificationIdsByRecipientId(UUID recipientId, int batchSize, LocalDateTime lastSeenReceiveAt);
-    List<UUID> getDeletedNotificationIdsByRecipientId(UUID recipientId, int batchSize, LocalDateTime lastSeenReceiveAt);
     NotificationRecipientProjection getById(UUID id);
 }

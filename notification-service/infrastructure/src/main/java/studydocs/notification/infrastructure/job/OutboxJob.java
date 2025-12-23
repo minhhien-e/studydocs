@@ -5,7 +5,7 @@ import io.github.domain.repository.OutboxRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import studydocs.notification.application.dto.payload.NotificationReceivePayload;
+import studydocs.notification.application.dto.payload.NotificationRecipientReadyPayload;
 import studydocs.notification.application.port.out.messaging.PublishNotificationEventPort;
 import studydocs.notification.domain.event.NotificationReceivedEvent;
 
@@ -27,7 +27,7 @@ public class OutboxJob {
     private void processEvent(Outbox event) {
         try {
             if (event.getPayload() instanceof NotificationReceivedEvent domainEvent) {
-                var payload = new NotificationReceivePayload(domainEvent.notificationId(), domainEvent.notificationRecipientId());
+                var payload = new NotificationRecipientReadyPayload(domainEvent.notificationId(), domainEvent.notificationRecipientId());
                 publishNotificationEventPort.publish(payload);
             }
             outboxRepository.markAsProcessed(event.getId());

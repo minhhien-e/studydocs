@@ -15,8 +15,8 @@ public class UserNotificationProfile extends AggregateRoot {
     private boolean emailEnabled;
     private boolean smsEnabled;
 
-    private UserNotificationProfile(UUID id) {
-        super(id);
+    private UserNotificationProfile(UUID id, Integer version) {
+        super(id,version);
     }
 
     private UserNotificationProfile() {
@@ -70,7 +70,7 @@ public class UserNotificationProfile extends AggregateRoot {
     }
 
     public static UserNotificationProfile reconstruct(
-            UUID id,
+            UUID id, Integer version,
             UUID userId,
             String email,
             String phone,
@@ -78,7 +78,7 @@ public class UserNotificationProfile extends AggregateRoot {
             boolean emailEnabled,
             boolean smsEnabled
     ) {
-        var profile = new UserNotificationProfile(id);
+        var profile = new UserNotificationProfile(id,version);
         profile.userId = userId;
         profile.emailAddress = email;
         profile.phoneNumber = phone;

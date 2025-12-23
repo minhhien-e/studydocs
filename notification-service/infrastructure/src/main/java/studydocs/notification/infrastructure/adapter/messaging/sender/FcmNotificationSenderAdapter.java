@@ -1,4 +1,4 @@
-package studydocs.notification.infrastructure.adapter.messaging;
+package studydocs.notification.infrastructure.adapter.messaging.sender;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -8,5 +8,6 @@ public record AddTemplateCommand(String name,
                                  String channel,
                                  String subjectTemplate,
                                  String bodyTemplate,
-                                 String description) implements Request<Void> {
+                                 String description,
+                                 String type) implements Request<Void> {
 }

@@ -10,8 +10,8 @@ public class FcmToken extends AggregateRoot {
     private UUID userId;
 
     /// Constructor
-    private FcmToken(UUID id) {
-        super(id);
+    private FcmToken(UUID id, Integer version) {
+        super(id,version);
     }
 
     private FcmToken() {
@@ -19,8 +19,8 @@ public class FcmToken extends AggregateRoot {
     }
 
     /// Factory method
-    public static FcmToken reconstruct(UUID id, UUID userId, String value) {
-        var entity = new FcmToken(id);
+    public static FcmToken reconstruct(UUID id, Integer version, UUID userId, String value) {
+        var entity = new FcmToken(id,version);
         entity.userId = userId;
         entity.value = new FcmTokenValue(value);
         return entity;

@@ -4,7 +4,8 @@ public enum DomainErrorCode {
 
     /* ===================== NOT FOUND ===================== */
     NOTIFICATION_NOT_FOUND(1, DomainErrorCategory.NOT_FOUND),
-    TEMPLATE_NOT_FOUND(10, DomainErrorCategory.NOT_FOUND),
+    TEMPLATE_BY_ID_NOT_FOUND(10, DomainErrorCategory.NOT_FOUND),
+    TEMPLATE_BY_NAME_NOT_FOUND(50, DomainErrorCategory.NOT_FOUND),
     RECIPIENT_NOT_FOUND(20, DomainErrorCategory.NOT_FOUND),
     RECIPIENTS_NOT_FOUND(21, DomainErrorCategory.NOT_FOUND),
     SENDER_NOT_FOUND(22, DomainErrorCategory.NOT_FOUND),
@@ -27,6 +28,7 @@ public enum DomainErrorCode {
     INVALID_TEMPLATE_CHANNEL(17, DomainErrorCategory.VALIDATION),
     INVALID_TEMPLATE_CREATION_TIME(18, DomainErrorCategory.VALIDATION),
     INVALID_TEMPLATE_UPDATE_TIME(19, DomainErrorCategory.VALIDATION),
+    INVALID_TEMPLATE_TYPE(51, DomainErrorCategory.VALIDATION),
 
     INVALID_BODY_DATA(16, DomainErrorCategory.VALIDATION),
     INVALID_PERSONALIZED_DATA(23, DomainErrorCategory.VALIDATION),

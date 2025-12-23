@@ -17,6 +17,7 @@ public final class TemplateMapper {
                 .subjectTemplate(request.subjectTemplate())
                 .bodyTemplate(request.bodyTemplate())
                 .description(request.description())
+                .type(request.type())
                 .build();
     }
 
@@ -74,6 +75,7 @@ public final class TemplateMapper {
                 projection.description(),
                 projection.subjectTemplate(),
                 projection.bodyTemplate(),
+                projection.type(),
                 projection.createdAt(),
                 projection.updatedTime()
         );

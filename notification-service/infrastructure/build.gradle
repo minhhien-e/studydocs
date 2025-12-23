@@ -24,7 +24,7 @@ dependencies {
     implementation 'com.google.api-client:google-api-client:2.6.0'
 
     implementation 'com.github.minhhien-e:MediatR:1.0.0'
-    implementation 'com.github.minhhien-e.foundation-domain:foundation-domain-mongo:1.0.2'
+    implementation 'com.github.minhhien-e.foundation-domain:foundation-domain-mongo:1.0.4'
     implementation("me.paulschwarz:spring-dotenv:4.0.0")
     compileOnly "org.projectlombok:lombok"
     annotationProcessor "org.projectlombok:lombok"

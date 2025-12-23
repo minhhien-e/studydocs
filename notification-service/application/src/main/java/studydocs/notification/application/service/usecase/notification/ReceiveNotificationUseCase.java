@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import studydocs.notification.application.dto.command.notification.ReceiveNotificationCommand;
 import studydocs.notification.application.dto.payload.UserDataProvidePayload;
 import studydocs.notification.application.dto.payload.base.DataProvidePayload;
+import studydocs.notification.application.enums.NotificationDataProviderPrefix;
 import studydocs.notification.application.port.in.renderer.TemplateRenderer;
 import studydocs.notification.application.port.in.usecase.notification.ReceiveNotificationUseCasePort;
 import studydocs.notification.application.service.builder.NotificationContentBuilder;
@@ -37,8 +38,12 @@ public class ReceiveNotificationUseCase implements ReceiveNotificationUseCasePor
                 notification.getSnapshotBody().value());
 
         for (var modelKey : modelKeys) {
+            var payload = createPayload(params, modelKey);
+            if (Objects.isNull(payload)) {
+                continue;
+            }
             notificationContent = notificationContentBuilder.build(notificationContent.subject(),
-                    notificationContent.body(), Objects.requireNonNull(createPayload(params, modelKey)));
+                    notificationContent.body(), payload);
         }
 
         var recipient = NotificationRecipient.create(
@@ -52,7 +57,7 @@ public class ReceiveNotificationUseCase implements ReceiveNotificationUseCasePor
     }
 
     private DataProvidePayload createPayload(ReceiveNotificationCommand param, String modelKey) {
-        if (modelKey.startsWith("user.")) {
+        if (modelKey.startsWith(NotificationDataProviderPrefix.USER.getPrefix())) {
             return new UserDataProvidePayload(param.recipientData().recipientId());
         }
         return null;

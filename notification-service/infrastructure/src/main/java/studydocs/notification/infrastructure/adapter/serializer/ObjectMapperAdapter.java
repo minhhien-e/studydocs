@@ -22,7 +22,11 @@ public class ObjectMapperAdapter implements DomainEventSerializer {
     }
 
     @Override
-    public DomainEvent deserialize(String s) {
-        return objectMapper.convertValue(s, DomainEvent.class);
+    public DomainEvent deserialize(Class<? extends DomainEvent> domainEventClass, String eventString) {
+        try {
+            return objectMapper.readValue(eventString, domainEventClass);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

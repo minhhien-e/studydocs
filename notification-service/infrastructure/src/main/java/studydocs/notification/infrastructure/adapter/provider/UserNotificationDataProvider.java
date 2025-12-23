@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import studydocs.notification.application.dto.payload.UserDataProvidePayload;
+import studydocs.notification.application.enums.NotificationDataProviderPrefix;
 import studydocs.notification.application.port.out.provider.NotificationDataProvider;
 import studydocs.notification.application.port.out.remote.RemoteUserServicePort;
 
@@ -19,7 +20,7 @@ public class UserNotificationDataProvider implements NotificationDataProvider<Us
 
     @Override
     public String getSupportPrefix() {
-        return "$user";
+        return NotificationDataProviderPrefix.USER.getPrefix();
     }
 
     @Override

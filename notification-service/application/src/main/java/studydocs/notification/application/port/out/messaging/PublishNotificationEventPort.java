@@ -1,7 +1,7 @@
 package studydocs.notification.application.port.out.messaging;
 
-import studydocs.notification.application.dto.payload.NotificationReceivePayload;
+import studydocs.notification.application.dto.payload.NotificationRecipientReadyPayload;
 
 public interface PublishNotificationEventPort {
-    void publish(NotificationReceivePayload payload);
+    void publish(NotificationRecipientReadyPayload payload);
 }

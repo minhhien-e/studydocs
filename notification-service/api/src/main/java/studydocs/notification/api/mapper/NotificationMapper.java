@@ -29,8 +29,8 @@ public final class NotificationMapper {
                 .templateId(request.templateId())
                 .channel(request.channel())
                 .type(request.type())
-                .snapshotSubjectData(request.snapshotSubjectData())
-                .snapshotBodyData(request.snapshotBodyData())
+                .subjectData(request.snapshotSubjectData())
+                .bodyData(request.snapshotBodyData())
                 .recipients(recipients)
                 .build();
     }
@@ -39,7 +39,7 @@ public final class NotificationMapper {
         return ReceiveNotificationCommand.builder()
                 .recipientData(RecipientData.builder()
                         .recipientId(userId)
-                        .context(Optional.ofNullable(request.getContext()))
+                        .context(request.getContext())
                         .build())
                 .notificationId(request.getNotificationId())
                 .build();

@@ -10,6 +10,7 @@ public record TemplateView(
         String description,
         String templateSubject,
         String templateBody,
+        String type,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {

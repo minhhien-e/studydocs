@@ -16,8 +16,8 @@ public class Notification extends AggregateRoot {
     private NotificationCreationTime createdAt;
 
     /// Constructor
-    private Notification(UUID id) {
-        super(id);
+    private Notification(UUID id, Integer version) {
+        super(id, version);
     }
 
     private Notification() {
@@ -45,7 +45,7 @@ public class Notification extends AggregateRoot {
         return notification;
     }
 
-    public static Notification reconstruct(UUID id,
+    public static Notification reconstruct(UUID id, Integer version,
                                            UUID templateId,
                                            UUID senderId,
                                            String category,
@@ -53,7 +53,7 @@ public class Notification extends AggregateRoot {
                                            String snapshotSubject,
                                            String snapshotBody,
                                            LocalDateTime createdAt) {
-        Notification notification = new Notification(id);
+        Notification notification = new Notification(id, version);
         notification.senderId = senderId;
         notification.templateId = templateId;
         notification.type = new NotificationType(category);

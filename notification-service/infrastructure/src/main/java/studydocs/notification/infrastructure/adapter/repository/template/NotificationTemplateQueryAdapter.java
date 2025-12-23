@@ -30,4 +30,9 @@ public class NotificationTemplateQueryAdapter implements NotificationTemplateQue
     public List<TemplateProjection> getByChannel(String channel) {
         return templateMongoRepository.findAllByChannel(channel).stream().map(NotificationTemplateMapper::toProjection).toList();
     }
+
+    @Override
+    public TemplateProjection getByName(String name) {
+        return templateMongoRepository.findByName(name).map(NotificationTemplateMapper::toProjection).orElseThrow(() -> new NotificationTemplateNotFoundException(name));
+    }
 }

@@ -9,6 +9,8 @@ import java.util.Map;
 public class StringTemplateRendererAdapter implements TemplateRenderer {
     @Override
     public String render(String template, Map<String, String> model) {
+        if(model == null)
+            return template;
         String result = template;
         for (Map.Entry<String, String> entry : model.entrySet()) {
             result = result.replace(String.format(getTemplateFormat(),entry.getKey()), entry.getValue());

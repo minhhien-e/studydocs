@@ -25,11 +25,11 @@ public class CreateNotificationUseCase implements CreateNotificationUseCasePort 
         var template = templateRepository.getById(params.templateId());
         String snapshotSubject = templateRenderer.render(
                 template.getSubjectTemplate().value(),
-                params.snapshotSubjectData()
+                params.subjectData()
         );
         String snapshotBody = templateRenderer.render(
                 template.getBodyTemplate().value(),
-                params.snapshotBodyData()
+                params.bodyData()
         );
         var notification = Notification.create(
                 params.senderId(),

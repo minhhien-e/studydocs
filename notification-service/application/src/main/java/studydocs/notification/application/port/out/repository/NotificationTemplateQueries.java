@@ -11,4 +11,6 @@ public interface NotificationTemplateQueries {
     List<TemplateProjection> findAll();
 
     List<TemplateProjection> getByChannel(String channel);
+
+    TemplateProjection getByName(String name);
 }

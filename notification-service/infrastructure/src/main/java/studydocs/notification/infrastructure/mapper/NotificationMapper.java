@@ -21,6 +21,7 @@ public final class NotificationMapper {
     public static NotificationEntity toEntity(Notification notification) {
         return NotificationEntity.builder()
                 .id(notification.getId())
+                .version(notification.getVersion())
                 .templateId(notification.getTemplateId())
                 .senderId(notification.getSenderId())
                 .snapshotSubject(notification.getSnapshotSubject().value())
@@ -34,6 +35,7 @@ public final class NotificationMapper {
     public static Notification toDomain(NotificationEntity entity) {
         return Notification.reconstruct(
                 entity.getId(),
+                entity.getVersion(),
                 entity.getTemplateId(),
                 entity.getSenderId(),
                 entity.getType(),

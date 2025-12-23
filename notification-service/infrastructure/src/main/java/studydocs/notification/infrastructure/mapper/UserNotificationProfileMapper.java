@@ -8,6 +8,7 @@ public final class UserNotificationProfileMapper {
     public static UserNotificationProfileEntity toEntity(UserNotificationProfile domain) {
         return UserNotificationProfileEntity.builder()
                 .id(domain.getId())
+                .version(domain.getVersion())
                 .userId(domain.getUserId())
                 .emailAddress(domain.getEmailAddress())
                 .phoneNumber(domain.getPhoneNumber())
@@ -20,6 +21,7 @@ public final class UserNotificationProfileMapper {
     public static UserNotificationProfile toDomain(UserNotificationProfileEntity entity) {
         return UserNotificationProfile.reconstruct(
                 entity.getId(),
+                entity.getVersion(),
                 entity.getUserId(),
                 entity.getEmailAddress(),
                 entity.getPhoneNumber(),

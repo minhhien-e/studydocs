@@ -24,8 +24,8 @@ public class NotificationRecipient extends AggregateRoot {
     private NotificationDeletionTime deletedAt;
 
     /// Constructor
-    private NotificationRecipient(UUID id) {
-        super(id);
+    private NotificationRecipient(UUID id, Integer version) {
+        super(id, version);
     }
 
     private NotificationRecipient() {
@@ -89,8 +89,8 @@ public class NotificationRecipient extends AggregateRoot {
         return recipient;
     }
 
-    public static NotificationRecipient reconstruct(UUID id, UUID notificationId, UUID recipientId, String renderedSubject, String renderedBody, boolean isRead, LocalDateTime receivedAt, LocalDateTime deletedAt) {
-        NotificationRecipient recipient = new NotificationRecipient(id);
+    public static NotificationRecipient reconstruct(UUID id, Integer version, UUID notificationId, UUID recipientId, String renderedSubject, String renderedBody, boolean isRead, LocalDateTime receivedAt, LocalDateTime deletedAt) {
+        NotificationRecipient recipient = new NotificationRecipient(id, version);
         recipient.recipientId = recipientId;
         recipient.notificationId = notificationId;
         recipient.isRead = isRead;

@@ -1,10 +1,10 @@
-package studydocs.notification.infrastructure.adapter.messaging;
+package studydocs.notification.infrastructure.adapter.messaging.publisher;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Component;
-import studydocs.notification.application.dto.payload.NotificationReceivePayload;
+import studydocs.notification.application.dto.payload.NotificationRecipientReadyPayload;
 import studydocs.notification.application.port.out.messaging.PublishNotificationEventPort;
 import studydocs.notification.infrastructure.config.RabbitMQConfig;
 
@@ -16,7 +16,7 @@ public class RabbitNotificationEventEventPublisher implements PublishNotificatio
     private final AmqpTemplate rabbitTemplate;
 
     @Override
-    public void publish(NotificationReceivePayload payload) {
+    public void publish(NotificationRecipientReadyPayload payload) {
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.NOTIFICATION_EXCHANGE,
                 RabbitMQConfig.NOTIFICATION_RECEIVED_ROUTING_KEY,

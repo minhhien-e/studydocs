@@ -20,7 +20,7 @@ public class AddTemplateUseCase implements AddTemplateUseCasePort {
     public Void execute(AddTemplateCommand params) {
         policy.checkNameUnique(params.name());
         var templateData = builder.build(params.subjectTemplate(), params.bodyTemplate());
-        var template = NotificationTemplate.create(params.name(), params.channel(), templateData.subject(), templateData.body(), params.description());
+        var template = NotificationTemplate.create(params.name(), params.channel(), templateData.subject(), templateData.body(), params.description(), params.type());
         templateRepository.save(template);
         return null;
     }

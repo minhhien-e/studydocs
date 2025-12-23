@@ -21,6 +21,7 @@ public class NotificationTemplateEntity extends AggregateEntity {
     private String subjectTemplate;
     private String bodyTemplate;
     private String description;
+    private String type;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

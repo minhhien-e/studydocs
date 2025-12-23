@@ -1,4 +1,4 @@
-package studydocs.notification.infrastructure.adapter.messaging;
+package studydocs.notification.infrastructure.adapter.messaging.sender;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

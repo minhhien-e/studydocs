@@ -22,6 +22,7 @@ public final class NotificationRecipientMapper {
     public static NotificationRecipient toDomain(NotificationRecipientEntity entity) {
         return NotificationRecipient.reconstruct(
                 entity.getId(),
+                entity.getVersion(),
                 entity.getNotificationId(),
                 entity.getRecipientId(),
                 entity.getRenderedSubject(),

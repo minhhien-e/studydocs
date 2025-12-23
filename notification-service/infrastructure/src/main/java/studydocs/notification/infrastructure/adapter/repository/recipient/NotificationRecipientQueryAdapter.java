@@ -73,20 +73,6 @@ public class NotificationRecipientQueryAdapter implements NotificationRecipientQ
         );
     }
 
-    @Override
-    public List<UUID> getDeletedNotificationIdsByRecipientId(
-            UUID recipientId,
-            int batchSize,
-            LocalDateTime lastSeenReceivedAt
-    ) {
-        return findNotificationIds(
-                recipientId,
-                batchSize,
-                lastSeenReceivedAt,
-                c -> c.and("deletedAt").ne(null)
-        );
-    }
-
     private List<UUID> findNotificationIds(
             UUID recipientId,
             int batchSize,

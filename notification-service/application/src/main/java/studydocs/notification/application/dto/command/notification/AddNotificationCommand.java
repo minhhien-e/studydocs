@@ -13,8 +13,8 @@ public record AddNotificationCommand(
         UUID templateId,
         String channel,
         String type,
-        Map<String, String> snapshotSubjectData,
-        Map<String, String> snapshotBodyData,
+        Map<String, String> subjectData,
+        Map<String, String> bodyData,
         List<RecipientData> recipients
 ) implements Request<UUID> {
 }
