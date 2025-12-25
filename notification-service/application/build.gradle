@@ -11,7 +11,7 @@ dependencyManagement {
 
 dependencies {
     implementation project(':domain')
-    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation "org.springframework:spring-context"
     compileOnly "org.projectlombok:lombok"
     annotationProcessor "org.projectlombok:lombok"
 }
