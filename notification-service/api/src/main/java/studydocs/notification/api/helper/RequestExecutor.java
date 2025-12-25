@@ -8,7 +8,7 @@ import studydocs.notification.application.dto.base.CursorPaginationResult;
 import studydocs.notification.application.dto.base.Request;
 import studydocs.notification.application.port.in.bus.MediatorBusPort;
 import studydocs.notification.application.port.in.provider.CurrentTraceIdProvider;
-import studydocs.notification.application.port.in.provider.CurrentUserProviderPort;
+import studydocs.notification.application.port.in.provider.CurrentUserProvider;
 import studydocs.notification.shared.web.ApiResponse;
 
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class RequestExecutor {
     private final MediatorBusPort mediatorBusPort;
-    private final CurrentUserProviderPort currentUserProviderPort;
+    private final CurrentUserProvider currentUserProvider;
     private final CurrentTraceIdProvider traceIdProvider;
 
     public <R, C> ResponseEntity<ApiResponse<?>> execute(Function<R, C> mapper, R request, HttpStatus status) {
@@ -30,7 +30,7 @@ public class RequestExecutor {
 
     // BusRequest có userId
     public <R, C> ResponseEntity<ApiResponse<?>> executeWithCurrentUser(BiFunction<UUID, R, C> mapper, R request, HttpStatus status) {
-        var userId = currentUserProviderPort.getCurrentUserId();
+        var userId = currentUserProvider.getCurrentUserId();
         var params = mapper.apply(userId, request);
         return handleRequest(params, status);
     }
@@ -55,7 +55,7 @@ public class RequestExecutor {
             Function<P, V> viewMapper,
             HttpStatus status
     ) {
-        var userId = currentUserProviderPort.getCurrentUserId();
+        var userId = currentUserProvider.getCurrentUserId();
         var command = requestMapper.apply(userId, request);
         var result = mediatorBusPort.send((Request<?>) command);
         var mappedResult = mapResult(result, viewMapper);

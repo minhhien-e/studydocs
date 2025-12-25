@@ -19,4 +19,6 @@ public interface NotificationRecipientMongoRepository extends MongoRepository<No
     Long countByRecipientIdAndDeletedAtIsNull(UUID recipientId);
 
     Long countByRecipientIdAndDeletedAtIsNotNull(UUID recipientId);
+
+    boolean existsByNotificationIdAndRecipientId(UUID notificationId, UUID recipientId);
 }

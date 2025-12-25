@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Exception e) {
         log.error(e.getMessage());
-        return ResponseEntity.status(500).body(ApiResponse.error(500, null, currentTraceIdProvider.getCurrentTraceId()));
+        return ResponseEntity.status(500).body(ApiResponse.error(500, -1, currentTraceIdProvider.getCurrentTraceId()));
 
     }
 }

@@ -15,13 +15,17 @@ public class SoftDeleteNotificationUseCase implements SoftDeleteNotificationUseC
 
     @Override
     public Void execute(SoftDeleteNotificationCommand params) {
-        var recipient = recipientRepository.getByNotificationIdAndRecipientId(
-                params.notificationId(),
-                params.requesterId()
-        );
-        notificationPolicy.checkCanAccess(recipient, params.requesterId());
-        recipient.softDelete();
-        recipientRepository.save(recipient);
+        params.notificationIds().forEach(notificationId -> {
+            var recipient = recipientRepository.getByNotificationIdAndRecipientId(
+                    notificationId,
+                    params.requesterId()
+            );
+            if (recipient != null) {
+                notificationPolicy.checkCanAccess(recipient, params.requesterId());
+                recipient.softDelete();
+                recipientRepository.save(recipient);
+            }
+        });
         return null;
     }
 }

@@ -9,7 +9,7 @@ import studydocs.notification.api.helper.RequestExecutor;
 import studydocs.notification.api.mapper.NotificationMapper;
 import studydocs.notification.application.dto.projection.NotificationRecipientProjection;
 import studydocs.notification.application.port.in.provider.CurrentTraceIdProvider;
-import studydocs.notification.application.port.in.provider.CurrentUserProviderPort;
+import studydocs.notification.application.port.in.provider.CurrentUserProvider;
 import studydocs.notification.application.service.orchestrator.CreateAndDistributeNotificationOrchestrator;
 import studydocs.notification.shared.web.ApiResponse;
 
@@ -21,7 +21,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/notifications")
 public class NotificationController {
     private final RequestExecutor requestExecutor;
-    private final CurrentUserProviderPort currentUserProvider;
+    private final CurrentUserProvider currentUserProvider;
     private final CurrentTraceIdProvider currentTraceIdProvider;
     private final CreateAndDistributeNotificationOrchestrator createAndDistributeNotificationOrchestrator;
 
@@ -46,7 +46,7 @@ public class NotificationController {
         return requestExecutor.executeWithCurrentUserAndMapView(
                 NotificationMapper::toQuery,
                 request,
-                projection->NotificationMapper.toView((NotificationRecipientProjection) projection),
+                projection -> NotificationMapper.toView((NotificationRecipientProjection) projection),
                 HttpStatus.OK
         );
     }
@@ -76,16 +76,13 @@ public class NotificationController {
     }
 
     /// Delete
-    @DeleteMapping("/{notificationId}/soft")
-    public ResponseEntity<?> softDelete(@PathVariable("notificationId") UUID notificationId) {
-        var request = new SoftDeleteNotificationRequest(notificationId);
+    @DeleteMapping("/soft")
+    public ResponseEntity<?> softDelete(@RequestBody SoftDeleteNotificationRequest request) {
         return requestExecutor.executeWithCurrentUser(NotificationMapper::toCommand, request, HttpStatus.OK);
-
     }
 
-    @DeleteMapping("/{notificationId}/hard")
-    public ResponseEntity<?> hardDelete(@PathVariable("notificationId") UUID notificationId) {
-        var request = new HardDeleteNotificationRequest(notificationId);
+    @DeleteMapping("/hard")
+    public ResponseEntity<?> hardDelete(@RequestBody HardDeleteNotificationRequest request) {
         return requestExecutor.executeWithCurrentUser(NotificationMapper::toCommand, request, HttpStatus.OK);
     }
 

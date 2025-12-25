@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public record NotificationRecipientView(
         UUID id,
-        String senderName,
+        UUID senderId,
         String subject,
         String body,
         String type,

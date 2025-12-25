@@ -11,7 +11,6 @@ import studydocs.notification.application.dto.query.notification.GetNotification
 import studydocs.notification.application.dto.query.notification.GetNotificationMetadataQuery;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 public final class NotificationMapper {
@@ -67,14 +66,14 @@ public final class NotificationMapper {
 
     public static SoftDeleteNotificationCommand toCommand(UUID userId, SoftDeleteNotificationRequest request) {
         return SoftDeleteNotificationCommand.builder()
-                .notificationId(request.notificationId())
+                .notificationIds(request.notificationIds())
                 .requesterId(userId)
                 .build();
     }
 
     public static HardDeleteNotificationCommand toCommand(UUID userId, HardDeleteNotificationRequest request) {
         return HardDeleteNotificationCommand.builder()
-                .notificationId(request.notificationId())
+                .notificationIds(request.notificationIds())
                 .requesterId(userId)
                 .build();
     }
@@ -104,7 +103,7 @@ public final class NotificationMapper {
     public static NotificationRecipientView toView(NotificationRecipientProjection projection) {
         return new NotificationRecipientView(
                 projection.getNotification().getId(),
-                projection.getNotification().getSenderName(),
+                projection.getNotification().getSenderId(),
                 projection.getRenderedSubject(),
                 projection.getRenderedBody(),
                 projection.getNotification().getType(),

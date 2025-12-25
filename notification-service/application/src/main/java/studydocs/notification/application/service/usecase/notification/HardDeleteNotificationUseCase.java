@@ -15,12 +15,16 @@ public class HardDeleteNotificationUseCase implements HardDeleteNotificationUseC
 
     @Override
     public Void execute(HardDeleteNotificationCommand params) {
-        var recipient = recipientRepository.getByNotificationIdAndRecipientId(
-                params.notificationId(),
-                params.requesterId()
-        );
-        notificationPolicy.checkCanAccess(recipient, params.requesterId());
-        recipientRepository.deleteByNotificationIdAndRecipientId(recipient.getNotificationId(), params.requesterId());
+        params.notificationIds().forEach(notificationId -> {
+            var recipient = recipientRepository.getByNotificationIdAndRecipientId(
+                    notificationId,
+                    params.requesterId()
+            );
+            if (recipient != null) {
+                notificationPolicy.checkCanAccess(recipient, params.requesterId());
+                recipientRepository.deleteByNotificationIdAndRecipientId(recipient.getNotificationId(), params.requesterId());
+            }
+        });
         return null;
     }
 }

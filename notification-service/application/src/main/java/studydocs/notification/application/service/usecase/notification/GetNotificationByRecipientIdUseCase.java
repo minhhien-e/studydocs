@@ -7,14 +7,12 @@ import studydocs.notification.application.dto.projection.NotificationRecipientPr
 import studydocs.notification.application.dto.query.notification.GetNotificationByRecipientIdQuery;
 import studydocs.notification.application.port.in.usecase.notification.GetNotificationByRecipientIdUseCasePort;
 import studydocs.notification.application.port.out.repository.NotificationRecipientQueries;
-import studydocs.notification.application.port.out.repository.UserQueries;
 import studydocs.notification.application.utils.CursorPaginationHelper;
 
 @Service
 @RequiredArgsConstructor
 public class GetNotificationByRecipientIdUseCase implements GetNotificationByRecipientIdUseCasePort {
     private final NotificationRecipientQueries repository;
-    private final UserQueries userQueries;
 
     @Override
     public CursorPaginationResult<NotificationRecipientProjection> execute(GetNotificationByRecipientIdQuery params) {
@@ -27,8 +25,6 @@ public class GetNotificationByRecipientIdUseCase implements GetNotificationByRec
                 params.receivedAt(),
                 params.limit() + 1
         );
-        var user = userQueries.getById(params.recipientId());
-        recipientNotifications.forEach(notification -> notification.getNotification().setSenderName(user.name()));
 
         return CursorPaginationHelper.buildResult(
                 recipientNotifications,

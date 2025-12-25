@@ -2,6 +2,6 @@ package studydocs.notification.application.port.in.provider;
 
 import java.util.UUID;
 
-public interface CurrentUserProviderPort {
+public interface CurrentUserProvider {
     UUID getCurrentUserId();
 }

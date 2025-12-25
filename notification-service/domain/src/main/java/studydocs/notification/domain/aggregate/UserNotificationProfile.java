@@ -2,7 +2,6 @@ package studydocs.notification.domain.aggregate;
 
 import io.github.domain.aggregate.base.AggregateRoot;
 
-import java.util.List;
 import java.util.UUID;
 
 public class UserNotificationProfile extends AggregateRoot {

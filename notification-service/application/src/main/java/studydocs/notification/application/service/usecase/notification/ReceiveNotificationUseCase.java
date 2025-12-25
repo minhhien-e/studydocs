@@ -28,7 +28,7 @@ public class ReceiveNotificationUseCase implements ReceiveNotificationUseCasePor
 
     @Override
     public Void execute(ReceiveNotificationCommand params) {
-        notificationSendPolicy.ensureCanSend(params.recipientData().recipientId());
+        notificationSendPolicy.ensureCanReceive(params.notificationId(), params.recipientData().recipientId());
 
         var notification = notificationRepository.getById(params.notificationId());
 

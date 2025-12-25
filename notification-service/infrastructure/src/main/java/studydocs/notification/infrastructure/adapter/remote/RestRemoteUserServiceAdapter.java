@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import studydocs.notification.application.dto.projection.UserProjection;
-import studydocs.notification.application.port.in.provider.CurrentUserProviderPort;
+import studydocs.notification.application.port.in.provider.CurrentUserProvider;
 import studydocs.notification.application.port.out.remote.RemoteUserServicePort;
 import studydocs.notification.domain.exception.AccessDeniedException;
 import studydocs.notification.infrastructure.dto.integration.UserIntegration;
@@ -19,13 +19,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RestRemoteUserServiceAdapter implements RemoteUserServicePort {
     private final RemoteApiCaller remoteApiCaller;
-    private final CurrentUserProviderPort currentUserProviderPort;
+    private final CurrentUserProvider currentUserProvider;
     @Value("${app.remote.user-service.url}")
     private String userServiceUrl;
 
     @Override
     public UserProjection getById(UUID id) {
-        var currentId = currentUserProviderPort.getCurrentUserId();
+        var currentId = currentUserProvider.getCurrentUserId();
         if (!currentId.equals(id)) {
             throw new AccessDeniedException(id, currentId);
         }

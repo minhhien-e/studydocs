@@ -14,7 +14,6 @@ import studydocs.notification.infrastructure.mapper.NotificationRecipientMapper;
 import studydocs.notification.infrastructure.persistence.entity.NotificationRecipientEntity;
 import studydocs.notification.infrastructure.persistence.repository.NotificationRecipientMongoRepository;
 
-import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -39,12 +38,9 @@ public class NotificationRecipientWriteAdapter
                 .map(NotificationRecipientMapper::toDomain)
                 .orElseThrow(() -> new NotificationNotFoundException(notificationId));
     }
-
     @Override
-    public List<NotificationRecipient> getByRecipientId(UUID recipientId) {
-        return mongoRepository.findByRecipientId(recipientId).stream()
-                .map(NotificationRecipientMapper::toDomain)
-                .toList();
+    public boolean existsByNotificationIdAndRecipientId(UUID notificationId, UUID recipientId) {
+        return mongoRepository.existsByNotificationIdAndRecipientId(notificationId, recipientId);
     }
 
     @Override

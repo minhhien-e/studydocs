@@ -1,12 +1,12 @@
 package studydocs.notification.infrastructure.adapter.provider;
 
 import org.springframework.stereotype.Component;
-import studydocs.notification.application.port.in.provider.CurrentUserProviderPort;
+import studydocs.notification.application.port.in.provider.CurrentUserProvider;
 
 import java.util.UUID;
 
 @Component
-public  class JwtCurrentUserProvider implements CurrentUserProviderPort {
+public  class JwtCurrentUserProvider implements CurrentUserProvider {
     public UUID getCurrentUserId() {
 //        var jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //        return UUID.fromString(jwt.getSubject());

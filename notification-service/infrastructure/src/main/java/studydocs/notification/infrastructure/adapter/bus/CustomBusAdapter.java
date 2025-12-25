@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import studydocs.notification.application.dto.base.Request;
 import studydocs.notification.application.port.in.bus.MediatorBusPort;
 import studydocs.notification.domain.exception.base.DomainException;
-import studydocs.notification.infrastructure.adapter.web.DomainToHttpExceptionMapper;
-import studydocs.notification.infrastructure.adapter.web.InfrastructureToHttpExceptionMapper;
+import studydocs.notification.infrastructure.adapter.web.exception.DomainToHttpExceptionMapper;
+import studydocs.notification.infrastructure.adapter.web.exception.InfrastructureToHttpExceptionMapper;
 import studydocs.notification.infrastructure.exception.base.InfrastructureException;
 
 @Component

@@ -1,6 +1,5 @@
 package studydocs.notification.domain.policy;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface NotificationSendPolicy {
@@ -9,7 +8,8 @@ public interface NotificationSendPolicy {
             UUID templateId
     );
 
-    void ensureCanSend(List<UUID> recipientIds);
+    void ensureCanReceive(UUID notificationId, UUID recipientId);
+
     void ensureCanSend(UUID recipientId);
 
 }
