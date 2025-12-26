@@ -1,6 +1,6 @@
 package studydocs.notification.infrastructure.adapter.registry;
 
-import io.github.domain.base.DomainEvent;
+import io.github.domain.event.DomainEvent;
 import io.github.domain.port.DomainEventRegistry;
 import org.springframework.stereotype.Component;
 import studydocs.notification.domain.event.NotificationReceivedEvent;

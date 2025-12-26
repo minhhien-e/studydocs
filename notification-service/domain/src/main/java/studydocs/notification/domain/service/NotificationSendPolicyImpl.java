@@ -37,7 +37,7 @@ public class NotificationSendPolicyImpl implements NotificationSendPolicy {
     @Override
     public void ensureCanReceive(UUID notificationId, UUID recipientId) {
         ensureCanSend(recipientId);
-        if(!notificationRecipientRepository.existsByNotificationIdAndRecipientId(notificationId, recipientId)){
+        if(notificationRecipientRepository.existsByNotificationIdAndRecipientId(notificationId, recipientId)){
             throw new NotificationRecipientAlreadyExistsException(notificationId, recipientId);
         }
     }

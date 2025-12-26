@@ -1,7 +1,6 @@
 package studydocs.notification.domain.aggregate;
 
-import io.github.domain.aggregate.base.AggregateRoot;
-import io.github.domain.enums.DomainStatus;
+import io.github.domain.aggregate.AggregateRoot;
 import studydocs.notification.domain.event.NotificationReceivedEvent;
 import studydocs.notification.domain.exception.notification.CannotMarkDeletedNotificationAsReadException;
 import studydocs.notification.domain.exception.notification.CannotMarkDeletedNotificationAsUnreadException;
@@ -24,7 +23,7 @@ public class NotificationRecipient extends AggregateRoot {
     private NotificationDeletionTime deletedAt;
 
     /// Constructor
-    private NotificationRecipient(UUID id, Integer version) {
+    private NotificationRecipient(UUID id, long version) {
         super(id, version);
     }
 
@@ -41,7 +40,6 @@ public class NotificationRecipient extends AggregateRoot {
             return;
         }
         this.isRead = true;
-        markChanged("isRead");
     }
 
     public void markAsUnread() {
@@ -52,7 +50,6 @@ public class NotificationRecipient extends AggregateRoot {
             return;
         }
         this.isRead = false;
-        markChanged("isRead");
     }
 
     public void softDelete() {
@@ -60,7 +57,6 @@ public class NotificationRecipient extends AggregateRoot {
             throw new NotificationAlreadySoftDeletedException(notificationId);
         }
         this.deletedAt = new NotificationDeletionTime(LocalDateTime.now());
-        markChanged("deletedAt");
     }
 
     public void restore() {
@@ -68,7 +64,6 @@ public class NotificationRecipient extends AggregateRoot {
             throw new NotificationNotSoftDeletedException(notificationId);
         }
         this.deletedAt = null;
-        markChanged("deletedAt");
     }
 
     /// Helper method
@@ -89,7 +84,7 @@ public class NotificationRecipient extends AggregateRoot {
         return recipient;
     }
 
-    public static NotificationRecipient reconstruct(UUID id, Integer version, UUID notificationId, UUID recipientId, String renderedSubject, String renderedBody, boolean isRead, LocalDateTime receivedAt, LocalDateTime deletedAt) {
+    public static NotificationRecipient reconstruct(UUID id, long version, UUID notificationId, UUID recipientId, String renderedSubject, String renderedBody, boolean isRead, LocalDateTime receivedAt, LocalDateTime deletedAt) {
         NotificationRecipient recipient = new NotificationRecipient(id, version);
         recipient.recipientId = recipientId;
         recipient.notificationId = notificationId;

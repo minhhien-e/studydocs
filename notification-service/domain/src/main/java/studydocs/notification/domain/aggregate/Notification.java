@@ -1,6 +1,6 @@
 package studydocs.notification.domain.aggregate;
 
-import io.github.domain.aggregate.base.AggregateRoot;
+import io.github.domain.aggregate.AggregateRoot;
 import studydocs.notification.domain.vo.*;
 
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ public class Notification extends AggregateRoot {
     private NotificationCreationTime createdAt;
 
     /// Constructor
-    private Notification(UUID id, Integer version) {
+    private Notification(UUID id, long version) {
         super(id, version);
     }
 
@@ -45,7 +45,7 @@ public class Notification extends AggregateRoot {
         return notification;
     }
 
-    public static Notification reconstruct(UUID id, Integer version,
+    public static Notification reconstruct(UUID id, long version,
                                            UUID templateId,
                                            UUID senderId,
                                            String category,

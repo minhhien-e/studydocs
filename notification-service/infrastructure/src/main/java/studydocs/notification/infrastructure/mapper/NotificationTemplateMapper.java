@@ -19,21 +19,21 @@ public final class NotificationTemplateMapper {
         );
     }
 
-    public static NotificationTemplateEntity toEntity(NotificationTemplate domainEntity) {
-        return NotificationTemplateEntity.builder()
-                .id(domainEntity.getId())
-                .bodyTemplate(domainEntity.getBodyTemplate().value())
-                .channel(domainEntity.getChannel().value())
-                .name(domainEntity.getName().value())
-                .subjectTemplate(domainEntity.getSubjectTemplate().value())
-                .description(domainEntity.getDescription())
-                .type(domainEntity.getType().value())
-                .createdAt(domainEntity.getCreatedAt().value())
-                .updatedAt(domainEntity.getUpdatedAt().value())
-                .build();
-    }
-
     public static NotificationTemplate toDomain(NotificationTemplateEntity entity) {
         return NotificationTemplate.reconstruct(entity.getId(), entity.getVersion(), entity.getName(), entity.getChannel(), entity.getSubjectTemplate(), entity.getBodyTemplate(), entity.getDescription(), entity.getCreatedAt(), entity.getUpdatedAt(), entity.getType());
+    }
+
+    public static void updateEntity(NotificationTemplateEntity entity, NotificationTemplate domain) {
+        if (entity.getId() == null) {
+            entity.setId(domain.getId());
+        }
+        entity.setBodyTemplate(domain.getBodyTemplate().value());
+        entity.setChannel(domain.getChannel().value());
+        entity.setName(domain.getName().value());
+        entity.setSubjectTemplate(domain.getSubjectTemplate().value());
+        entity.setDescription(domain.getDescription());
+        entity.setType(domain.getType().value());
+        entity.setCreatedAt(domain.getCreatedAt().value());
+        entity.setUpdatedAt(domain.getUpdatedAt().value());
     }
 }

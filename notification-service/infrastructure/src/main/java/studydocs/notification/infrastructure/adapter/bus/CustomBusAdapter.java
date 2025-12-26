@@ -8,14 +8,11 @@ import studydocs.notification.application.dto.base.Request;
 import studydocs.notification.application.port.in.bus.MediatorBusPort;
 import studydocs.notification.domain.exception.base.DomainException;
 import studydocs.notification.infrastructure.adapter.web.exception.DomainToHttpExceptionMapper;
-import studydocs.notification.infrastructure.adapter.web.exception.InfrastructureToHttpExceptionMapper;
-import studydocs.notification.infrastructure.exception.base.InfrastructureException;
 
 @Component
 @RequiredArgsConstructor
 public class CustomBusAdapter implements MediatorBusPort {
     private final DomainToHttpExceptionMapper domainToHttpExceptionMapper;
-    private final InfrastructureToHttpExceptionMapper infrastructureToHttpExceptionMapper;
     private final Bus bus;
 
     @Override
@@ -24,9 +21,6 @@ public class CustomBusAdapter implements MediatorBusPort {
             return bus.send(BusRequestWrapper.of(request));
         } catch (DomainException e) {
             throw domainToHttpExceptionMapper.map(e);
-        }
-        catch (InfrastructureException e){
-            throw infrastructureToHttpExceptionMapper.map(e);
         }
     }
 }

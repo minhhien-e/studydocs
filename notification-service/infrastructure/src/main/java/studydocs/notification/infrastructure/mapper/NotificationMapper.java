@@ -18,20 +18,6 @@ public final class NotificationMapper {
                 .build();
     }
 
-    public static NotificationEntity toEntity(Notification notification) {
-        return NotificationEntity.builder()
-                .id(notification.getId())
-                .version(notification.getVersion())
-                .templateId(notification.getTemplateId())
-                .senderId(notification.getSenderId())
-                .snapshotSubject(notification.getSnapshotSubject().value())
-                .snapshotBody(notification.getSnapshotBody().value())
-                .type(notification.getType().value())
-                .channel(notification.getChannel().value())
-                .createdAt(notification.getCreatedAt().value())
-                .build();
-    }
-
     public static Notification toDomain(NotificationEntity entity) {
         return Notification.reconstruct(
                 entity.getId(),
@@ -44,5 +30,18 @@ public final class NotificationMapper {
                 entity.getSnapshotBody(),
                 entity.getCreatedAt()
         );
+    }
+
+    public static void updateEntity(NotificationEntity entity, Notification domain) {
+        if (entity.getId() == null) {
+            entity.setId(domain.getId());
+        }
+        entity.setTemplateId(domain.getTemplateId());
+        entity.setSenderId(domain.getSenderId());
+        entity.setSnapshotSubject(domain.getSnapshotSubject().value());
+        entity.setSnapshotBody(domain.getSnapshotBody().value());
+        entity.setType(domain.getType().value());
+        entity.setChannel(domain.getChannel().value());
+        entity.setCreatedAt(domain.getCreatedAt().value());
     }
 }

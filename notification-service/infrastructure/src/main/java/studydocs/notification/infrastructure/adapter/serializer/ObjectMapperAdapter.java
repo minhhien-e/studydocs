@@ -2,7 +2,7 @@ package studydocs.notification.infrastructure.adapter.serializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.domain.base.DomainEvent;
+import io.github.domain.event.DomainEvent;
 import io.github.domain.port.DomainEventSerializer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

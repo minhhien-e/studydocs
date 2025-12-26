@@ -6,18 +6,6 @@ import studydocs.notification.domain.vo.NotificationDeletionTime;
 import studydocs.notification.infrastructure.persistence.entity.NotificationRecipientEntity;
 
 public final class NotificationRecipientMapper {
-    public static NotificationRecipientEntity toEntity(NotificationRecipient domain) {
-        return NotificationRecipientEntity.builder()
-                .id(domain.getId())
-                .notificationId(domain.getNotificationId())
-                .recipientId(domain.getRecipientId())
-                .renderedSubject(domain.getRenderedSubject())
-                .renderedBody(domain.getRenderedBody())
-                .isRead(domain.isRead())
-                .receivedAt(domain.getReceptionTime().value())
-                .deletedAt(domain.getDeletedAt().map(NotificationDeletionTime::value).orElse(null))
-                .build();
-    }
 
     public static NotificationRecipient toDomain(NotificationRecipientEntity entity) {
         return NotificationRecipient.reconstruct(
@@ -32,6 +20,7 @@ public final class NotificationRecipientMapper {
                 entity.getDeletedAt()
         );
     }
+
     public static NotificationRecipientProjection toProjection(NotificationRecipientEntity entity) {
         return NotificationRecipientProjection.builder()
                 .id(entity.getId())
@@ -42,5 +31,18 @@ public final class NotificationRecipientMapper {
                 .receivedAt(entity.getReceivedAt())
                 .deletedAt(entity.getDeletedAt())
                 .build();
+    }
+
+    public static void updateEntity(NotificationRecipientEntity entity, NotificationRecipient domain) {
+        if (entity.getId() == null) {
+            entity.setId(domain.getId());
+        }
+        entity.setNotificationId(domain.getNotificationId());
+        entity.setRecipientId(domain.getRecipientId());
+        entity.setRenderedSubject(domain.getRenderedSubject());
+        entity.setRenderedBody(domain.getRenderedBody());
+        entity.setIsRead(domain.isRead());
+        entity.setReceivedAt(domain.getReceptionTime().value());
+        entity.setDeletedAt(domain.getDeletedAt().map(NotificationDeletionTime::value).orElse(null));
     }
 }

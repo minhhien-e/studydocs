@@ -1,6 +1,6 @@
 package studydocs.notification.domain.aggregate;
 
-import io.github.domain.aggregate.base.AggregateRoot;
+import io.github.domain.aggregate.AggregateRoot;
 import studydocs.notification.domain.exception.template.TemplateDescriptionNullOrEmptyException;
 import studydocs.notification.domain.exception.template.TemplateDescriptionTooLongException;
 import studydocs.notification.domain.exception.template.TemplateDescriptionTooShortException;
@@ -22,7 +22,7 @@ public class NotificationTemplate extends AggregateRoot {
     private TemplateType type;
 
     /// Constructor
-    private NotificationTemplate(UUID id, Integer version) {
+    private NotificationTemplate(UUID id, long version) {
         super(id, version);
     }
 
@@ -33,27 +33,23 @@ public class NotificationTemplate extends AggregateRoot {
     /// Business logic
     public void editBody(String body) {
         this.bodyTemplate = new TemplateBody(body);
-        markChanged("bodyTemplate");
         update();
     }
 
     public void editSubject(String subject) {
         this.subjectTemplate = new TemplateSubject(subject);
-        markChanged("subjectTemplate");
         update();
 
     }
 
     public void editChannel(String channel) {
         this.channel = new TemplateChannel(channel);
-        markChanged("channel");
         update();
 
     }
 
     public void rename(String name) {
         this.name = new TemplateName(name);
-        markChanged("name");
         update();
 
     }
@@ -69,13 +65,11 @@ public class NotificationTemplate extends AggregateRoot {
             throw new TemplateDescriptionTooLongException();
         }
         this.description = description;
-        markChanged("description");
         update();
     }
 
     private void update() {
         this.updatedAt = new TemplateUpdateTime(LocalDateTime.now());
-        markChanged("updatedAt");
     }
 
     /// Factory method
@@ -95,7 +89,7 @@ public class NotificationTemplate extends AggregateRoot {
         return template;
     }
 
-    public static NotificationTemplate reconstruct(UUID id, Integer version, String name, String channel, String subject, String body, String description, LocalDateTime createdAt, LocalDateTime updatedAt, String type) {
+    public static NotificationTemplate reconstruct(UUID id, long version, String name, String channel, String subject, String body, String description, LocalDateTime createdAt, LocalDateTime updatedAt, String type) {
         NotificationTemplate template = new NotificationTemplate(id,version);
         template.name = new TemplateName(name);
         template.channel = new TemplateChannel(channel);

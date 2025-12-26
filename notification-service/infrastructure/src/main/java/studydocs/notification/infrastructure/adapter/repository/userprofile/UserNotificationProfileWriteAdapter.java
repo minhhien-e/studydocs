@@ -1,11 +1,11 @@
 package studydocs.notification.infrastructure.adapter.repository.userprofile;
 
-import io.github.domain.aggregate.base.AggregateChild;
-import io.github.domain.entity.base.DomainEntity;
+import io.github.domain.aggregate.AggregateChild;
 import io.github.domain.port.DomainEventSerializer;
 import io.github.infrastructure.mongo.entity.base.MongoEntity;
-import io.github.infrastructure.mongo.helper.MongoEntityWriter;
-import io.github.infrastructure.mongo.repository.base.AbstractAggregateMongoRepository;
+import io.github.infrastructure.mongo.helper.MongoHelper;
+import io.github.infrastructure.mongo.repository.base.AbstractAggregateMongoEntityRepository;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 import studydocs.notification.domain.aggregate.UserNotificationProfile;
 import studydocs.notification.domain.exception.userprofile.UserNotificationProfileNotFoundException;
@@ -20,17 +20,18 @@ import java.util.UUID;
 
 @Repository
 public class UserNotificationProfileWriteAdapter 
-        extends AbstractAggregateMongoRepository<UserNotificationProfile, UserNotificationProfileEntity>
+        extends AbstractAggregateMongoEntityRepository<UserNotificationProfile, UserNotificationProfileEntity>
         implements UserNotificationProfileRepository {
     
     private final UserNotificationProfileMongoRepository mongoRepository;
 
     public UserNotificationProfileWriteAdapter(
             UserNotificationProfileMongoRepository mongoRepository,
-            MongoEntityWriter mongoEntityWriter,
+            MongoTemplate mongoTemplate,
+            MongoHelper mongoHelper,
             DomainEventSerializer domainEventSerializer
     ) {
-        super(mongoEntityWriter,domainEventSerializer);
+        super(domainEventSerializer, mongoTemplate, mongoHelper);
         this.mongoRepository = mongoRepository;
     }
     
@@ -52,22 +53,26 @@ public class UserNotificationProfileWriteAdapter
     }
 
     @Override
-    public Class<?> getEntityClass() {
+    public Class<UserNotificationProfileEntity> getEntityClass() {
         return UserNotificationProfileEntity.class;
     }
     
     @Override
-    public UserNotificationProfileEntity toEntity(UserNotificationProfile domainEntity) {
-        return UserNotificationProfileMapper.toEntity(domainEntity);
+    public UserNotificationProfile toDomainEntity(UserNotificationProfileEntity entity) {
+        return UserNotificationProfileMapper.toDomain(entity);
     }
 
     @Override
-    protected Class<?> getChildEntityClass(AggregateChild aggregateChild) {
+    public void updateEntity(UserNotificationProfileEntity snapshot, UserNotificationProfile domain) {
+        UserNotificationProfileMapper.updateEntity(snapshot, domain);
+    }
+
+    @Override
+    protected AggregateChild getChildInstance(Class<? extends AggregateChild> childClass) {
         return null;
     }
 
     @Override
-    protected MongoEntity toChildEntity(DomainEntity domainEntity) {
-        return null;
+    protected void updateChildEntity(Class<? extends AggregateChild> aggregateChildClass, AggregateChild child, MongoEntity childEntity) {
     }
 }

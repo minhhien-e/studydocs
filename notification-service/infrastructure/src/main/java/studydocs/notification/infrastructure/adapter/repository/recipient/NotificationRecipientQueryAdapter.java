@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import studydocs.notification.application.dto.projection.NotificationRecipientProjection;
 import studydocs.notification.application.port.out.repository.NotificationRecipientQueries;
-import studydocs.notification.infrastructure.exception.NotificationRecipientNotFoundException;
+import studydocs.notification.domain.exception.recipient.NotificationRecipientNotFoundException;
 import studydocs.notification.infrastructure.mapper.NotificationRecipientMapper;
 import studydocs.notification.infrastructure.persistence.entity.NotificationRecipientEntity;
 import studydocs.notification.infrastructure.persistence.repository.NotificationRecipientMongoRepository;

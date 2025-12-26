@@ -8,14 +8,14 @@ public final class FcmTokenMapper {
     }
 
     public static FcmToken toDomain(FcmTokenEntity entity) {
-        return FcmToken.reconstruct(entity.getId(),entity.getVersion(), entity.getUserId(), entity.getValue());
+        return FcmToken.reconstruct(entity.getId(), entity.getVersion(), entity.getUserId(), entity.getValue());
     }
-    public static FcmTokenEntity toEntity(FcmToken domain) {
-        return FcmTokenEntity.builder()
-                .id(domain.getId())
-                .version(domain.getVersion())
-                .userId(domain.getUserId())
-                .value(domain.getValue().value())
-                .build();
+
+    public static void updateEntity(FcmTokenEntity entity, FcmToken domain) {
+        if (entity.getId() == null) {
+            entity.setId(domain.getId());
+        }
+        entity.setUserId(domain.getUserId());
+        entity.setValue(domain.getValue().value());
     }
 }

@@ -7,8 +7,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import studydocs.notification.infrastructure.exception.RemoteException;
 import studydocs.notification.shared.web.ApiResponse;
+import studydocs.notification.shared.web.HttpException;
 
 
 @Component
@@ -56,7 +56,7 @@ public class RemoteApiCaller {
         if (body == null)
             throw new RuntimeException();
         if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new RemoteException(body.statusCode(), body.errorCode());
+            throw new HttpException("Failed to communicate with remote service", body.statusCode(), body.errorCode());
         }
 
         return body;

@@ -10,6 +10,7 @@ public enum DomainErrorCode {
     RECIPIENTS_NOT_FOUND(21, DomainErrorCategory.NOT_FOUND),
     SENDER_NOT_FOUND(22, DomainErrorCategory.NOT_FOUND),
     USER_NOTIFICATION_PROFILE_NOT_FOUND(40, DomainErrorCategory.NOT_FOUND),
+    NOTIFICATION_RECIPIENT_NOT_FOUND(45, DomainErrorCategory.NOT_FOUND),
 
     /* ===================== VALIDATION ===================== */
     INVALID_NOTIFICATION_STATUS(2, DomainErrorCategory.VALIDATION),

@@ -1,6 +1,7 @@
 package studydocs.notification.domain.aggregate;
 
-import io.github.domain.aggregate.base.AggregateRoot;
+
+import io.github.domain.aggregate.AggregateRoot;
 
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ public class UserNotificationProfile extends AggregateRoot {
     private boolean emailEnabled;
     private boolean smsEnabled;
 
-    private UserNotificationProfile(UUID id, Integer version) {
+    private UserNotificationProfile(UUID id, long version) {
         super(id,version);
     }
 
@@ -26,27 +27,22 @@ public class UserNotificationProfile extends AggregateRoot {
 
     public void updateEmail(String email) {
         this.emailAddress = email;
-        markChanged("emailAddress");
     }
 
     public void updatePhoneNumber(String phone) {
         this.phoneNumber = phone;
-        markChanged("phoneNumber");
     }
 
     public void setPushEnabled(boolean enabled) {
         this.pushEnabled = enabled;
-        markChanged("pushEnabled");
     }
 
     public void setEmailEnabled(boolean enabled) {
         this.emailEnabled = enabled;
-        markChanged("emailEnabled");
     }
 
     public void setSmsEnabled(boolean enabled) {
         this.smsEnabled = enabled;
-        markChanged("smsEnabled");
     }
 
     /// Factory Methods
@@ -69,7 +65,7 @@ public class UserNotificationProfile extends AggregateRoot {
     }
 
     public static UserNotificationProfile reconstruct(
-            UUID id, Integer version,
+            UUID id, long version,
             UUID userId,
             String email,
             String phone,

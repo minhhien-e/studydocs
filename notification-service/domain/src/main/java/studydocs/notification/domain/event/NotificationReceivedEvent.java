@@ -1,6 +1,7 @@
 package studydocs.notification.domain.event;
 
-import io.github.domain.base.DomainEvent;
+
+import io.github.domain.event.DomainEvent;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

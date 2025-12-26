@@ -1,11 +1,12 @@
 package studydocs.notification.infrastructure.adapter.repository.template;
 
-import io.github.domain.aggregate.base.AggregateChild;
-import io.github.domain.entity.base.DomainEntity;
+import io.github.domain.aggregate.AggregateChild;
 import io.github.domain.port.DomainEventSerializer;
 import io.github.infrastructure.mongo.entity.base.MongoEntity;
-import io.github.infrastructure.mongo.helper.MongoEntityWriter;
-import io.github.infrastructure.mongo.repository.base.AbstractAggregateMongoRepository;
+import io.github.infrastructure.mongo.exception.ResourceNotFoundException;
+import io.github.infrastructure.mongo.helper.MongoHelper;
+import io.github.infrastructure.mongo.repository.base.AbstractAggregateMongoEntityRepository;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 import studydocs.notification.domain.aggregate.NotificationTemplate;
 import studydocs.notification.domain.exception.template.NotificationTemplateNotFoundException;
@@ -17,30 +18,40 @@ import studydocs.notification.infrastructure.persistence.repository.Notification
 import java.util.UUID;
 
 @Repository
-public class NotificationTemplateWriteAdapter extends AbstractAggregateMongoRepository<NotificationTemplate, NotificationTemplateEntity> implements NotificationTemplateRepository {
+public class NotificationTemplateWriteAdapter extends AbstractAggregateMongoEntityRepository<NotificationTemplate, NotificationTemplateEntity> implements NotificationTemplateRepository {
     private final NotificationTemplateMongoRepository mongoRepository;
 
     public NotificationTemplateWriteAdapter(NotificationTemplateMongoRepository mongoRepository,
-                                            MongoEntityWriter mongoEntityWriter,
-                                            DomainEventSerializer domainEventSerializer
+                                            DomainEventSerializer domainEventSerializer,
+                                            MongoTemplate mongoTemplate,
+                                            MongoHelper mongoHelper
     ) {
-        super(mongoEntityWriter, domainEventSerializer);
+        super(domainEventSerializer, mongoTemplate, mongoHelper);
         this.mongoRepository = mongoRepository;
     }
 
     @Override
-    public Class<?> getEntityClass() {
+    public Class<NotificationTemplateEntity> getEntityClass() {
         return NotificationTemplateEntity.class;
     }
 
     @Override
-    public NotificationTemplateEntity toEntity(NotificationTemplate domainEntity) {
-        return NotificationTemplateMapper.toEntity(domainEntity);
+    public NotificationTemplate toDomainEntity(NotificationTemplateEntity entity) {
+        return NotificationTemplateMapper.toDomain(entity);
+    }
+
+    @Override
+    public void updateEntity(NotificationTemplateEntity snapshot, NotificationTemplate domainEntity) {
+        NotificationTemplateMapper.updateEntity(snapshot, domainEntity);
     }
 
     @Override
     public NotificationTemplate getById(UUID id) {
-        return mongoRepository.findById(id).map(NotificationTemplateMapper::toDomain).orElseThrow(() -> new NotificationTemplateNotFoundException(id));
+        try {
+            return super.getById(id);
+        } catch (ResourceNotFoundException e) {
+            throw new NotificationTemplateNotFoundException(id);
+        }
     }
 
     @Override
@@ -54,12 +65,11 @@ public class NotificationTemplateWriteAdapter extends AbstractAggregateMongoRepo
     }
 
     @Override
-    protected Class<?> getChildEntityClass(AggregateChild aggregateChild) {
+    protected AggregateChild getChildInstance(Class<? extends AggregateChild> aggregateChild) {
         return null;
     }
 
     @Override
-    protected MongoEntity toChildEntity(DomainEntity domainEntity) {
-        return null;
+    protected void updateChildEntity(Class<? extends AggregateChild> aggregateChildClass, AggregateChild child, MongoEntity childEntity) {
     }
 }

@@ -1,11 +1,11 @@
 package studydocs.notification.infrastructure.adapter.repository.fcm;
 
-import io.github.domain.aggregate.base.AggregateChild;
-import io.github.domain.entity.base.DomainEntity;
+import io.github.domain.aggregate.AggregateChild;
 import io.github.domain.port.DomainEventSerializer;
 import io.github.infrastructure.mongo.entity.base.MongoEntity;
-import io.github.infrastructure.mongo.helper.MongoEntityWriter;
-import io.github.infrastructure.mongo.repository.base.AbstractAggregateMongoRepository;
+import io.github.infrastructure.mongo.helper.MongoHelper;
+import io.github.infrastructure.mongo.repository.base.AbstractAggregateMongoEntityRepository;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 import studydocs.notification.domain.aggregate.FcmToken;
 import studydocs.notification.domain.repository.FcmTokenRepository;
@@ -14,21 +14,27 @@ import studydocs.notification.infrastructure.persistence.entity.FcmTokenEntity;
 import studydocs.notification.infrastructure.persistence.repository.FcmTokenMongoRepository;
 
 @Repository
-public class FcmTokenWriteAdapter extends AbstractAggregateMongoRepository<FcmToken, FcmTokenEntity> implements FcmTokenRepository {
+public class FcmTokenWriteAdapter extends AbstractAggregateMongoEntityRepository<FcmToken, FcmTokenEntity> implements FcmTokenRepository {
     private final FcmTokenMongoRepository fcmTokenMongoRepository;
-    public FcmTokenWriteAdapter(MongoEntityWriter mongoEntityWriter, DomainEventSerializer domainEventSerializer, FcmTokenMongoRepository fcmTokenMongoRepository) {
-        super(mongoEntityWriter, domainEventSerializer);
+
+    public FcmTokenWriteAdapter(MongoHelper mongoHelper, DomainEventSerializer domainEventSerializer, MongoTemplate mongoTemplate, FcmTokenMongoRepository fcmTokenMongoRepository) {
+        super(domainEventSerializer, mongoTemplate, mongoHelper);
         this.fcmTokenMongoRepository = fcmTokenMongoRepository;
     }
 
     @Override
-    public Class<?> getEntityClass() {
+    public Class<FcmTokenEntity> getEntityClass() {
         return FcmTokenEntity.class;
     }
 
     @Override
-    public FcmTokenEntity toEntity(FcmToken domainEntity) {
-        return FcmTokenMapper.toEntity(domainEntity);
+    public FcmToken toDomainEntity(FcmTokenEntity entity) {
+        return FcmTokenMapper.toDomain(entity);
+    }
+
+    @Override
+    public void updateEntity(FcmTokenEntity snapshot, FcmToken domainEntity) {
+        FcmTokenMapper.updateEntity(snapshot, domainEntity);
     }
 
     @Override
@@ -40,13 +46,14 @@ public class FcmTokenWriteAdapter extends AbstractAggregateMongoRepository<FcmTo
     public void deleteByValue(String token) {
         fcmTokenMongoRepository.deleteByValue(token);
     }
+
     @Override
-    protected Class<?> getChildEntityClass(AggregateChild child) {
+    protected AggregateChild getChildInstance(Class<? extends AggregateChild> childClass) {
         return null;
     }
 
     @Override
-    protected MongoEntity toChildEntity(DomainEntity entity) {
-        return null;
+    protected void updateChildEntity(Class<? extends AggregateChild> aggregateChildClass, AggregateChild child, MongoEntity childEntity) {
+
     }
 }

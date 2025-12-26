@@ -1,10 +1,9 @@
 package studydocs.notification.domain.repository;
 
-import io.github.domain.repository.DomainEntityRepository;
+import io.github.domain.repository.AggregateRootWriter;
 import studydocs.notification.domain.aggregate.Notification;
 
 import java.util.UUID;
 
-public interface NotificationRepository extends DomainEntityRepository<Notification> {
-    Notification getById(UUID id);
+public interface NotificationRepository extends AggregateRootWriter<Notification> {
 }

@@ -1,6 +1,6 @@
 package studydocs.notification.domain.aggregate;
 
-import io.github.domain.aggregate.base.AggregateRoot;
+import io.github.domain.aggregate.AggregateRoot;
 import studydocs.notification.domain.vo.FcmTokenValue;
 
 import java.util.UUID;
@@ -10,7 +10,7 @@ public class FcmToken extends AggregateRoot {
     private UUID userId;
 
     /// Constructor
-    private FcmToken(UUID id, Integer version) {
+    private FcmToken(UUID id, long version) {
         super(id,version);
     }
 
@@ -19,7 +19,7 @@ public class FcmToken extends AggregateRoot {
     }
 
     /// Factory method
-    public static FcmToken reconstruct(UUID id, Integer version, UUID userId, String value) {
+    public static FcmToken reconstruct(UUID id, long version, UUID userId, String value) {
         var entity = new FcmToken(id,version);
         entity.userId = userId;
         entity.value = new FcmTokenValue(value);

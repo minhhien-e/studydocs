@@ -1,15 +1,17 @@
 package studydocs.notification.infrastructure.adapter.repository.recipient;
 
-import io.github.domain.aggregate.base.AggregateChild;
-import io.github.domain.entity.base.DomainEntity;
+import io.github.domain.aggregate.AggregateChild;
 import io.github.domain.port.DomainEventSerializer;
 import io.github.infrastructure.mongo.entity.base.MongoEntity;
-import io.github.infrastructure.mongo.helper.MongoEntityWriter;
-import io.github.infrastructure.mongo.repository.base.AbstractAggregateMongoRepository;
+import io.github.infrastructure.mongo.exception.ResourceNotFoundException;
+import io.github.infrastructure.mongo.helper.MongoHelper;
+import io.github.infrastructure.mongo.repository.base.AbstractAggregateMongoEntityRepository;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 import studydocs.notification.domain.aggregate.NotificationRecipient;
 import studydocs.notification.domain.exception.notification.NotificationNotFoundException;
 import studydocs.notification.domain.repository.NotificationRecipientRepository;
+import studydocs.notification.domain.exception.recipient.NotificationRecipientNotFoundException;
 import studydocs.notification.infrastructure.mapper.NotificationRecipientMapper;
 import studydocs.notification.infrastructure.persistence.entity.NotificationRecipientEntity;
 import studydocs.notification.infrastructure.persistence.repository.NotificationRecipientMongoRepository;
@@ -18,18 +20,43 @@ import java.util.UUID;
 
 @Repository
 public class NotificationRecipientWriteAdapter
-        extends AbstractAggregateMongoRepository<NotificationRecipient, NotificationRecipientEntity>
+        extends AbstractAggregateMongoEntityRepository<NotificationRecipient, NotificationRecipientEntity>
         implements NotificationRecipientRepository {
 
     private final NotificationRecipientMongoRepository mongoRepository;
 
     public NotificationRecipientWriteAdapter(
             NotificationRecipientMongoRepository mongoRepository,
-            MongoEntityWriter mongoEntityWriter,
-            DomainEventSerializer domainEventSerializer
+            DomainEventSerializer domainEventSerializer,
+            MongoTemplate mongoTemplate,
+            MongoHelper mongoHelper
     ) {
-        super(mongoEntityWriter, domainEventSerializer);
+        super(domainEventSerializer, mongoTemplate, mongoHelper);
         this.mongoRepository = mongoRepository;
+    }
+
+    @Override
+    public Class<NotificationRecipientEntity> getEntityClass() {
+        return NotificationRecipientEntity.class;
+    }
+
+    @Override
+    public NotificationRecipient toDomainEntity(NotificationRecipientEntity entity) {
+        return NotificationRecipientMapper.toDomain(entity);
+    }
+
+    @Override
+    public void updateEntity(NotificationRecipientEntity snapshot, NotificationRecipient domain) {
+        NotificationRecipientMapper.updateEntity(snapshot, domain);
+    }
+
+    @Override
+    public NotificationRecipient getById(UUID id) {
+        try {
+            return super.getById(id);
+        } catch (ResourceNotFoundException e) {
+            throw new NotificationRecipientNotFoundException(id);
+        }
     }
 
     @Override
@@ -38,6 +65,7 @@ public class NotificationRecipientWriteAdapter
                 .map(NotificationRecipientMapper::toDomain)
                 .orElseThrow(() -> new NotificationNotFoundException(notificationId));
     }
+
     @Override
     public boolean existsByNotificationIdAndRecipientId(UUID notificationId, UUID recipientId) {
         return mongoRepository.existsByNotificationIdAndRecipientId(notificationId, recipientId);
@@ -49,22 +77,11 @@ public class NotificationRecipientWriteAdapter
     }
 
     @Override
-    public Class<?> getEntityClass() {
-        return NotificationRecipientEntity.class;
-    }
-
-    @Override
-    public NotificationRecipientEntity toEntity(NotificationRecipient aggregate) {
-        return NotificationRecipientMapper.toEntity(aggregate);
-    }
-
-    @Override
-    protected Class<?> getChildEntityClass(AggregateChild aggregateChild) {
+    protected AggregateChild getChildInstance(Class<? extends AggregateChild> childClass) {
         return null;
     }
 
     @Override
-    protected MongoEntity toChildEntity(DomainEntity domainEntity) {
-        return null;
+    protected void updateChildEntity(Class<? extends AggregateChild> aggregateChildClass, AggregateChild child, MongoEntity childEntity) {
     }
 }

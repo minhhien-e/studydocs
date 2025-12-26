@@ -21,8 +21,6 @@ public enum HttpErrorCategoryMapping {
     public static HttpStatus from(Object category) {
         if (category instanceof DomainErrorCategory domain) {
             return valueOf(domain.name()).status;
-        } else if (category instanceof InfrastructureErrorCode infrastructure) {
-            return valueOf(infrastructure.name()).status;
         }
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }
