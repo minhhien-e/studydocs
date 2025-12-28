@@ -32,6 +32,9 @@ public class ReviewController {
     private final ReviewQueryService queryService;
     private final ReviewReactionService reactionService;
     private final ReviewRepository reviewRepo;
+    private final studydocs.service.DocumentReactionService docReactionService;
+    private final studydocs.repository.DocumentStatsRepository docStatsRepo;
+    private final studydocs.repository.DocumentReactionRepository docReactionRepo;
 
     @PostMapping
     @PreAuthorize("hasRole('write')")
@@ -107,6 +110,53 @@ public class ReviewController {
 
         reactionService.react(id, userId, type);
         return ResponseEntity.ok(ApiResponse.success(200, "Reaction updated"));
+    }
+
+    @PostMapping("/document/{docId}/react")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<String>> reactToDocument(
+            @PathVariable UUID docId,
+            @RequestParam String type) { // "like" or "dislike"
+
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userIdStr;
+
+        if (authentication.getPrincipal() instanceof Jwt jwt) {
+            userIdStr = jwt.getSubject();
+        } else {
+            userIdStr = authentication.getName();
+        }
+
+        UUID userId = UUID.fromString(userIdStr);
+
+        docReactionService.react(docId, userId, type);
+        return ResponseEntity.ok(ApiResponse.success(200, "Document reaction updated"));
+    }
+
+    @GetMapping("/document/{docId}/stats")
+    public ResponseEntity<ApiResponse<studydocs.model.DocumentStats>> getDocumentStats(@PathVariable UUID docId) {
+        return ResponseEntity.ok(ApiResponse.success(200,
+                docStatsRepo.findById(docId).orElse(new studydocs.model.DocumentStats(docId, 0, 0))));
+    }
+
+    @GetMapping("/document/{docId}/reaction")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<studydocs.model.ReviewReaction.ReactionType>> getUserDocumentReaction(
+            @PathVariable UUID docId) {
+
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userIdStr;
+
+        if (authentication.getPrincipal() instanceof Jwt jwt) {
+            userIdStr = jwt.getSubject();
+        } else {
+            userIdStr = authentication.getName();
+        }
+        UUID userId = UUID.fromString(userIdStr);
+
+        var reaction = docReactionRepo.findByDocumentIdAndUserId(docId, userId).orElse(null);
+
+        return ResponseEntity.ok(ApiResponse.success(200, reaction != null ? reaction.getType() : null));
     }
 
     @PutMapping("/{id}/hidden")
