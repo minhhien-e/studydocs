@@ -24,14 +24,16 @@ public enum ErrorCode {
 
     // --- Business logic ---
     OPERATION_NOT_ALLOWED(HttpStatus.FORBIDDEN, "B001"),
-
+    INVALID_RANGE(HttpStatus.BAD_REQUEST, "B002"),
     // --- Repository / DB ---
     SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "DB001"),
     UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "DB002"),
     DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "DB003"),
 
     // --- System ---
-    NO_HANDLER(HttpStatus.NO_CONTENT, "NO_HANDLER");
+    NO_HANDLER(HttpStatus.NO_CONTENT, "NO_HANDLER"),
+
+   ;
 
     private final HttpStatus status;
     private final String code;

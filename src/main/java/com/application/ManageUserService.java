@@ -18,4 +18,12 @@ public interface ManageUserService {
     ApiResponse<?> isUserExists(String userId, String traceId);
 
     ApiResponse<?> updateImage(String id, MultipartFile file, String traceId);
+
+    ApiResponse<?> getUserCount(String traceId);
+
+    ApiResponse<?> deleteUser(String id, String traceId);
+
+    ApiResponse<?> getUsersInRange(int fromIndex, int toIndex, String traceId);
+
+    ApiResponse<?> getAllUsers(String traceId);
 }

@@ -25,12 +25,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
 //	// Spring Cloud (Eureka client)
-	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+//	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
 	// Validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 //	rabbit mq
-	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+//	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'

@@ -2,7 +2,10 @@ package com.application.impl;
 
 import com.application.ManageUserService;
 import com.application.bus.SimpleUserCommandBus;
-import com.domain.command.*;
+import com.domain.command.DeleteUser;
+import com.domain.command.GetAllUser;
+import com.domain.command.GetUserCount;
+import com.domain.command.GetUsersInRange;
 import com.helper.HelperMap;
 import com.interfaces.model.ApiResponse;
 import com.interfaces.model.RegisterRequest;
@@ -12,19 +15,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-
 @RequiredArgsConstructor
 @Service
 @Slf4j
 public class ManageUserServiceImpl implements ManageUserService {
-
     private final SimpleUserCommandBus commandBus;
 
     @Override
     public ApiResponse<?> registerUser(RegisterRequest request, String traceId) {
         var command = HelperMap.INSTANCE.toRegisterUser(request);
         var result = commandBus.send(command); // DomainException sẽ được ném nếu lỗi
-        return ApiResponse.success(result, null); // message = null
+        return ApiResponse.success(result, null); //
+//        message = null
     }
 
     @Override
@@ -60,5 +62,33 @@ public class ManageUserServiceImpl implements ManageUserService {
         var command = HelperMap.INSTANCE.toCheckUserExists(userId);
         var exists = commandBus.send(command);
         return ApiResponse.success(exists, null);
+    }
+
+    @Override
+    public ApiResponse<?> getUserCount(String traceId) {
+        var command =  GetUserCount.commandOf();
+        var count = commandBus.send(command);
+        return ApiResponse.success(count, null);
+    }
+
+    @Override
+    public ApiResponse<?> deleteUser(String id, String traceId) {
+        var command = DeleteUser.commandOf(id);
+        var result = commandBus.send(command);
+        return ApiResponse.success(result, null);
+    }
+
+    @Override
+    public ApiResponse<?> getUsersInRange(int fromIndex, int toIndex, String traceId) {
+        var command = GetUsersInRange.commandOf(fromIndex, toIndex);
+        var users = commandBus.send(command);
+        return ApiResponse.success(users, null);
+    }
+
+    @Override
+    public ApiResponse<?> getAllUsers(String traceId) {
+        var command = GetAllUser.commandOf();
+        var users = commandBus.send(command);
+        return ApiResponse.success(users, null);
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,73 +26,164 @@ class UserMongoRepositoryTest {
         repository = new UserMongoRepository(mongoTemplate);
     }
 
+    // ================================
+    // existsByUsername
+    // ================================
     @Test
     void testExistsByUsername_ShouldReturnTrue() {
-        String username = "john";
         when(mongoTemplate.exists(any(Query.class), eq(UserEntity.class))).thenReturn(true);
 
-        boolean result = repository.existsByUsername(username);
+        boolean result = repository.existsByUsername("john");
 
         assertTrue(result);
-        verify(mongoTemplate, times(1)).exists(any(Query.class), eq(UserEntity.class));
+        verify(mongoTemplate).exists(any(Query.class), eq(UserEntity.class));
     }
 
+    // ================================
+    // existsByUserId
+    // ================================
+    @Test
+    void testExistsByUserId_ShouldReturnFalse() {
+        when(mongoTemplate.exists(any(Query.class), eq(UserEntity.class))).thenReturn(false);
+
+        boolean result = repository.existsByUserId("123");
+
+        assertFalse(result);
+        verify(mongoTemplate).exists(any(Query.class), eq(UserEntity.class));
+    }
+
+    // ================================
+    // save()
+    // ================================
     @Test
     void testSave_ShouldReturnSavedUser() {
+
         UserEntity user = new UserEntity(null, "John Doe", "john", "john@example.com",
                 "123456789", null, "M", LocalDate.of(1990, 1, 1), "Address");
-        when(mongoTemplate.save(user)).thenReturn(new UserEntity("1", "John Doe", "john",
-                "john@example.com", "123456789", null, "M", LocalDate.of(1990,1,1), "Address"));
+
+        when(mongoTemplate.save(user)).thenReturn(
+                new UserEntity("1", "John Doe", "john",
+                        "john@example.com", "123456789", null,
+                        "M", LocalDate.of(1990, 1, 1), "Address")
+        );
 
         UserEntity saved = repository.save(user);
 
-        assertNotNull(saved.getId());
-        assertEquals("John Doe", saved.getFullName());
-        verify(mongoTemplate, times(1)).save(user);
+        assertEquals("1", saved.getId());
+        verify(mongoTemplate).save(user);
     }
 
+    // ================================
+    // updateUser
+    // ================================
     @Test
     void testUpdateUser_ShouldCallUpdateFirst() {
-        UserEntity user = new UserEntity("1", "John Doe", "john", "john@example.com",
-                "123456789", null, "M", LocalDate.of(1990,1,1), "Address");
+
+        UserEntity user = new UserEntity("1", "John", "john",
+                "john@example.com", "123", "/a.jpg", "M",
+                LocalDate.of(1990, 1, 1), "Address");
 
         repository.updateUser(user);
 
         ArgumentCaptor<Query> queryCaptor = ArgumentCaptor.forClass(Query.class);
         ArgumentCaptor<Update> updateCaptor = ArgumentCaptor.forClass(Update.class);
 
-        verify(mongoTemplate, times(1)).updateFirst(queryCaptor.capture(),
-                updateCaptor.capture(), eq(UserEntity.class));
+        verify(mongoTemplate).updateFirst(queryCaptor.capture(), updateCaptor.capture(), eq(UserEntity.class));
 
-        assertEquals("1", queryCaptor.getValue().getQueryObject().get("_id")); // Mongo id field mapping
-        assertEquals("John Doe", updateCaptor.getValue().getUpdateObject().get("fullName"));
+        assertEquals("1", queryCaptor.getValue().getQueryObject().get("id"));
+        assertEquals("John", updateCaptor.getValue().getUpdateObject().get("fullName"));
     }
 
-    @Test
-    void testFindById_ShouldReturnUser() {
-        String id = "1";
-        UserEntity user = new UserEntity(id, "John Doe", "john", "john@example.com",
-                "123456789", null, "M", LocalDate.of(1990,1,1), "Address");
-
-        when(mongoTemplate.findById(id, UserEntity.class)).thenReturn(user);
-
-        Optional<UserEntity> result = repository.findById(id);
-
-        assertTrue(result.isPresent());
-        assertEquals("John Doe", result.get().getFullName());
-        verify(mongoTemplate, times(1)).findById(id, UserEntity.class);
-    }
-
+    // ================================
+    // deleteById
+    // ================================
     @Test
     void testDeleteById_ShouldCallRemove() {
-        String id = "1";
-
-        repository.deleteById(id);
+        repository.deleteById("10");
 
         ArgumentCaptor<Query> queryCaptor = ArgumentCaptor.forClass(Query.class);
-        verify(mongoTemplate, times(1)).remove(queryCaptor.capture(), eq(UserEntity.class));
+        verify(mongoTemplate).remove(queryCaptor.capture(), eq(UserEntity.class));
 
-        assertEquals("1", queryCaptor.getValue().getQueryObject().get("_id"));
+        assertEquals("10", queryCaptor.getValue().getQueryObject().get("id"));
     }
 
+    // ================================
+    // findById
+    // ================================
+    @Test
+    void testFindById_ShouldReturnUser() {
+
+        UserEntity user = new UserEntity("1", "John", "john",
+                "john@example.com", "123", null, "M", LocalDate.now(), "Address");
+
+        when(mongoTemplate.findById("1", UserEntity.class)).thenReturn(user);
+
+        Optional<UserEntity> result = repository.findById("1");
+
+        assertTrue(result.isPresent());
+        assertEquals("John", result.get().getFullName());
+    }
+
+    // ================================
+    // findByUsername
+    // ================================
+    @Test
+    void testFindByUsername_ShouldReturnUser() {
+
+        UserEntity user = new UserEntity("1", "John", "john",
+                "john@example.com", "123", null, "M", LocalDate.now(), "Address");
+
+        when(mongoTemplate.findOne(any(Query.class), eq(UserEntity.class))).thenReturn(user);
+
+        Optional<UserEntity> result = repository.findByUsername("john");
+
+        assertTrue(result.isPresent());
+        assertEquals("john", result.get().getUsername());
+    }
+
+    // ================================
+    // findAll
+    // ================================
+    @Test
+    void testFindAll_ShouldReturnUserList() {
+
+        List<UserEntity> mockUsers = List.of(
+                new UserEntity("1", "A", "a", "a@a.com","1", null,"M",LocalDate.now(),"x"),
+                new UserEntity("2", "B", "b", "b@b.com","2", null,"F",LocalDate.now(),"y")
+        );
+
+        when(mongoTemplate.findAll(UserEntity.class)).thenReturn(mockUsers);
+
+        List<UserEntity> result = repository.findAll();
+
+        assertEquals(2, result.size());
+        verify(mongoTemplate).findAll(UserEntity.class);
+    }
+
+    // ================================
+    // existsById
+    // ================================
+    @Test
+    void testExistsById_ShouldReturnTrue() {
+
+        when(mongoTemplate.exists(any(Query.class), eq(UserEntity.class))).thenReturn(true);
+
+        boolean result = repository.existsById("1");
+
+        assertTrue(result);
+    }
+
+    // ================================
+    // count
+    // ================================
+    @Test
+    void testCount_ShouldReturnCount() {
+
+        when(mongoTemplate.count(any(Query.class), eq(UserEntity.class))).thenReturn(5L);
+
+        long result = repository.count();
+
+        assertEquals(5, result);
+        verify(mongoTemplate).count(any(Query.class), eq(UserEntity.class));
+    }
 }

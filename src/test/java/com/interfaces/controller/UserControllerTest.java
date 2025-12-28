@@ -8,10 +8,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 
 class UserControllerTest {
 
@@ -30,85 +30,74 @@ class UserControllerTest {
         request.setFullName("John Doe");
         request.setUsername("johndoe");
 
-        ApiResponse<?> expectedResponse = ApiResponse.success("User Registered", "Thành công");
+        ApiResponse<?> expected = ApiResponse.success("User Registered", "Thành công");
 
-        // fix generic wildcard
         Mockito.<ApiResponse<?>>when(manageUserService.registerUser(any(RegisterRequest.class), anyString()))
-                .thenReturn(expectedResponse);
+                .thenReturn(expected);
 
-        ApiResponse<?> response = userController.register(request, "trace123");
+        ApiResponse<?> result = userController.register(request, "trace123");
 
-        assertNotNull(response);
-        assertEquals("User Registered", response.data());
-        assertEquals("Thành công", response.message());
+        assertNotNull(result);
+        assertEquals("User Registered", result.data());
+        assertEquals("Thành công", result.message());
     }
 
     @Test
     void testUpdateUser() {
         UpdateUserRequest request = new UpdateUserRequest();
-        request.setId("user123");
-        request.setFullName("Jane Doe");
+        request.setId("u1");
+        request.setFullName("Jane");
 
-        ApiResponse<?> expectedResponse = ApiResponse.success("User Updated", "Thành công");
+        ApiResponse<?> expected = ApiResponse.success("User Updated", "Thành công");
 
         Mockito.<ApiResponse<?>>when(manageUserService.updateUser(any(UpdateUserRequest.class), anyString()))
-                .thenReturn(expectedResponse);
+                .thenReturn(expected);
 
-        ApiResponse<?> response = userController.update(request, "trace123");
+        ApiResponse<?> result = userController.update(request, "trace123");
 
-        assertNotNull(response);
-        assertEquals("User Updated", response.data());
-        assertEquals("Thành công", response.message());
+        assertEquals("User Updated", result.data());
+        assertEquals("Thành công", result.message());
     }
 
     @Test
     void testGetUserByID() {
-        String userId = "user123";
-        ApiResponse<?> expectedResponse = ApiResponse.success("User Data", "Thành công");
+        ApiResponse<?> expected = ApiResponse.success("User Data", "Thành công");
 
         Mockito.<ApiResponse<?>>when(manageUserService.getUserById(anyString(), anyString()))
-                .thenReturn(expectedResponse);
+                .thenReturn(expected);
 
-        ApiResponse<?> response = userController.getUserByID(userId, "trace123");
+        ApiResponse<?> result = userController.getUserByID("u1", "trace123");
 
-        assertNotNull(response);
-        assertEquals("User Data", response.data());
-        assertEquals("Thành công", response.message());
+        assertEquals("User Data", result.data());
+        assertEquals("Thành công", result.message());
     }
 
     @Test
     void testCheckUserPrivate() {
-        String userId = "user123";
-        ApiResponse<?> expectedResponse = ApiResponse.success(true, "Thành công");
+        ApiResponse<?> expected = ApiResponse.success(true, "Thành công");
 
         Mockito.<ApiResponse<?>>when(manageUserService.isUserPrivate(anyString(), anyString()))
-                .thenReturn(expectedResponse);
+                .thenReturn(expected);
 
-        ApiResponse<?> response = userController.checkUserPrivate(userId, "trace123");
+        ApiResponse<?> result = userController.checkUserPrivate("u1", "trace123");
 
-        assertNotNull(response);
-        assertEquals(true, response.data());
-        assertEquals("Thành công", response.message());
+        assertEquals(true, result.data());
     }
 
     @Test
     void testCheckUserExists() {
-        String userId = "user123";
-        ApiResponse<?> expectedResponse = ApiResponse.success(true, "Thành công");
+        ApiResponse<?> expected = ApiResponse.success(true, "Thành công");
 
         Mockito.<ApiResponse<?>>when(manageUserService.isUserExists(anyString(), anyString()))
-                .thenReturn(expectedResponse);
+                .thenReturn(expected);
 
-        ApiResponse<?> response = userController.checkUserExists(userId, "trace123");
+        ApiResponse<?> result = userController.checkUserExists("u1", "trace123");
 
-        assertNotNull(response);
-        assertEquals(true, response.data());
-        assertEquals("Thành công", response.message());
+        assertEquals(true, result.data());
     }
 
     @Test
     void testUpdateImage() {
-        String userId = "user123";
         MockMultipartFile file = new MockMultipartFile(
                 "file",
                 "avatar.png",
@@ -116,15 +105,61 @@ class UserControllerTest {
                 "dummy".getBytes()
         );
 
-        ApiResponse<?> expectedResponse = ApiResponse.success("/uploads/avatar.png", "Thành công");
+        ApiResponse<?> expected = ApiResponse.success("/uploads/avatar.png", "Thành công");
 
-        Mockito.<ApiResponse<?>>when(manageUserService.updateImage(anyString(), any(MockMultipartFile.class), anyString()))
-                .thenReturn(expectedResponse);
+        Mockito.<ApiResponse<?>>when(manageUserService.updateImage(anyString(), any(MultipartFile.class), anyString()))
+                .thenReturn(expected);
 
-        ApiResponse<?> response = userController.updateImage(userId, file, "trace123");
+        ApiResponse<?> result = userController.updateImage("u1", file, "trace123");
 
-        assertNotNull(response);
-        assertEquals("/uploads/avatar.png", response.data());
-        assertEquals("Thành công", response.message());
+        assertEquals("/uploads/avatar.png", result.data());
+    }
+
+    @Test
+    void testGetAllUsers() {
+        ApiResponse<?> expected = ApiResponse.success("All Users", "Thành công");
+
+        Mockito.<ApiResponse<?>>when(manageUserService.getAllUsers(anyString()))
+                .thenReturn(expected);
+
+        ApiResponse<?> result = userController.getAllUsers("trace123");
+
+        assertEquals("All Users", result.data());
+    }
+
+    @Test
+    void testGetUserCount() {
+        ApiResponse<?> expected = ApiResponse.success(10, "Thành công");
+
+        Mockito.<ApiResponse<?>>when(manageUserService.getUserCount(anyString()))
+                .thenReturn(expected);
+
+        ApiResponse<?> result = userController.getUserCount("trace123");
+
+        assertEquals(10, result.data());
+    }
+
+    @Test
+    void testDeleteUser() {
+        ApiResponse<?> expected = ApiResponse.success("Deleted", "Thành công");
+
+        Mockito.<ApiResponse<?>>when(manageUserService.deleteUser(anyString(), anyString()))
+                .thenReturn(expected);
+
+        ApiResponse<?> result = userController.deleteUser("u1", "trace123");
+
+        assertEquals("Deleted", result.data());
+    }
+
+    @Test
+    void testGetUsersInRange() {
+        ApiResponse<?> expected = ApiResponse.success("Users Range", "Thành công");
+
+        Mockito.<ApiResponse<?>>when(manageUserService.getUsersInRange(anyInt(), anyInt(), anyString()))
+                .thenReturn(expected);
+
+        ApiResponse<?> result = userController.getUsersInRange(0, 5, "trace123");
+
+        assertEquals("Users Range", result.data());
     }
 }

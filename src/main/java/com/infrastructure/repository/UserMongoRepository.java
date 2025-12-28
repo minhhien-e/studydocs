@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.error.ErrorCode.*;
@@ -98,4 +99,33 @@ public class UserMongoRepository implements UserRepository {
             throw custom(SAVE_FAILED, "findByUsername", t);
         }
     }
+
+    @Override
+    public List<UserEntity> findAll() {
+        try {
+            return mongoTemplate.findAll(UserEntity.class);
+        } catch (Throwable t) {
+            throw custom(SAVE_FAILED, "findAll", t);
+        }
+    }
+
+    @Override
+    public boolean existsById(String id) {
+        try {
+            Query query = new Query(Criteria.where("id").is(id));
+            return mongoTemplate.exists(query, UserEntity.class);
+        } catch (Throwable t) {
+            throw custom(SAVE_FAILED, "existsById", t);
+        }
+    }
+
+    @Override
+    public long count() {
+        try {
+            return mongoTemplate.count(new Query(), UserEntity.class);
+        } catch (Throwable t) {
+            throw custom(SAVE_FAILED, "count", t);
+        }
+    }
+
 }

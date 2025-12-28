@@ -1,4 +1,31 @@
+#server:
+#  port: ${SERVER_PORT:8082}
+#
+#spring:
+#  application:
+#    name: user-service
+#
+#  data:
+#    mongodb:
+#      uri: mongodb+srv://${MONGO_USER}:${MONGO_PASS}@user.hzlz13a.mongodb.net/?retryWrites=true&w=majority&appName=User
+#      database: ${MONGO_DATABASE}
+#
+##  rabbitmq:
+##    host: ${RABBITMQ_HOST}
+##    port: ${RABBITMQ_PORT}
+##    username: ${RABBITMQ_USERNAME}
+##    password: ${RABBITMQ_PASSWORD}
+##    virtual-host: ${RABBITMQ_VHOST}
+##    ssl:
+##      enabled: ${RABBITMQ_SSL_ENABLED:true}
+#
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://host.docker.internal:8761/eureka
+
 server:
+  address: ${SERVER_ADDRESS:0.0.0.0}
   port: ${SERVER_PORT:8082}
 
 spring:
@@ -9,17 +36,3 @@ spring:
     mongodb:
       uri: mongodb+srv://${MONGO_USER}:${MONGO_PASS}@user.hzlz13a.mongodb.net/?retryWrites=true&w=majority&appName=User
       database: ${MONGO_DATABASE}
-
-  rabbitmq:
-    host: ${RABBITMQ_HOST}
-    port: ${RABBITMQ_PORT}
-    username: ${RABBITMQ_USERNAME}
-    password: ${RABBITMQ_PASSWORD}
-    virtual-host: ${RABBITMQ_VHOST}
-    ssl:
-      enabled: ${RABBITMQ_SSL_ENABLED:true}
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://host.docker.internal:8761/eureka

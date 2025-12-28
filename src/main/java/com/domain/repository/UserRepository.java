@@ -2,6 +2,7 @@ package com.domain.repository;
 
 import com.domain.entity.UserEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
@@ -55,4 +56,12 @@ public interface UserRepository {
      * @throws ExceptionMessage nếu có lỗi truy vấn
      */
     Optional<UserEntity> findByUsername(String username);
+    // Lấy tất cả user
+    List<UserEntity> findAll();
+
+    // Kiểm tra user tồn tại theo ID
+    boolean existsById(String id);
+
+    // Đếm tổng số user
+    long count();
 }

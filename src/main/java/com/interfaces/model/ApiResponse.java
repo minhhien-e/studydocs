@@ -1,17 +1,15 @@
 package com.interfaces.model;
-
-
-public record ApiResponse<T>(
-        int statusCode,
-        String errorCode,
-        String message,
-        T data
-) {
-    public static <T> ApiResponse<T> success(T data, String message) {
-        return new ApiResponse<>(200, null, message, data);
+public record ApiResponse<T>(int statusCode, Integer errorCode, T data, String traceId) {
+    public static <T> ApiResponse<T> success(T data, String traceId) {
+        return new ApiResponse<>(200, null, data, traceId);
     }
 
-    public static <T> ApiResponse<T> error(int code, String errorCode, String message) {
-        return new ApiResponse<>(code, errorCode, message, null);
+    public static <T> ApiResponse<T> success(int statusCode, T data, String traceId) {
+        return new ApiResponse<>(statusCode, null, data, traceId);
+
+    }
+
+    public static <T> ApiResponse<T> error(int statusCode, Integer errorCode, String traceId) {
+        return new ApiResponse<>(statusCode, errorCode, null, traceId);
     }
 }

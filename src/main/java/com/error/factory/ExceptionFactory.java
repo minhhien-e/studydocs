@@ -35,7 +35,9 @@ public class ExceptionFactory {
     public static DomainException internalError(String methodName) {
         return new DomainException(ErrorCode.INTERNAL_SERVER_ERROR, methodName);
     }
-
+    public static DomainException invalidRange(String methodName) {
+        return new DomainException(ErrorCode.INVALID_RANGE, methodName);
+    }
     /**
      * Sinh lỗi tùy biến theo ErrorCode
      */

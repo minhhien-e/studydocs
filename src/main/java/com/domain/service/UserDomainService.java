@@ -3,9 +3,13 @@ package com.domain.service;
 import com.domain.command.*;
 import com.domain.entity.UserEntity;
 import com.domain.repository.UserRepository;
+import com.error.factory.ExceptionFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+
 import static com.error.factory.ExceptionFactory.*;
 
 @Service
@@ -13,7 +17,7 @@ import static com.error.factory.ExceptionFactory.*;
 public class UserDomainService {
 
     private final UserRepository userRepository;
-
+    private final ImageServiceClient imageServiceClient;
     /**
      * Đăng ký người dùng mới.
      */
@@ -86,21 +90,53 @@ public class UserDomainService {
      * Cập nhật ảnh đại diện của người dùng.
      */
     public UserEntity updateImage(String userId, MultipartFile image) {
+
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> userNotFound("updateImage"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (image == null || image.isEmpty()) {
-            throw invalidImage("updateImage");
+            throw new RuntimeException("Invalid image");
         }
 
-        try {
-            String newAvatarUrl = "/uploads/" + image.getOriginalFilename();
-            user.setAvatarUrl(newAvatarUrl);
+        // Gửi ảnh qua Image Service
+        String newAvatarUrl = imageServiceClient.uploadImage(image);
 
-            return userRepository.save(user);
+        user.setAvatarUrl(newAvatarUrl);
 
-        } catch (Throwable t) {
-            throw internalError("updateImage");
-        }
+        return userRepository.save(user);
     }
+
+    public List<UserEntity> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public List<UserEntity> getUsersInRange(int fromIndex, int toIndex) {
+
+        List<UserEntity> allUsers = userRepository.findAll();
+
+        if (fromIndex < 0 || toIndex >= allUsers.size() || fromIndex > toIndex) {
+            throw invalidRange("getUsersInRange");
+        }
+
+        return allUsers.subList(fromIndex, toIndex + 1);
+    }
+
+
+    public Boolean deleteUser(String userId) {
+
+        boolean exists = userRepository.existsById(userId);
+        if (!exists) {
+            throw userNotFound("deleteUser");
+        }
+
+        userRepository.deleteById(userId);
+
+        return true;
+    }
+
+
+    public Integer getUserCount() {
+        return (int) userRepository.count();
+    }
+
 }

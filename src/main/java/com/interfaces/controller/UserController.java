@@ -70,4 +70,39 @@ public class UserController {
         LOG.info("[traceId: {}] 🖼️ Nhận request cập nhật ảnh user id={}", traceId, id);
         return manageUserService.updateImage(id, file, traceId);
     }
+    /** 🧑‍🤝‍🧑 Lấy danh sách tất cả user */
+    @GetMapping("/all")
+    public ApiResponse<?> getAllUsers(
+            @RequestHeader(value = "X-Trace-Id", required = false) String traceId) {
+        LOG.info("[traceId: {}] 📜 Nhận request lấy danh sách tất cả người dùng", traceId);
+        return manageUserService.getAllUsers(traceId);
+    }
+
+    /** 🔢 Lấy tổng số user (trả về int hoặc long) */
+    @GetMapping("/count")
+    public ApiResponse<?> getUserCount(
+            @RequestHeader(value = "X-Trace-Id", required = false) String traceId) {
+        LOG.info("[traceId: {}] 🔢 Nhận request lấy tổng số người dùng", traceId);
+        return manageUserService.getUserCount(traceId);
+    }
+
+    /** 🗑️ Xóa user theo ID */
+    @DeleteMapping("/delete")
+    public ApiResponse<?> deleteUser(
+            @RequestParam String id,
+            @RequestHeader(value = "X-Trace-Id", required = false) String traceId) {
+        LOG.info("[traceId: {}] 🗑️ Nhận request xóa user id={}", traceId, id);
+        return manageUserService.deleteUser(id, traceId);
+    }
+    @GetMapping("/range")
+    public ApiResponse<?> getUsersInRange(
+            @RequestParam int fromIndex,
+            @RequestParam int toIndex,
+            @RequestHeader(value = "X-Trace-Id", required = false) String traceId) {
+
+        LOG.info("[traceId: {}] 📘 Nhận request lấy danh sách user từ index {} đến {}",
+                traceId, fromIndex, toIndex);
+
+        return manageUserService.getUsersInRange(fromIndex, toIndex, traceId);
+    }
 }
