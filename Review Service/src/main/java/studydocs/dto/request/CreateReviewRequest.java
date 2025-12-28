@@ -11,9 +11,6 @@ public class CreateReviewRequest {
     @NotNull
     private UUID documentId;
 
-    @NotNull
-    private UUID userId;
-
     @NotBlank
     private String comment;
 }

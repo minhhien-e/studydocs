@@ -8,8 +8,10 @@ import java.util.UUID;
 public class ReviewNotFoundException extends RuntimeException {
 
     private final int errorCode = 501;
+    private final UUID reviewId;
 
-    public ReviewNotFoundException(UUID id) {
-        super("Review not found: " + id);
+    public ReviewNotFoundException(UUID reviewId) {
+        super("Review not found with id: " + reviewId);
+        this.reviewId = reviewId;
     }
 }

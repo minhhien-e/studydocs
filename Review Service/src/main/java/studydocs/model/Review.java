@@ -23,11 +23,16 @@ public class Review {
     private UUID userId;
     private String comment;
 
-    private Boolean isDeleted = false;
+    private long likeCount = 0;
+    private long dislikeCount = 0;
+
+    private boolean isDeleted = false;
+    private boolean isHidden = false;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
+    private LocalDateTime hiddenAt;
 
     public Review(UUID documentId, UUID userId, String comment) {
         this.id = UUID.randomUUID();
@@ -46,4 +51,14 @@ public class Review {
         this.isDeleted = true;
         this.deletedAt = LocalDateTime.now();
     }
+
+    public void setHidden(boolean hidden) {
+        this.isHidden = hidden;
+        this.hiddenAt = hidden ? LocalDateTime.now() : null;
+    }
+
+    public void incrementLike() { this.likeCount++; }
+    public void decrementLike() { if (this.likeCount > 0) this.likeCount--; }
+    public void incrementDislike() { this.dislikeCount++; }
+    public void decrementDislike() { if (this.dislikeCount > 0) this.dislikeCount--; }
 }

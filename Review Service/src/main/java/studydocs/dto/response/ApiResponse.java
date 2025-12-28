@@ -2,7 +2,7 @@ package studydocs.dto.response;
 
 public record ApiResponse<T>(
         int statusCode,
-        int errorCode,
+        Integer errorCode,
         T data
 ) {
     public static <T> ApiResponse<T> success(int statusCode, T data) {

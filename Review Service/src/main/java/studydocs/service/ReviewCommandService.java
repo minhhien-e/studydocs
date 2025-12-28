@@ -1,6 +1,8 @@
 package studydocs.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import studydocs.client.DocumentClient;
 import studydocs.dto.request.CreateReviewRequest;
@@ -18,12 +20,43 @@ public class ReviewCommandService {
     private final ReviewRepository reviewRepository;
     private final DocumentClient documentClient;
 
+    // Method helper lấy userId từ JWT
+    private UUID getCurrentUserId() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+
+        // Principal thường là Jwt object trong oauth2ResourceServer
+        if (authentication.getPrincipal() instanceof Jwt jwt) {
+            String userIdStr = jwt.getSubject(); // "sub" claim thường là userId
+            try {
+                return UUID.fromString(userIdStr);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        // Fallback: nếu getName() trả về UUID string
+        try {
+            return UUID.fromString(authentication.getName());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public ReviewResponse createReview(CreateReviewRequest req) {
         documentClient.validateDocumentId(req.getDocumentId());
 
+        UUID userId = getCurrentUserId();
+        if (userId == null) {
+            throw new RuntimeException("Không thể xác định người dùng từ token. Vui lòng đăng nhập lại.");
+            // Hoặc tạo exception riêng sau nếu cần
+        }
+
         Review review = new Review(
                 req.getDocumentId(),
-                req.getUserId(),
+                userId,           // <-- lấy từ JWT
                 req.getComment()
         );
 
@@ -37,7 +70,6 @@ public class ReviewCommandService {
 
         review.update(comment);
         reviewRepository.save(review);
-
         return new ReviewResponse(review);
     }
 
