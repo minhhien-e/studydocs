@@ -35,6 +35,8 @@ app:
   remote:
     user-service:
       url: ${USER_SERVICE_URL:http://localhost:8087/api/v1/users}
+    file-service:
+      url: ${USER_SERVICE_URL:http://localhost:8084/api/v1/files}
   notification:
     email:
       from: ${EMAIL_HOST}

@@ -1,11 +1,13 @@
 package studydocs.notification.infrastructure.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import studydocs.notification.shared.web.ApiResponse;
 import studydocs.notification.shared.web.HttpException;
@@ -15,7 +17,7 @@ import studydocs.notification.shared.web.HttpException;
 @RequiredArgsConstructor
 public class RemoteApiCaller {
     private final RestTemplate restTemplate;
-
+    private final ObjectMapper objectMapper;
 
     public <T> T getForEntity(
             String url,
@@ -44,22 +46,25 @@ public class RemoteApiCaller {
             ParameterizedTypeReference<ApiResponse<T>> responseType,
             HttpEntity<?> requestEntity,
             Object... uriVariables) {
-
-        ResponseEntity<ApiResponse<T>> response = restTemplate.exchange(
-                url,
-                method,
-                requestEntity,
-                responseType,
-                uriVariables
-        );
-        var body = response.getBody();
-        if (body == null)
-            throw new RuntimeException();
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new HttpException("Failed to communicate with remote service", body.statusCode(), body.errorCode());
+        try {
+            ResponseEntity<ApiResponse<T>> response = restTemplate.exchange(
+                    url,
+                    method,
+                    requestEntity,
+                    responseType,
+                    uriVariables
+            );
+            return response.getBody();
+        } catch (HttpStatusCodeException ex) {
+            String responseBody = ex.getResponseBodyAsString();
+            ApiResponse<?> error = null;
+            try {
+                error = objectMapper.readValue(responseBody, ApiResponse.class);
+            } catch (Exception ignored) {
+            }
+            assert error != null;
+            throw new HttpException("Failed to communicate with remote service", error.statusCode(), error.errorCode());
         }
-
-        return body;
     }
 }
 

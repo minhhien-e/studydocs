@@ -23,8 +23,8 @@ public final class UserNotificationProfileMapper {
             entity.setId(domain.getId());
         }
         entity.setUserId(domain.getUserId());
-        entity.setEmailAddress(domain.getEmailAddress());
-        entity.setPhoneNumber(domain.getPhoneNumber());
+        entity.setEmailAddress(domain.getEmailAddress().value());
+        entity.setPhoneNumber(domain.getPhoneNumber().value());
         entity.setPushEnabled(domain.isPushEnabled());
         entity.setEmailEnabled(domain.isEmailEnabled());
         entity.setSmsEnabled(domain.isSmsEnabled());

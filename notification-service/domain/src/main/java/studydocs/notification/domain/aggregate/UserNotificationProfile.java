@@ -2,14 +2,16 @@ package studydocs.notification.domain.aggregate;
 
 
 import io.github.domain.aggregate.AggregateRoot;
+import studydocs.notification.domain.vo.EmailAddress;
+import studydocs.notification.domain.vo.PhoneNumber;
 
 import java.util.UUID;
 
 public class UserNotificationProfile extends AggregateRoot {
     private UUID userId;
 
-    private String emailAddress;
-    private String phoneNumber;
+    private EmailAddress emailAddress;
+    private PhoneNumber phoneNumber;
 
     private boolean pushEnabled;
     private boolean emailEnabled;
@@ -26,11 +28,11 @@ public class UserNotificationProfile extends AggregateRoot {
     /// Business Logic
 
     public void updateEmail(String email) {
-        this.emailAddress = email;
+        this.emailAddress = new EmailAddress(email);
     }
 
     public void updatePhoneNumber(String phone) {
-        this.phoneNumber = phone;
+        this.phoneNumber = new PhoneNumber(phone);
     }
 
     public void setPushEnabled(boolean enabled) {
@@ -54,8 +56,8 @@ public class UserNotificationProfile extends AggregateRoot {
     ) {
         var profile = new UserNotificationProfile();
         profile.userId = userId;
-        profile.emailAddress = email;
-        profile.phoneNumber = phoneNumber;
+        profile.emailAddress = new EmailAddress(email);
+        profile.phoneNumber = new PhoneNumber(phoneNumber);
         // Default preferences - all enabled
         profile.pushEnabled = true;
         profile.emailEnabled = true;
@@ -75,8 +77,8 @@ public class UserNotificationProfile extends AggregateRoot {
     ) {
         var profile = new UserNotificationProfile(id,version);
         profile.userId = userId;
-        profile.emailAddress = email;
-        profile.phoneNumber = phone;
+        profile.emailAddress = new EmailAddress(email);
+        profile.phoneNumber = new PhoneNumber(phone);
         profile.pushEnabled = pushEnabled;
         profile.emailEnabled = emailEnabled;
         profile.smsEnabled = smsEnabled;
@@ -90,11 +92,11 @@ public class UserNotificationProfile extends AggregateRoot {
         return userId;
     }
 
-    public String getEmailAddress() {
+    public EmailAddress getEmailAddress() {
         return emailAddress;
     }
 
-    public String getPhoneNumber() {
+    public PhoneNumber getPhoneNumber() {
         return phoneNumber;
     }
 

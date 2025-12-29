@@ -6,6 +6,7 @@ import studydocs.notification.application.dto.payload.base.DataProvidePayload;
 import studydocs.notification.application.port.in.renderer.TemplateRenderer;
 import studydocs.notification.application.port.out.provider.NotificationDataProvider;
 import studydocs.notification.application.service.builder.data.NotificationContent;
+import studydocs.notification.application.service.support.TemplateVariableNormalizer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class NotificationContentBuilder {
     private final TemplateRenderer templateRenderer;
+    private final TemplateVariableNormalizer normalizer;
     private final Map<Class<? extends DataProvidePayload>, NotificationDataProvider<? extends DataProvidePayload>> providerMap;
 
     @SuppressWarnings("unchecked")
@@ -23,8 +25,8 @@ public class NotificationContentBuilder {
         Map<String, Object> data = provider.getData(payload);
         data.forEach((key, value) -> model.put(key, String.valueOf(value)));
 
-        String renderedSubject = templateRenderer.render(subjectTemplate, model);
-        String renderedBody = templateRenderer.render(bodyTemplate, model);
+        String renderedSubject = templateRenderer.render(normalizer.normalize(subjectTemplate), model);
+        String renderedBody = templateRenderer.render(normalizer.normalize(bodyTemplate), model);
 
         return new NotificationContent(renderedSubject, renderedBody);
     }
