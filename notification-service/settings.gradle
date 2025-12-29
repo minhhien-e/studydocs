@@ -1,0 +1,17 @@
+rootProject.name = 'notification-service'
+include(
+        "api",
+        "application",
+        "infrastructure",
+        "domain",
+        "bootstrap",
+        'shared',
+        'demo'
+)
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
