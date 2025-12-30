@@ -7,9 +7,11 @@ import java.time.LocalDateTime;
 
 
 
+import java.util.UUID;
+
 @Value(staticConstructor = "commandOf")
 public class UpdateUser implements UserCommand {
-    String userId;
+    UUID userId;
     String fullName;
     String username;
     String email;

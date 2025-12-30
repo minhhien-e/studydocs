@@ -3,6 +3,7 @@ package com.application;
 import com.interfaces.model.ApiResponse;
 import com.interfaces.model.RegisterRequest;
 import com.interfaces.model.UpdateUserRequest;
+import java.util.UUID;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ManageUserService {
@@ -11,17 +12,17 @@ public interface ManageUserService {
 
     ApiResponse<?> updateUser(UpdateUserRequest request, String traceId);
 
-    ApiResponse<?> getUserById(String id, String traceId);
+    ApiResponse<?> getUserById(UUID id, String traceId);
 
-    ApiResponse<?> isUserPrivate(String userId, String traceId);
+    ApiResponse<?> isUserPrivate(UUID userId, String traceId);
 
-    ApiResponse<?> isUserExists(String userId, String traceId);
+    ApiResponse<?> isUserExists(UUID userId, String traceId);
 
-    ApiResponse<?> updateImage(String id, MultipartFile file, String traceId);
+    ApiResponse<?> updateImage(UUID id, MultipartFile file, String traceId);
 
     ApiResponse<?> getUserCount(String traceId);
 
-    ApiResponse<?> deleteUser(String id, String traceId);
+    ApiResponse<?> deleteUser(UUID id, String traceId);
 
     ApiResponse<?> getUsersInRange(int fromIndex, int toIndex, String traceId);
 

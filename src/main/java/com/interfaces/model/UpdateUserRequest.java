@@ -11,13 +11,15 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserRequest {
 
     @NotBlank(message = "ID người dùng không được để trống")
-    private String id;
+    private UUID id;
 
     @NotBlank(message = "Họ và tên không được để trống")
     @Size(max = 100, message = "Họ và tên không được dài quá 100 ký tự")

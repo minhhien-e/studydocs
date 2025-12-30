@@ -4,6 +4,7 @@ import com.domain.command.GetUsersInRange;
 import com.domain.command.RegisterUser;
 import com.domain.dto.UserDTO;
 import com.domain.service.UserDomainService;
+import com.error.exception.HttpExeption;
 import com.helper.HelperMap;
 import com.infrastructure.restemplate.notification.NotificationClient;
 import com.interfaces.model.NotifyRegisterSuccessRequest;
@@ -39,6 +40,7 @@ public class RegisterUserHandler implements CommandHandler<RegisterUser,UserDTO>
                 );
             } catch (Exception e) {
                 log.error("Notify failed", e);
+                throw e;
             }
         }
 

@@ -4,6 +4,7 @@ import com.domain.entity.UserEntity;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UserRepository {
 
@@ -17,7 +18,7 @@ public interface UserRepository {
      * Kiểm tra userId đã tồn tại chưa
      * @return true nếu tồn tại, false nếu không
      */
-    boolean existsByUserId(String id);
+    boolean existsByUserId(UUID id);
 
     /**
      * Lưu mới user
@@ -39,7 +40,7 @@ public interface UserRepository {
      * @param id id của user
      * @throws ExceptionMessage nếu user không tồn tại hoặc xóa thất bại
      */
-    void deleteById(String id);
+    void deleteById(UUID id);
 
     /**
      * Tìm user theo id
@@ -47,7 +48,7 @@ public interface UserRepository {
      * @return Optional chứa UserEntity nếu tồn tại, empty nếu không
      * @throws ExceptionMessage nếu có lỗi truy vấn
      */
-    Optional<UserEntity> findById(String id);
+    Optional<UserEntity> findById(UUID id);
 
     /**
      * Tìm user theo username
@@ -60,7 +61,7 @@ public interface UserRepository {
     List<UserEntity> findAll();
 
     // Kiểm tra user tồn tại theo ID
-    boolean existsById(String id);
+    boolean existsById(UUID id);
 
     // Đếm tổng số user
     long count();

@@ -1,7 +1,13 @@
 package com.domain.service;
 
+import com.error.exception.HttpExeption;
 import com.infrastructure.restemplate.RemoteApiCaller;
+import com.interfaces.model.ApiResponse;
+import com.interfaces.model.UpdateAvatarResponse;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
@@ -9,18 +15,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
-
 @Component
 @RequiredArgsConstructor
 public class ImageServiceClient {
 
     private final RemoteApiCaller remoteApiCaller;
 
-    public String uploadImage(MultipartFile file) {
-        String url = "http://image-service/api/images/upload";
+    @Value("${upload-file.service.url}")
+    private String uploadFileUrl;  // Lấy URL từ YAML
 
+    public String uploadImage(MultipartFile file) {
         try {
-            // Convert MultipartFile → Resource
             Resource fileResource = new ByteArrayResource(file.getBytes()) {
                 @Override
                 public String getFilename() {
@@ -31,20 +36,11 @@ public class ImageServiceClient {
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
             body.add("file", fileResource);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-            HttpEntity<MultiValueMap<String, Object>> request =
-                    new HttpEntity<>(body, headers);
-
-            ResponseEntity<String> response = remoteApiCaller.exchange(
-                    url,
-                    HttpMethod.POST,
-                    request,
-                    String.class
-            );
-
-            return response.getBody();
+            ApiResponse<UpdateAvatarResponse> response = remoteApiCaller.post(uploadFileUrl,body,MediaType.MULTIPART_FORM_DATA,new ParameterizedTypeReference<ApiResponse<UpdateAvatarResponse>>() {});
+            if(response.errorCode()!=null){throw new HttpExeption(response.statusCode(),response.errorCode());
+            }
+            return response.data().getId().toString();
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to upload image: " + e.getMessage());

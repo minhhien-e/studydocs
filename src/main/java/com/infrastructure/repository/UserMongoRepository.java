@@ -3,6 +3,7 @@ package com.infrastructure.repository;
 import com.domain.entity.UserEntity;
 import com.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -11,11 +12,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.error.ErrorCode.*;
 import static com.error.factory.InfrastructureExceptionFactory.custom;
 //import static com.error.infrastructure.InfrastructureExceptionFactory.custom;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class UserMongoRepository implements UserRepository {
@@ -33,7 +36,7 @@ public class UserMongoRepository implements UserRepository {
     }
 
     @Override
-    public boolean existsByUserId(String id) {
+    public boolean existsByUserId(UUID id) {
         try {
             Query query = new Query(Criteria.where("id").is(id));
             return mongoTemplate.exists(query, UserEntity.class);
@@ -46,8 +49,9 @@ public class UserMongoRepository implements UserRepository {
     public UserEntity save(UserEntity user) {
         try {
             return mongoTemplate.save(user);
-        } catch (Throwable t) {
-            throw custom(SAVE_FAILED, "save", t);
+        } catch (Exception e) {
+            log.error("save failed", e);
+            throw custom(SAVE_FAILED, "save", e.getCause());
         }
     }
 
@@ -72,7 +76,7 @@ public class UserMongoRepository implements UserRepository {
     }
 
     @Override
-    public void deleteById(String id) {
+    public void deleteById(UUID id) {
         try {
             Query query = new Query(Criteria.where("id").is(id));
             mongoTemplate.remove(query, UserEntity.class);
@@ -82,7 +86,7 @@ public class UserMongoRepository implements UserRepository {
     }
 
     @Override
-    public Optional<UserEntity> findById(String id) {
+    public Optional<UserEntity> findById(UUID id) {
         try {
             return Optional.ofNullable(mongoTemplate.findById(id, UserEntity.class));
         } catch (Throwable t) {
@@ -110,7 +114,7 @@ public class UserMongoRepository implements UserRepository {
     }
 
     @Override
-    public boolean existsById(String id) {
+    public boolean existsById(UUID id) {
         try {
             Query query = new Query(Criteria.where("id").is(id));
             return mongoTemplate.exists(query, UserEntity.class);

@@ -18,7 +18,8 @@ dependencies {
 	//	Mongo DB
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	// Spring Security (nếu có xác thực)
-//	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 // env
 	implementation 'me.paulschwarz:spring-dotenv:4.0.0'
 	// Spring Boot Actuator

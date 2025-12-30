@@ -7,6 +7,8 @@ import com.interfaces.model.RegisterRequest;
 import com.interfaces.model.UpdateUserRequest;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 public enum HelperMap {
 
     INSTANCE; // ✅ duy nhất một instance
@@ -73,7 +75,7 @@ public enum HelperMap {
         );
     }
 
-    public UpdateUser toUpdateUser(UpdateUserRequest request, String userId) {
+    public UpdateUser toUpdateUser(UpdateUserRequest request, UUID userId) {
         return UpdateUser.commandOf(
                 userId,
                 request.getFullName(),
@@ -86,19 +88,19 @@ public enum HelperMap {
                 request.getAddress()
         );
     }
-    public UpdateImage toUpdateImage(String userId, MultipartFile file) {
+    public UpdateImage toUpdateImage(UUID userId, MultipartFile file) {
         return UpdateImage.commandOf(userId, file);
     }
 
-    public GetUserById toGetUserById(String userId) {
+    public GetUserById toGetUserById(UUID userId) {
         return GetUserById.commandOf(userId);
     }
 
-    public CheckUserPrivate toCheckUserPrivate(String userId) {
+    public CheckUserPrivate toCheckUserPrivate(UUID userId) {
         return CheckUserPrivate.commandOf(userId);
     }
 
-    public CheckUserExists toCheckUserExists(String userId) {
+    public CheckUserExists toCheckUserExists(UUID userId) {
         return CheckUserExists.commandOf(userId);
     }
 }

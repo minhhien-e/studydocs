@@ -3,12 +3,13 @@ package com.domain.service;
 import com.domain.command.*;
 import com.domain.entity.UserEntity;
 import com.domain.repository.UserRepository;
-import com.error.factory.ExceptionFactory;
+import com.infrastructure.JwtCurrentUserProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.error.factory.ExceptionFactory.*;
 
@@ -18,6 +19,7 @@ public class UserDomainService {
 
     private final UserRepository userRepository;
     private final ImageServiceClient imageServiceClient;
+    private final JwtCurrentUserProvider jwtuse;
     /**
      * Đăng ký người dùng mới.
      */
@@ -28,7 +30,7 @@ public class UserDomainService {
         }
 
         UserEntity user = new UserEntity(
-                null,
+                jwtuse.getCurrentUserId(), // ID sẽ được generate (UUID)
                 command.getFullName(),
                 command.getUsername(),
                 command.getEmail(),
@@ -73,7 +75,7 @@ public class UserDomainService {
      * Kiểm tra người dùng có tồn tại không.
      */
     public boolean checkUserExist(CheckUserExists command) {
-        return userRepository.existsByUserId(command.getUserId());
+        return userRepository.existsById(command.getUserId());
     }
 
     /**
@@ -89,18 +91,16 @@ public class UserDomainService {
     /**
      * Cập nhật ảnh đại diện của người dùng.
      */
-    public UserEntity updateImage(String userId, MultipartFile image) {
+    public UserEntity updateImage(UUID userId, MultipartFile image) {
 
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> userNotFound("updateImage"));
 
         if (image == null || image.isEmpty()) {
-            throw new RuntimeException("Invalid image");
+            throw invalidImage("updateImage");
         }
 
-        // Gửi ảnh qua Image Service
         String newAvatarUrl = imageServiceClient.uploadImage(image);
-
         user.setAvatarUrl(newAvatarUrl);
 
         return userRepository.save(user);
@@ -111,7 +111,6 @@ public class UserDomainService {
     }
 
     public List<UserEntity> getUsersInRange(int fromIndex, int toIndex) {
-
         List<UserEntity> allUsers = userRepository.findAll();
 
         if (fromIndex < 0 || toIndex >= allUsers.size() || fromIndex > toIndex) {
@@ -121,22 +120,17 @@ public class UserDomainService {
         return allUsers.subList(fromIndex, toIndex + 1);
     }
 
-
-    public Boolean deleteUser(String userId) {
-
+    public Boolean deleteUser(UUID userId) {
         boolean exists = userRepository.existsById(userId);
         if (!exists) {
             throw userNotFound("deleteUser");
         }
 
         userRepository.deleteById(userId);
-
         return true;
     }
-
 
     public Integer getUserCount() {
         return (int) userRepository.count();
     }
-
 }

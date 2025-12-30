@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,7 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "users")
 public class UserEntity {
     @Id
-    private String id;
+    private UUID id;
 
     private String fullName;
     private String username;
@@ -28,7 +29,7 @@ public class UserEntity {
 
     private boolean isprivate;
 
-    public UserEntity(String id, String fullName, String username, String email,
+    public UserEntity(UUID id, String fullName, String username, String email,
                       String phoneNumber, String avatarUrl, String gender,
                       LocalDate dateOfBirth, String address) {
         this.id = id;

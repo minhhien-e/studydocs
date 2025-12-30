@@ -4,8 +4,10 @@ import lombok.Value;
 
 import java.time.LocalDateTime;
 
+import java.util.UUID;
+
 @Value(staticConstructor = "commandOf")
 public class GetUserById implements UserCommand {
-    String userId;
+    UUID userId;
     LocalDateTime timestamp = LocalDateTime.now();
 }

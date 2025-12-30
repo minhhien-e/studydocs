@@ -9,13 +9,15 @@ import org.springframework.data.annotation.Id;
 import java.time.LocalDate;
 
 
+import java.util.UUID;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO {
     @Id
-    private String id;
+    private UUID id;
     private String fullName;
     private String username;
     private String email;
