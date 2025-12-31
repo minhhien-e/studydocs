@@ -1,6 +1,0 @@
-.env
-/build
-/.gradle
-/.idea
-/gradle
-.gitignore
