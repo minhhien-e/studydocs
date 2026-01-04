@@ -1,7 +1,9 @@
 package com.example.academicservice.exception;
 
 /**
- * Exception được throw khi không tìm thấy resource trong database
+ * Exception được throw khi không tìm thấy resource trong database.
+ * 
+ * <p>This is a placeholder class. User will update this with their own implementation.
  */
 public class ResourceNotFoundException extends RuntimeException {
     

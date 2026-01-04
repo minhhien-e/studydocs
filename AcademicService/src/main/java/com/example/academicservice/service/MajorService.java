@@ -10,9 +10,11 @@ import com.example.academicservice.exception.ResourceNotFoundException;
 import com.example.academicservice.mapper.MajorMapper;
 import com.example.academicservice.repository.DepartmentRepository;
 import com.example.academicservice.repository.MajorRepository;
+import com.example.academicservice.repository.specification.MajorSpecifications;
 import com.example.academicservice.service.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,30 +34,6 @@ public class MajorService {
     private final DepartmentRepository departmentRepository;
     private final MajorMapper majorMapper;
 
-    // === ID-based methods ===
-
-    /**
-     * Lấy tất cả các ngành theo ID bộ môn
-     */
-    @Transactional(readOnly = true)
-    public List<MajorResponse> getAllMajorsByDepartmentId(Long departmentId) {
-        log.info("Fetching all majors for department id: {}", departmentId);
-        return majorRepository.findByDepartmentId(departmentId).stream()
-                .map(majorMapper::toResponse)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Lấy các ngành đang active theo ID bộ môn
-     */
-    @Transactional(readOnly = true)
-    public List<MajorResponse> getActiveMajorsByDepartmentId(Long departmentId) {
-        log.info("Fetching active majors for department id: {}", departmentId);
-        return majorRepository.findByDepartmentIdAndIsActive(departmentId, true).stream()
-                .map(majorMapper::toResponse)
-                .collect(Collectors.toList());
-    }
-
     /**
      * Lấy thông tin ngành theo ID
      */
@@ -64,17 +42,6 @@ public class MajorService {
         log.info("Fetching major with id: {}", id);
         Major major = majorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Major", "id", id));
-        return majorMapper.toResponse(major);
-    }
-
-    /**
-     * Lấy thông tin ngành theo slug trong một bộ môn
-     */
-    @Transactional(readOnly = true)
-    public MajorResponse getMajorBySlug(Long departmentId, String slug) {
-        log.info("Fetching major with slug: {} in department: {}", slug, departmentId);
-        Major major = majorRepository.findByDepartmentIdAndSlug(departmentId, slug)
-                .orElseThrow(() -> new ResourceNotFoundException("Major", "slug", slug));
         return majorMapper.toResponse(major);
     }
 
@@ -105,159 +72,76 @@ public class MajorService {
 
     /**
      * Cập nhật thông tin ngành theo ID
+     * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    public MajorResponse updateMajor(Long id, MajorUpdateRequest request) {
-        log.info("Updating major with id: {}", id);
+    public MajorResponse updateMajor(Long id, Long universityId, MajorUpdateRequest request) {
+        log.info("Updating major with id: {} and universityId: {}", id, universityId);
 
         Major major = majorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Major", "id", id));
+
+        // Validate universityId để đảm bảo không nhầm lẫn khi 2 trường có cùng tên
+        if (!major.getDepartment().getFaculty().getUniversity().getId().equals(universityId)) {
+            throw new ResourceNotFoundException("Major", "id", id + " không thuộc university " + universityId);
+        }
 
         return updateMajorInternal(major, request);
     }
 
     /**
      * Xóa ngành theo ID
+     * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    public void deleteMajorById(Long id) {
-        log.info("Deleting major with id: {}", id);
+    public void deleteMajorById(Long id, Long universityId) {
+        log.info("Deleting major with id: {} and universityId: {}", id, universityId);
 
-        if (!majorRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Major", "id", id);
+        Major major = majorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Major", "id", id));
+
+        // Validate universityId để đảm bảo không nhầm lẫn khi 2 trường có cùng tên
+        if (!major.getDepartment().getFaculty().getUniversity().getId().equals(universityId)) {
+            throw new ResourceNotFoundException("Major", "id", id + " không thuộc university " + universityId);
         }
 
-        majorRepository.deleteById(id);
+        majorRepository.delete(major);
         log.info("Major deleted successfully with id: {}", id);
     }
 
     /**
-     * Xóa ngành theo slug trong bộ môn
+     * Cập nhật thông tin ngành theo slug
+     * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    public void deleteMajorBySlug(Long departmentId, String slug) {
-        log.info("Deleting major with slug: {} in department: {}", slug, departmentId);
+    public MajorResponse updateMajorBySlug(Long universityId, Long departmentId, String slug, MajorUpdateRequest request) {
+        log.info("Updating major with slug: {} in department: {} and universityId: {}", slug, departmentId, universityId);
 
         Major major = majorRepository.findByDepartmentIdAndSlug(departmentId, slug)
                 .orElseThrow(() -> new ResourceNotFoundException("Major", "slug", slug));
 
-        majorRepository.delete(major);
-        log.info("Major deleted successfully with slug: {}", slug);
-    }
-
-    // === Slug-based methods ===
-
-    /**
-     * Lấy tất cả các ngành theo chuỗi slug (university -> faculty -> department)
-     */
-    @Transactional(readOnly = true)
-    public List<MajorResponse> getAllMajorsByUniversityFacultyAndDepartmentSlug(String universitySlug,
-                                                                               String facultySlug,
-                                                                               String departmentSlug) {
-        log.info("Fetching all majors for university slug: {}, faculty slug: {}, department slug: {}",
-                universitySlug, facultySlug, departmentSlug);
-        return majorRepository
-                .findByUniversitySlugAndFacultySlugAndDepartmentSlug(universitySlug, facultySlug, departmentSlug)
-                .stream()
-                .map(majorMapper::toResponse)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Lấy các ngành đang active theo chuỗi slug
-     */
-    @Transactional(readOnly = true)
-    public List<MajorResponse> getActiveMajorsByUniversityFacultyAndDepartmentSlug(String universitySlug,
-                                                                                   String facultySlug,
-                                                                                   String departmentSlug) {
-        log.info("Fetching active majors for university slug: {}, faculty slug: {}, department slug: {}",
-                universitySlug, facultySlug, departmentSlug);
-        return majorRepository
-                .findByUniversitySlugAndFacultySlugAndDepartmentSlugAndIsActive(universitySlug, facultySlug, departmentSlug, true)
-                .stream()
-                .map(majorMapper::toResponse)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Lấy thông tin ngành theo chuỗi slug đầy đủ (university -> faculty -> department -> major)
-     */
-    @Transactional(readOnly = true)
-    public MajorResponse getMajorByUniversityFacultyDepartmentAndMajorSlug(String universitySlug,
-                                                                           String facultySlug,
-                                                                           String departmentSlug,
-                                                                           String majorSlug) {
-        log.info("Fetching major with university slug: {}, faculty slug: {}, department slug: {}, major slug: {}",
-                universitySlug, facultySlug, departmentSlug, majorSlug);
-
-        Major major = majorRepository
-                .findByUniversitySlugAndFacultySlugAndDepartmentSlugAndMajorSlug(universitySlug, facultySlug, departmentSlug, majorSlug)
-                .orElseThrow(() -> new ResourceNotFoundException("Major", "slug", majorSlug));
-
-        return majorMapper.toResponse(major);
-    }
-
-    /**
-     * Tạo mới ngành bằng chuỗi slug (university -> faculty -> department)
-     */
-    public MajorResponse createMajorByUniversityFacultyAndDepartmentSlug(String universitySlug,
-                                                                         String facultySlug,
-                                                                         String departmentSlug,
-                                                                         MajorCreateRequest request) {
-        log.info("Creating major with name: {} for university slug: {}, faculty slug: {}, department slug: {}",
-                request.getName(), universitySlug, facultySlug, departmentSlug);
-
-        Department department = departmentRepository
-                .findByUniversitySlugAndFacultySlugAndDepartmentSlug(universitySlug, facultySlug, departmentSlug)
-                .orElseThrow(() -> new ResourceNotFoundException("Department", "slug", departmentSlug));
-
-        String slug = StringUtil.toSlug(request.getName());
-        if (majorRepository.existsByDepartmentIdAndSlug(department.getId(), slug)) {
-            throw new DuplicateResourceException("Ngành với slug: " + slug + " đã tồn tại trong bộ môn này");
+        // Validate universityId để đảm bảo không nhầm lẫn khi 2 trường có cùng tên
+        if (!major.getDepartment().getFaculty().getUniversity().getId().equals(universityId)) {
+            throw new ResourceNotFoundException("Major", "slug", slug + " không thuộc university " + universityId);
         }
-
-        Major major = majorMapper.toEntity(request);
-        major.setSlug(slug);
-        major.setDepartment(department);
-        major.setIsActive(true);
-
-        Major savedMajor = majorRepository.save(major);
-        log.info("Major created successfully with id: {}", savedMajor.getId());
-
-        return majorMapper.toResponse(savedMajor);
-    }
-
-    /**
-     * Cập nhật thông tin ngành bằng chuỗi slug đầy đủ
-     */
-    public MajorResponse updateMajorByUniversityFacultyDepartmentAndMajorSlug(String universitySlug,
-                                                                              String facultySlug,
-                                                                              String departmentSlug,
-                                                                              String majorSlug,
-                                                                              MajorUpdateRequest request) {
-        log.info("Updating major with university slug: {}, faculty slug: {}, department slug: {}, major slug: {}",
-                universitySlug, facultySlug, departmentSlug, majorSlug);
-
-        Major major = majorRepository
-                .findByUniversitySlugAndFacultySlugAndDepartmentSlugAndMajorSlug(universitySlug, facultySlug, departmentSlug, majorSlug)
-                .orElseThrow(() -> new ResourceNotFoundException("Major", "slug", majorSlug));
 
         return updateMajorInternal(major, request);
     }
 
     /**
-     * Xóa ngành bằng chuỗi slug đầy đủ
+     * Xóa ngành theo slug
+     * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    public void deleteMajorByUniversityFacultyDepartmentAndMajorSlug(String universitySlug,
-                                                                     String facultySlug,
-                                                                     String departmentSlug,
-                                                                     String majorSlug) {
-        log.info("Deleting major with university slug: {}, faculty slug: {}, department slug: {}, major slug: {}",
-                universitySlug, facultySlug, departmentSlug, majorSlug);
+    public void deleteMajorBySlug(Long universityId, Long departmentId, String slug) {
+        log.info("Deleting major with slug: {} in department: {} and universityId: {}", slug, departmentId, universityId);
 
-        Major major = majorRepository
-                .findByUniversitySlugAndFacultySlugAndDepartmentSlugAndMajorSlug(universitySlug, facultySlug, departmentSlug, majorSlug)
-                .orElseThrow(() -> new ResourceNotFoundException("Major", "slug", majorSlug));
+        Major major = majorRepository.findByDepartmentIdAndSlug(departmentId, slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Major", "slug", slug));
+
+        // Validate universityId để đảm bảo không nhầm lẫn khi 2 trường có cùng tên
+        if (!major.getDepartment().getFaculty().getUniversity().getId().equals(universityId)) {
+            throw new ResourceNotFoundException("Major", "slug", slug + " không thuộc university " + universityId);
+        }
 
         majorRepository.delete(major);
-        log.info("Major deleted successfully with slug: {}", majorSlug);
+        log.info("Major deleted successfully with slug: {}", slug);
     }
 
     /**
@@ -281,6 +165,39 @@ public class MajorService {
         log.info("Major updated successfully with id: {}", updatedMajor.getId());
 
         return majorMapper.toResponse(updatedMajor);
+    }
+
+
+    /**
+     * Filter majors với query parameters
+     * Tất cả các tham số đều optional, có thể kết hợp nhiều filter cùng lúc
+     * 
+     * @param universityId - ID trường đại học (optional)
+     * @param universitySlug - Slug trường đại học (optional)
+     * @param facultyId - ID khoa (optional)
+     * @param facultySlug - Slug khoa (optional)
+     * @param departmentId - ID bộ môn (optional)
+     * @param departmentSlug - Slug bộ môn (optional)
+     * @param isActive - Lọc theo trạng thái active (optional, null = lấy tất cả)
+     * @return Danh sách majors
+     */
+    @Transactional(readOnly = true)
+    public List<MajorResponse> filter(Long universityId, String universitySlug,
+                                     Long facultyId, String facultySlug,
+                                     Long departmentId, String departmentSlug,
+                                     Boolean isActive) {
+        log.info("Filtering majors with universityId: {}, universitySlug: {}, " +
+                "facultyId: {}, facultySlug: {}, departmentId: {}, departmentSlug: {}, isActive: {}",
+                universityId, universitySlug, facultyId, facultySlug, departmentId, departmentSlug, isActive);
+        
+        Specification<Major> spec = MajorSpecifications.filterBy(
+            universityId, universitySlug, facultyId, facultySlug, departmentId, departmentSlug, isActive
+        );
+        List<Major> majors = majorRepository.findAll(spec);
+        
+        return majors.stream()
+                .map(majorMapper::toResponse)
+                .collect(Collectors.toList());
     }
 }
 

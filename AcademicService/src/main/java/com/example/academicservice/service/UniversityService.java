@@ -7,9 +7,11 @@ import com.example.academicservice.exception.DuplicateResourceException;
 import com.example.academicservice.exception.ResourceNotFoundException;
 import com.example.academicservice.mapper.UniversityMapper;
 import com.example.academicservice.repository.UniversityRepository;
+import com.example.academicservice.repository.specification.UniversitySpecifications;
 import com.example.academicservice.service.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -159,5 +161,26 @@ public class UniversityService {
 
         universityRepository.delete(university);
         log.info("University deleted successfully with slug: {}", slug);
+    }
+
+    /**
+     * Filter universities với query parameters
+     * Tất cả các tham số đều optional, có thể kết hợp nhiều filter cùng lúc
+     * 
+     * @param id - ID trường đại học (optional)
+     * @param slug - Slug trường đại học (optional)
+     * @param isActive - Lọc theo trạng thái active (optional, null = lấy tất cả)
+     * @return Danh sách universities
+     */
+    @Transactional(readOnly = true)
+    public List<UniversityResponse> filter(Long id, String slug, Boolean isActive) {
+        log.info("Filtering universities with id: {}, slug: {}, isActive: {}", id, slug, isActive);
+        
+        Specification<University> spec = UniversitySpecifications.filterBy(id, slug, isActive);
+        List<University> universities = universityRepository.findAll(spec);
+        
+        return universities.stream()
+                .map(universityMapper::toResponse)
+                .collect(Collectors.toList());
     }
 }

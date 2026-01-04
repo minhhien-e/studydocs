@@ -10,9 +10,11 @@ import com.example.academicservice.exception.ResourceNotFoundException;
 import com.example.academicservice.mapper.DepartmentMapper;
 import com.example.academicservice.repository.DepartmentRepository;
 import com.example.academicservice.repository.FacultyRepository;
+import com.example.academicservice.repository.specification.DepartmentSpecifications;
 import com.example.academicservice.service.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,30 +34,6 @@ public class DepartmentService {
     private final FacultyRepository facultyRepository;
     private final DepartmentMapper departmentMapper;
 
-    // === ID-based methods ===
-
-    /**
-     * Lấy tất cả các bộ môn theo ID khoa
-     */
-    @Transactional(readOnly = true)
-    public List<DepartmentResponse> getAllDepartmentsByFacultyId(Long facultyId) {
-        log.info("Fetching all departments for faculty id: {}", facultyId);
-        return departmentRepository.findByFacultyId(facultyId).stream()
-                .map(departmentMapper::toResponse)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Lấy các bộ môn đang active theo ID khoa
-     */
-    @Transactional(readOnly = true)
-    public List<DepartmentResponse> getActiveDepartmentsByFacultyId(Long facultyId) {
-        log.info("Fetching active departments for faculty id: {}", facultyId);
-        return departmentRepository.findByFacultyIdAndIsActive(facultyId, true).stream()
-                .map(departmentMapper::toResponse)
-                .collect(Collectors.toList());
-    }
-
     /**
      * Lấy thông tin bộ môn theo ID
      */
@@ -64,17 +42,6 @@ public class DepartmentService {
         log.info("Fetching department with id: {}", id);
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Department", "id", id));
-        return departmentMapper.toResponse(department);
-    }
-
-    /**
-     * Lấy thông tin bộ môn theo slug trong một khoa
-     */
-    @Transactional(readOnly = true)
-    public DepartmentResponse getDepartmentBySlug(Long facultyId, String slug) {
-        log.info("Fetching department with slug: {} in faculty: {}", slug, facultyId);
-        Department department = departmentRepository.findByFacultyIdAndSlug(facultyId, slug)
-                .orElseThrow(() -> new ResourceNotFoundException("Department", "slug", slug));
         return departmentMapper.toResponse(department);
     }
 
@@ -105,140 +72,76 @@ public class DepartmentService {
 
     /**
      * Cập nhật thông tin bộ môn theo ID
+     * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    public DepartmentResponse updateDepartment(Long id, DepartmentUpdateRequest request) {
-        log.info("Updating department with id: {}", id);
+    public DepartmentResponse updateDepartment(Long id, Long universityId, DepartmentUpdateRequest request) {
+        log.info("Updating department with id: {} and universityId: {}", id, universityId);
 
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Department", "id", id));
+
+        // Validate universityId để đảm bảo không nhầm lẫn khi 2 trường có cùng tên
+        if (!department.getFaculty().getUniversity().getId().equals(universityId)) {
+            throw new ResourceNotFoundException("Department", "id", id + " không thuộc university " + universityId);
+        }
 
         return updateDepartmentInternal(department, request);
     }
 
     /**
      * Xóa bộ môn theo ID
+     * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    public void deleteDepartmentById(Long id) {
-        log.info("Deleting department with id: {}", id);
+    public void deleteDepartmentById(Long id, Long universityId) {
+        log.info("Deleting department with id: {} and universityId: {}", id, universityId);
 
-        if (!departmentRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Department", "id", id);
+        Department department = departmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Department", "id", id));
+
+        // Validate universityId để đảm bảo không nhầm lẫn khi 2 trường có cùng tên
+        if (!department.getFaculty().getUniversity().getId().equals(universityId)) {
+            throw new ResourceNotFoundException("Department", "id", id + " không thuộc university " + universityId);
         }
 
-        departmentRepository.deleteById(id);
+        departmentRepository.delete(department);
         log.info("Department deleted successfully with id: {}", id);
     }
 
     /**
-     * Xóa bộ môn theo slug trong khoa
+     * Cập nhật thông tin bộ môn theo slug
+     * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    public void deleteDepartmentBySlug(Long facultyId, String slug) {
-        log.info("Deleting department with slug: {} in faculty: {}", slug, facultyId);
+    public DepartmentResponse updateDepartmentBySlug(Long universityId, Long facultyId, String slug, DepartmentUpdateRequest request) {
+        log.info("Updating department with slug: {} in faculty: {} and universityId: {}", slug, facultyId, universityId);
 
         Department department = departmentRepository.findByFacultyIdAndSlug(facultyId, slug)
                 .orElseThrow(() -> new ResourceNotFoundException("Department", "slug", slug));
 
-        departmentRepository.delete(department);
-        log.info("Department deleted successfully with slug: {}", slug);
-    }
-
-    // === Slug-based methods ===
-
-    /**
-     * Lấy tất cả các bộ môn theo university slug + faculty slug
-     */
-    @Transactional(readOnly = true)
-    public List<DepartmentResponse> getAllDepartmentsByUniversitySlugAndFacultySlug(String universitySlug, String facultySlug) {
-        log.info("Fetching all departments for university slug: {} and faculty slug: {}", universitySlug, facultySlug);
-        return departmentRepository.findByUniversitySlugAndFacultySlug(universitySlug, facultySlug).stream()
-                .map(departmentMapper::toResponse)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Lấy các bộ môn đang active theo university slug + faculty slug
-     */
-    @Transactional(readOnly = true)
-    public List<DepartmentResponse> getActiveDepartmentsByUniversitySlugAndFacultySlug(String universitySlug, String facultySlug) {
-        log.info("Fetching active departments for university slug: {} and faculty slug: {}", universitySlug, facultySlug);
-        return departmentRepository.findByUniversitySlugAndFacultySlugAndIsActive(universitySlug, facultySlug, true).stream()
-                .map(departmentMapper::toResponse)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Lấy thông tin bộ môn theo chuỗi slug (university -> faculty -> department)
-     */
-    @Transactional(readOnly = true)
-    public DepartmentResponse getDepartmentByUniversityFacultyAndDepartmentSlug(String universitySlug, String facultySlug, String departmentSlug) {
-        log.info("Fetching department with university slug: {}, faculty slug: {}, department slug: {}",
-                universitySlug, facultySlug, departmentSlug);
-
-        Department department = departmentRepository
-                .findByUniversitySlugAndFacultySlugAndDepartmentSlug(universitySlug, facultySlug, departmentSlug)
-                .orElseThrow(() -> new ResourceNotFoundException("Department", "slug", departmentSlug));
-
-        return departmentMapper.toResponse(department);
-    }
-
-    /**
-     * Tạo mới bộ môn bằng chuỗi slug (university -> faculty)
-     */
-    public DepartmentResponse createDepartmentByUniversitySlugAndFacultySlug(String universitySlug, String facultySlug, DepartmentCreateRequest request) {
-        log.info("Creating department with name: {} for university slug: {} and faculty slug: {}",
-                request.getName(), universitySlug, facultySlug);
-
-        Faculty faculty = facultyRepository.findByUniversitySlugAndFacultySlug(universitySlug, facultySlug)
-                .orElseThrow(() -> new ResourceNotFoundException("Faculty", "slug", facultySlug));
-
-        String slug = StringUtil.toSlug(request.getName());
-        if (departmentRepository.existsByFacultyIdAndSlug(faculty.getId(), slug)) {
-            throw new DuplicateResourceException("Bộ môn với slug: " + slug + " đã tồn tại trong khoa này");
+        // Validate universityId để đảm bảo không nhầm lẫn khi 2 trường có cùng tên
+        if (!department.getFaculty().getUniversity().getId().equals(universityId)) {
+            throw new ResourceNotFoundException("Department", "slug", slug + " không thuộc university " + universityId);
         }
-
-        Department department = departmentMapper.toEntity(request);
-        department.setSlug(slug);
-        department.setFaculty(faculty);
-        department.setIsActive(true);
-
-        Department savedDepartment = departmentRepository.save(department);
-        log.info("Department created successfully with id: {}", savedDepartment.getId());
-
-        return departmentMapper.toResponse(savedDepartment);
-    }
-
-    /**
-     * Cập nhật thông tin bộ môn bằng chuỗi slug (university -> faculty -> department)
-     */
-    public DepartmentResponse updateDepartmentByUniversityFacultyAndDepartmentSlug(String universitySlug,
-                                                                                  String facultySlug,
-                                                                                  String departmentSlug,
-                                                                                  DepartmentUpdateRequest request) {
-        log.info("Updating department with university slug: {}, faculty slug: {}, department slug: {}",
-                universitySlug, facultySlug, departmentSlug);
-
-        Department department = departmentRepository
-                .findByUniversitySlugAndFacultySlugAndDepartmentSlug(universitySlug, facultySlug, departmentSlug)
-                .orElseThrow(() -> new ResourceNotFoundException("Department", "slug", departmentSlug));
 
         return updateDepartmentInternal(department, request);
     }
 
     /**
-     * Xóa bộ môn bằng chuỗi slug (university -> faculty -> department)
+     * Xóa bộ môn theo slug
+     * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    public void deleteDepartmentByUniversityFacultyAndDepartmentSlug(String universitySlug,
-                                                                     String facultySlug,
-                                                                     String departmentSlug) {
-        log.info("Deleting department with university slug: {}, faculty slug: {}, department slug: {}",
-                universitySlug, facultySlug, departmentSlug);
+    public void deleteDepartmentBySlug(Long universityId, Long facultyId, String slug) {
+        log.info("Deleting department with slug: {} in faculty: {} and universityId: {}", slug, facultyId, universityId);
 
-        Department department = departmentRepository
-                .findByUniversitySlugAndFacultySlugAndDepartmentSlug(universitySlug, facultySlug, departmentSlug)
-                .orElseThrow(() -> new ResourceNotFoundException("Department", "slug", departmentSlug));
+        Department department = departmentRepository.findByFacultyIdAndSlug(facultyId, slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Department", "slug", slug));
+
+        // Validate universityId để đảm bảo không nhầm lẫn khi 2 trường có cùng tên
+        if (!department.getFaculty().getUniversity().getId().equals(universityId)) {
+            throw new ResourceNotFoundException("Department", "slug", slug + " không thuộc university " + universityId);
+        }
 
         departmentRepository.delete(department);
-        log.info("Department deleted successfully with slug: {}", departmentSlug);
+        log.info("Department deleted successfully with slug: {}", slug);
     }
 
     /**
@@ -262,6 +165,35 @@ public class DepartmentService {
         log.info("Department updated successfully with id: {}", updatedDepartment.getId());
 
         return departmentMapper.toResponse(updatedDepartment);
+    }
+
+    /**
+     * Filter departments với query parameters
+     * Tất cả các tham số đều optional, có thể kết hợp nhiều filter cùng lúc
+     * 
+     * @param universityId - ID trường đại học (optional)
+     * @param universitySlug - Slug trường đại học (optional)
+     * @param facultyId - ID khoa (optional)
+     * @param facultySlug - Slug khoa (optional)
+     * @param isActive - Lọc theo trạng thái active (optional, null = lấy tất cả)
+     * @return Danh sách departments
+     */
+    @Transactional(readOnly = true)
+    public List<DepartmentResponse> filter(Long universityId, String universitySlug,
+                                          Long facultyId, String facultySlug,
+                                          Boolean isActive) {
+        log.info("Filtering departments with universityId: {}, universitySlug: {}, " +
+                "facultyId: {}, facultySlug: {}, isActive: {}",
+                universityId, universitySlug, facultyId, facultySlug, isActive);
+        
+        Specification<Department> spec = DepartmentSpecifications.filterBy(
+            universityId, universitySlug, facultyId, facultySlug, isActive
+        );
+        List<Department> departments = departmentRepository.findAll(spec);
+        
+        return departments.stream()
+                .map(departmentMapper::toResponse)
+                .collect(Collectors.toList());
     }
 }
 

@@ -14,142 +14,94 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/majors")
 public class MajorController {
 
     private final MajorService majorService;
 
-    // === ID-based endpoints (existing) ===
-
-    /**
-     * Lấy tất cả các ngành theo ID bộ môn
-     */
-    @GetMapping("/majors/department/{departmentId}")
-    public List<MajorResponse> getAllMajorsByDepartmentId(@PathVariable Long departmentId) {
-        return majorService.getAllMajorsByDepartmentId(departmentId);
-    }
-
-    /**
-     * Lấy các ngành đang active theo ID bộ môn
-     */
-    @GetMapping("/majors/department/{departmentId}/active")
-    public List<MajorResponse> getActiveMajorsByDepartmentId(@PathVariable Long departmentId) {
-        return majorService.getActiveMajorsByDepartmentId(departmentId);
-    }
-
     /**
      * Lấy thông tin ngành theo ID
      */
-    @GetMapping("/majors/id/{id}")
+    @GetMapping("/id/{id}")
     public MajorResponse getMajorById(@PathVariable Long id) {
         return majorService.getMajorById(id);
     }
 
     /**
-     * Lấy thông tin ngành theo slug trong một bộ môn
-     */
-    @GetMapping("/majors/department/{departmentId}/slug/{slug}")
-    public MajorResponse getMajorBySlug(@PathVariable Long departmentId, @PathVariable String slug) {
-        return majorService.getMajorBySlug(departmentId, slug);
-    }
-
-    /**
      * Tạo mới ngành
      */
-    @PostMapping("/majors")
+    @PostMapping
     public MajorResponse createMajor(@RequestBody MajorCreateRequest request) {
         return majorService.createMajor(request);
     }
 
     /**
      * Cập nhật thông tin ngành theo ID
+     * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    @PutMapping("/majors/{id}")
-    public MajorResponse updateMajor(@PathVariable Long id, @RequestBody MajorUpdateRequest request) {
-        return majorService.updateMajor(id, request);
+    @PutMapping("/id/{id}")
+    public MajorResponse updateMajorById(@PathVariable Long id,
+                                        @RequestParam Long universityId,
+                                        @RequestBody MajorUpdateRequest request) {
+        return majorService.updateMajor(id, universityId, request);
+    }
+
+    /**
+     * Cập nhật thông tin ngành theo slug
+     * Bắt buộc phải có universityId và departmentId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
+     */
+    @PutMapping("/slug/{slug}")
+    public MajorResponse updateMajorBySlug(@PathVariable String slug,
+                                          @RequestParam Long universityId,
+                                          @RequestParam Long departmentId,
+                                          @RequestBody MajorUpdateRequest request) {
+        return majorService.updateMajorBySlug(universityId, departmentId, slug, request);
     }
 
     /**
      * Xóa ngành theo ID
+     * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    @DeleteMapping("/majors/id/{id}")
-    public void deleteMajorById(@PathVariable Long id) {
-        majorService.deleteMajorById(id);
+    @DeleteMapping("/id/{id}")
+    public void deleteMajorById(@PathVariable Long id, @RequestParam Long universityId) {
+        majorService.deleteMajorById(id, universityId);
     }
 
     /**
-     * Xóa ngành theo slug trong một bộ môn
+     * Xóa ngành theo slug
+     * Bắt buộc phải có universityId và departmentId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    @DeleteMapping("/majors/department/{departmentId}/slug/{slug}")
-    public void deleteMajorBySlug(@PathVariable Long departmentId, @PathVariable String slug) {
-        majorService.deleteMajorBySlug(departmentId, slug);
-    }
-
-    // === Slug-based endpoints (new) ===
-
-    /**
-     * Lấy tất cả các ngành theo chuỗi slug (university -> faculty -> department)
-     */
-    @GetMapping("/universities/{universitySlug}/faculties/{facultySlug}/departments/{departmentSlug}/majors")
-    public List<MajorResponse> getAllMajorsByUniversityFacultyAndDepartmentSlug(@PathVariable String universitySlug,
-                                                                                @PathVariable String facultySlug,
-                                                                                @PathVariable String departmentSlug) {
-        return majorService.getAllMajorsByUniversityFacultyAndDepartmentSlug(universitySlug, facultySlug, departmentSlug);
+    @DeleteMapping("/slug/{slug}")
+    public void deleteMajorBySlug(@PathVariable String slug,
+                                 @RequestParam Long universityId,
+                                 @RequestParam Long departmentId) {
+        majorService.deleteMajorBySlug(universityId, departmentId, slug);
     }
 
     /**
-     * Lấy các ngành đang active theo chuỗi slug
+     * Filter majors với query parameters
+     * Tất cả các tham số đều optional, có thể kết hợp nhiều filter cùng lúc
+     * 
+     * @param universityId - ID trường đại học (optional)
+     * @param universitySlug - Slug trường đại học (optional)
+     * @param facultyId - ID khoa (optional)
+     * @param facultySlug - Slug khoa (optional)
+     * @param departmentId - ID bộ môn (optional)
+     * @param departmentSlug - Slug bộ môn (optional)
+     * @param isActive - Lọc theo trạng thái active (optional, null = lấy tất cả)
+     * @return Danh sách ngành học
      */
-    @GetMapping("/universities/{universitySlug}/faculties/{facultySlug}/departments/{departmentSlug}/majors/active")
-    public List<MajorResponse> getActiveMajorsByUniversityFacultyAndDepartmentSlug(@PathVariable String universitySlug,
-                                                                                   @PathVariable String facultySlug,
-                                                                                   @PathVariable String departmentSlug) {
-        return majorService.getActiveMajorsByUniversityFacultyAndDepartmentSlug(universitySlug, facultySlug, departmentSlug);
-    }
-
-    /**
-     * Lấy thông tin ngành theo chuỗi slug đầy đủ (university -> faculty -> department -> major)
-     */
-    @GetMapping("/universities/{universitySlug}/faculties/{facultySlug}/departments/{departmentSlug}/majors/{majorSlug}")
-    public MajorResponse getMajorByUniversityFacultyDepartmentAndMajorSlug(@PathVariable String universitySlug,
-                                                                           @PathVariable String facultySlug,
-                                                                           @PathVariable String departmentSlug,
-                                                                           @PathVariable String majorSlug) {
-        return majorService.getMajorByUniversityFacultyDepartmentAndMajorSlug(universitySlug, facultySlug, departmentSlug, majorSlug);
-    }
-
-    /**
-     * Tạo mới ngành bằng chuỗi slug (university -> faculty -> department)
-     */
-    @PostMapping("/universities/{universitySlug}/faculties/{facultySlug}/departments/{departmentSlug}/majors")
-    public MajorResponse createMajorByUniversityFacultyAndDepartmentSlug(@PathVariable String universitySlug,
-                                                                         @PathVariable String facultySlug,
-                                                                         @PathVariable String departmentSlug,
-                                                                         @RequestBody MajorCreateRequest request) {
-        return majorService.createMajorByUniversityFacultyAndDepartmentSlug(universitySlug, facultySlug, departmentSlug, request);
-    }
-
-    /**
-     * Cập nhật thông tin ngành bằng chuỗi slug đầy đủ
-     */
-    @PutMapping("/universities/{universitySlug}/faculties/{facultySlug}/departments/{departmentSlug}/majors/{majorSlug}")
-    public MajorResponse updateMajorByUniversityFacultyDepartmentAndMajorSlug(@PathVariable String universitySlug,
-                                                                              @PathVariable String facultySlug,
-                                                                              @PathVariable String departmentSlug,
-                                                                              @PathVariable String majorSlug,
-                                                                              @RequestBody MajorUpdateRequest request) {
-        return majorService.updateMajorByUniversityFacultyDepartmentAndMajorSlug(universitySlug, facultySlug, departmentSlug, majorSlug, request);
-    }
-
-    /**
-     * Xóa ngành bằng chuỗi slug đầy đủ
-     */
-    @DeleteMapping("/universities/{universitySlug}/faculties/{facultySlug}/departments/{departmentSlug}/majors/{majorSlug}")
-    public void deleteMajorByUniversityFacultyDepartmentAndMajorSlug(@PathVariable String universitySlug,
-                                                                     @PathVariable String facultySlug,
-                                                                     @PathVariable String departmentSlug,
-                                                                     @PathVariable String majorSlug) {
-        majorService.deleteMajorByUniversityFacultyDepartmentAndMajorSlug(universitySlug, facultySlug, departmentSlug, majorSlug);
+    @GetMapping("/filter")
+    public List<MajorResponse> filterMajors(
+            @RequestParam(required = false) Long universityId,
+            @RequestParam(required = false) String universitySlug,
+            @RequestParam(required = false) Long facultyId,
+            @RequestParam(required = false) String facultySlug,
+            @RequestParam(required = false) Long departmentId,
+            @RequestParam(required = false) String departmentSlug,
+            @RequestParam(required = false) Boolean isActive) {
+        return majorService.filter(universityId, universitySlug, facultyId, 
+                                  facultySlug, departmentId, departmentSlug, isActive);
     }
 }
 

@@ -4,6 +4,7 @@ import com.example.academicservice.dto.request.UniversityCreateRequest;
 import com.example.academicservice.dto.response.UniversityResponse;
 import com.example.academicservice.service.UniversityService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,28 +20,12 @@ public class UniversityController {
     private final UniversityService universityService;
 
     /**
-     * Lấy tất cả các trường đại học
-     */
-    @GetMapping
-    public List<UniversityResponse> getAllUniversities() {
-        return universityService.getAllUniversities();
-    }
-
-    /**
      * Lấy trường đại học theo ID
      */
     @GetMapping("/id/{id}")
+    @PreAuthorize("hasAnyAuthority('READ_USER')")
     public UniversityResponse getUniversityById(@PathVariable Long id) {
         return universityService.getUniversityById(id);
-    }
-
-    /**
-     * Lấy trường đại học theo slug
-     */
-
-    @GetMapping("/slug/{slug}")
-    public UniversityResponse getUniversityBySlug(@PathVariable String slug) {
-        return universityService.getUniversityBySlug(slug);
     }
 
     /**
@@ -52,12 +37,21 @@ public class UniversityController {
     }
 
     /**
-     * Cập nhật thông tin trường đại học
+     * Cập nhật thông tin trường đại học theo ID
      */
-    @PutMapping("/{id}")
-    public UniversityResponse updateUniversity(@PathVariable Long id,
-                                               @RequestBody UniversityCreateRequest request) {
+    @PutMapping("/id/{id}")
+    public UniversityResponse updateUniversityById(@PathVariable Long id,
+                                                   @RequestBody UniversityCreateRequest request) {
         return universityService.updateUniversity(id, request);
+    }
+
+    /**
+     * Cập nhật thông tin trường đại học theo slug
+     */
+    @PutMapping("/slug/{slug}")
+    public UniversityResponse updateUniversityBySlug(@PathVariable String slug,
+                                                     @RequestBody UniversityCreateRequest request) {
+        return universityService.updateUniversityBySlug(slug, request);
     }
 
     /**
@@ -76,45 +70,21 @@ public class UniversityController {
         universityService.deleteUniversityBySlug(slug);
     }
 
-    // === Slug-based endpoints (new) ===
-
     /**
-     * Lấy tất cả các trường đại học (slug-based)
+     * Filter universities với query parameters
+     * Tất cả các tham số đều optional, có thể kết hợp nhiều filter cùng lúc
+     * 
+     * @param id - ID trường đại học (optional)
+     * @param slug - Slug trường đại học (optional)
+     * @param isActive - Lọc theo trạng thái active (optional, null = lấy tất cả)
+     * @return Danh sách trường đại học
      */
-    @GetMapping("/universities")
-    public List<UniversityResponse> getAllUniversitiesSlug() {
-        return universityService.getAllUniversities();
-    }
-
-    /**
-     * Lấy trường đại học theo slug (slug-based)
-     */
-    @GetMapping("/universities/{slug}")
-    public UniversityResponse getUniversityBySlugSlug(@PathVariable String slug) {
-        return universityService.getUniversityBySlug(slug);
-    }
-
-    /**
-     * Tạo mới trường đại học (slug-based)
-     */
-    @PostMapping("/universities")
-    public UniversityResponse createUniversitySlug(@RequestBody UniversityCreateRequest request) {
-        return universityService.createUniversity(request);
-    }
-
-    /**
-     * Cập nhật thông tin trường đại học theo slug (slug-based)
-     */
-    @PutMapping("/universities/{slug}")
-    public UniversityResponse updateUniversityBySlug(@PathVariable String slug, @RequestBody UniversityCreateRequest request) {
-        return universityService.updateUniversityBySlug(slug, request);
-    }
-
-    /**
-     * Xóa trường đại học theo slug (slug-based)
-     */
-    @DeleteMapping("/universities/{slug}")
-    public void deleteUniversityBySlugSlug(@PathVariable String slug) {
-        universityService.deleteUniversityBySlug(slug);
+    @GetMapping("/filter")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+    public List<UniversityResponse> filterUniversities(
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String slug,
+            @RequestParam(required = false) Boolean isActive) {
+        return universityService.filter(id, slug, isActive);
     }
 }

@@ -14,130 +14,82 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/faculties")
 public class FacultyController {
 
     private final FacultyService facultyService;
 
-    // === ID-based endpoints (existing) ===
-
-    /**
-     * Lấy tất cả các khoa theo ID trường đại học
-     */
-    @GetMapping("/faculties/university/{universityId}")
-    public List<FacultyResponse> getAllFacultiesByUniversityId(@PathVariable Long universityId) {
-        return facultyService.getAllFacultiesByUniversityId(universityId);
-    }
-
-    /**
-     * Lấy các khoa đang active theo ID trường đại học
-     */
-    @GetMapping("/faculties/university/{universityId}/active")
-    public List<FacultyResponse> getActiveFacultiesByUniversityId(@PathVariable Long universityId) {
-        return facultyService.getActiveFacultiesByUniversityId(universityId);
-    }
-
     /**
      * Lấy thông tin khoa theo ID
      */
-    @GetMapping("/faculties/id/{id}")
+    @GetMapping("/id/{id}")
     public FacultyResponse getFacultyById(@PathVariable Long id) {
         return facultyService.getFacultyById(id);
     }
 
     /**
-     * Lấy thông tin khoa theo slug trong một trường đại học
-     */
-    @GetMapping("/faculties/university/{universityId}/slug/{slug}")
-    public FacultyResponse getFacultyBySlug(@PathVariable Long universityId, @PathVariable String slug) {
-        return facultyService.getFacultyBySlug(universityId, slug);
-    }
-
-    /**
      * Tạo mới khoa
      */
-    @PostMapping("/faculties")
+    @PostMapping
     public FacultyResponse createFaculty(@RequestBody FacultyCreateRequest request) {
         return facultyService.createFaculty(request);
     }
 
     /**
-     * Cập nhật thông tin khoa
+     * Cập nhật thông tin khoa theo ID
+     * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa
      */
-    @PutMapping("/faculties/{id}")
-    public FacultyResponse updateFaculty(@PathVariable Long id, @RequestBody FacultyUpdateRequest request) {
-        return facultyService.updateFaculty(id, request);
+    @PutMapping("/id/{id}")
+    public FacultyResponse updateFacultyById(@PathVariable Long id,
+                                            @RequestParam Long universityId,
+                                            @RequestBody FacultyUpdateRequest request) {
+        return facultyService.updateFaculty(id, universityId, request);
+    }
+
+    /**
+     * Cập nhật thông tin khoa theo slug
+     * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa
+     */
+    @PutMapping("/slug/{slug}")
+    public FacultyResponse updateFacultyBySlug(@PathVariable String slug,
+                                              @RequestParam Long universityId,
+                                              @RequestBody FacultyUpdateRequest request) {
+        return facultyService.updateFacultyBySlug(universityId, slug, request);
     }
 
     /**
      * Xóa khoa theo ID
+     * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa
      */
-    @DeleteMapping("/faculties/id/{id}")
-    public void deleteFacultyById(@PathVariable Long id) {
-        facultyService.deleteFacultyById(id);
+    @DeleteMapping("/id/{id}")
+    public void deleteFacultyById(@PathVariable Long id, @RequestParam Long universityId) {
+        facultyService.deleteFacultyById(id, universityId);
     }
 
     /**
      * Xóa khoa theo slug
+     * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa
      */
-    @DeleteMapping("/faculties/university/{universityId}/slug/{slug}")
-    public void deleteFacultyBySlug(@PathVariable Long universityId, @PathVariable String slug) {
+    @DeleteMapping("/slug/{slug}")
+    public void deleteFacultyBySlug(@PathVariable String slug, @RequestParam Long universityId) {
         facultyService.deleteFacultyBySlug(universityId, slug);
     }
 
-    // === Slug-based endpoints (new) ===
-
     /**
-     * Lấy tất cả các khoa theo university slug
+     * Filter faculties với query parameters
+     * Tất cả các tham số đều optional, có thể kết hợp nhiều filter cùng lúc
+     * 
+     * @param universityId - ID trường đại học (optional)
+     * @param universitySlug - Slug trường đại học (optional)
+     * @param isActive - Lọc theo trạng thái active (optional, null = lấy tất cả)
+     * @return Danh sách khoa
      */
-    @GetMapping("/universities/{universitySlug}/faculties")
-    public List<FacultyResponse> getAllFacultiesByUniversitySlug(@PathVariable String universitySlug) {
-        return facultyService.getAllFacultiesByUniversitySlug(universitySlug);
-    }
-
-    /**
-     * Lấy các khoa đang active theo university slug
-     */
-    @GetMapping("/universities/{universitySlug}/faculties/active")
-    public List<FacultyResponse> getActiveFacultiesByUniversitySlug(@PathVariable String universitySlug) {
-        return facultyService.getActiveFacultiesByUniversitySlug(universitySlug);
-    }
-
-    /**
-     * Lấy thông tin khoa theo university slug + faculty slug
-     */
-    @GetMapping("/universities/{universitySlug}/faculties/{facultySlug}")
-    public FacultyResponse getFacultyByUniversitySlugAndFacultySlug(@PathVariable String universitySlug, 
-                                                                    @PathVariable String facultySlug) {
-        return facultyService.getFacultyByUniversitySlugAndFacultySlug(universitySlug, facultySlug);
-    }
-
-    /**
-     * Tạo mới khoa bằng university slug
-     */
-    @PostMapping("/universities/{universitySlug}/faculties")
-    public FacultyResponse createFacultyByUniversitySlug(@PathVariable String universitySlug, 
-                                                        @RequestBody FacultyCreateRequest request) {
-        return facultyService.createFacultyByUniversitySlug(universitySlug, request);
-    }
-
-    /**
-     * Cập nhật thông tin khoa bằng university slug + faculty slug
-     */
-    @PutMapping("/universities/{universitySlug}/faculties/{facultySlug}")
-    public FacultyResponse updateFacultyByUniversitySlugAndFacultySlug(@PathVariable String universitySlug, 
-                                                                      @PathVariable String facultySlug, 
-                                                                      @RequestBody FacultyUpdateRequest request) {
-        return facultyService.updateFacultyByUniversitySlugAndFacultySlug(universitySlug, facultySlug, request);
-    }
-
-    /**
-     * Xóa khoa theo university slug + faculty slug
-     */
-    @DeleteMapping("/universities/{universitySlug}/faculties/{facultySlug}")
-    public void deleteFacultyByUniversitySlugAndFacultySlug(@PathVariable String universitySlug, 
-                                                            @PathVariable String facultySlug) {
-        facultyService.deleteFacultyByUniversitySlugAndFacultySlug(universitySlug, facultySlug);
+    @GetMapping("/filter")
+    public List<FacultyResponse> filterFaculties(
+            @RequestParam(required = false) Long universityId,
+            @RequestParam(required = false) String universitySlug,
+            @RequestParam(required = false) Boolean isActive) {
+        return facultyService.filter(universityId, universitySlug, isActive);
     }
 }
 
