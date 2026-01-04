@@ -1,13 +1,19 @@
 package com.example.demoauth.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import com.example.demoauth.domain.User;
 import com.example.demoauth.domain.UserIdentity;
 import com.example.demoauth.dto.LoginProviderRequestDto;
 import com.example.demoauth.dto.TokenResponseDto;
+import com.example.demoauth.exception.AuthErrorCodes;
+import com.example.demoauth.exception.AuthException;
 import com.example.demoauth.repository.RoleRepository;
 import com.example.demoauth.repository.UserIdentityRepository;
 import com.example.demoauth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
@@ -16,9 +22,6 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class GoogleOAuthProviderService implements OAuthProviderService {
@@ -32,10 +35,10 @@ public class GoogleOAuthProviderService implements OAuthProviderService {
     private final RoleRepository roleRepository;
 
     public GoogleOAuthProviderService(UserRepository userRepository,
-                                      UserIdentityRepository userIdentityRepository,
-                                      TokenService tokenService,
-                                      RoleRepository roleRepository,
-                                      @Value("${spring.security.oauth2.client.registration.google.client-id}") String googleClientId) {
+            UserIdentityRepository userIdentityRepository,
+            TokenService tokenService,
+            RoleRepository roleRepository,
+            @Value("${spring.security.oauth2.client.registration.google.client-id}") String googleClientId) {
         this.userRepository = userRepository;
         this.userIdentityRepository = userIdentityRepository;
         this.tokenService = tokenService;
@@ -46,9 +49,9 @@ public class GoogleOAuthProviderService implements OAuthProviderService {
     private JwtDecoder buildGoogleJwtDecoder(String clientId) {
         // Dùng helper của Spring để lấy đúng JWKS & config cho issuer Google
         JwtDecoder decoder = JwtDecoders.fromIssuerLocation(GOOGLE_ISSUER);
-    
+
         var defaultValidator = JwtValidators.createDefaultWithIssuer(GOOGLE_ISSUER);
-    
+
         OAuth2TokenValidator<Jwt> audienceValidator = jwt -> {
             List<String> audiences = jwt.getAudience();
             if (audiences != null && audiences.contains(clientId)) {
@@ -57,14 +60,13 @@ public class GoogleOAuthProviderService implements OAuthProviderService {
             OAuth2Error error = new OAuth2Error(
                     "invalid_token",
                     "Invalid audience",
-                    OAuth2ParameterNames.AUDIENCE
-            );
+                    OAuth2ParameterNames.AUDIENCE);
             return OAuth2TokenValidatorResult.failure(error);
         };
-    
+
         ((NimbusJwtDecoder) decoder)
                 .setJwtValidator(new DelegatingOAuth2TokenValidator<>(defaultValidator, audienceValidator));
-    
+
         return decoder;
     }
 
@@ -75,7 +77,8 @@ public class GoogleOAuthProviderService implements OAuthProviderService {
 
     /**
      * Tạm thời: coi tokenId chính là provider_user_id.
-     * Sau này khi tích hợp verify Google ID token, ta sẽ trích xuất sub/email/name từ token.
+     * Sau này khi tích hợp verify Google ID token, ta sẽ trích xuất sub/email/name
+     * từ token.
      */
     @Override
     @Transactional
@@ -84,7 +87,11 @@ public class GoogleOAuthProviderService implements OAuthProviderService {
         try {
             jwt = googleJwtDecoder.decode(request.getTokenId());
         } catch (JwtValidationException ex) {
-            throw ex;
+            throw new AuthException(
+                    HttpStatus.UNAUTHORIZED,
+                    AuthErrorCodes.INVALID_PROVIDER_TOKEN,
+                    "Google token validation failed: " + ex.getMessage(),
+                    ex);
         }
 
         String providerUserId = jwt.getSubject(); // "sub" từ Google
@@ -93,8 +100,8 @@ public class GoogleOAuthProviderService implements OAuthProviderService {
         String name = jwt.getClaimAsString("name");
 
         // 1. Tìm xem identity đã tồn tại chưa
-        Optional<UserIdentity> existingIdentityOpt =
-                userIdentityRepository.findByProviderAndProviderUserId(PROVIDER_NAME, providerUserId);
+        Optional<UserIdentity> existingIdentityOpt = userIdentityRepository
+                .findByProviderAndProviderUserId(PROVIDER_NAME, providerUserId);
 
         User user;
         if (existingIdentityOpt.isPresent()) {
@@ -105,7 +112,7 @@ public class GoogleOAuthProviderService implements OAuthProviderService {
             user = User.builder()
                     .email(email)
                     .username(email != null ? email : "google-" + providerUserId)
-                    .passwordHash(null)        // Login bằng Google nên không cần mật khẩu local
+                    .passwordHash(null) // Login bằng Google nên không cần mật khẩu local
                     .displayName(name != null ? name : "GoogleUser-" + providerUserId)
                     .emailVerified(Boolean.TRUE.equals(emailVerified))
                     .build();
@@ -131,5 +138,3 @@ public class GoogleOAuthProviderService implements OAuthProviderService {
         return tokenService.generateTokens(user);
     }
 }
-
-

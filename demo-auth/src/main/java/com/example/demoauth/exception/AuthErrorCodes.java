@@ -3,14 +3,16 @@ package com.example.demoauth.exception;
 /**
  * Auth error codes: reserved range 0..99.
  *
- * <p>Notes:
+ * <p>
+ * Notes:
  * <ul>
- *   <li>Success should use {@code errorCode = null}.</li>
- *   <li>Client maps {@code errorCode} to a user-friendly message.</li>
+ * <li>Success should use {@code errorCode = null}.</li>
+ * <li>Client maps {@code errorCode} to a user-friendly message.</li>
  * </ul>
  */
 public final class AuthErrorCodes {
-    private AuthErrorCodes() {}
+    private AuthErrorCodes() {
+    }
 
     /** Username/password invalid (login local). */
     public static final int INVALID_CREDENTIALS = 1;
@@ -21,11 +23,16 @@ public final class AuthErrorCodes {
     /** Email already exists (register local). */
     public static final int EMAIL_EXISTS = 3;
 
-    /** User not found (e.g., /me with a valid JWT subject but missing user record). */
+    /**
+     * User not found (e.g., /me with a valid JWT subject but missing user record).
+     */
     public static final int USER_NOT_FOUND = 4;
 
     /** Unsupported OAuth provider. */
     public static final int UNSUPPORTED_PROVIDER = 5;
+
+    /** Invalid OAuth provider token (Google/Facebook...). */
+    public static final int INVALID_PROVIDER_TOKEN = 6;
 
     /** Refresh token expired. */
     public static final int REFRESH_TOKEN_EXPIRED = 10;
@@ -51,5 +58,3 @@ public final class AuthErrorCodes {
     /** Unknown auth error (fallback). */
     public static final int AUTH_UNKNOWN = 99;
 }
-
-
