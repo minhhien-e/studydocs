@@ -52,9 +52,6 @@ public final class AuthErrorCodes {
     /** Authenticated but not authorized -> 403 (Spring Security). */
     public static final int FORBIDDEN = 91;
 
-    /** Validation failed (optional, auth range). */
-    public static final int VALIDATION_FAILED = 98;
-
     /** Unknown auth error (fallback). */
     public static final int AUTH_UNKNOWN = 99;
 }
