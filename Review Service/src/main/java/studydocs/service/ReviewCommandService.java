@@ -22,27 +22,7 @@ public class ReviewCommandService {
 
     // Method helper lấy userId từ JWT
     private UUID getCurrentUserId() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
-        }
-
-        // Principal thường là Jwt object trong oauth2ResourceServer
-        if (authentication.getPrincipal() instanceof Jwt jwt) {
-            String userIdStr = jwt.getSubject(); // "sub" claim thường là userId
-            try {
-                return UUID.fromString(userIdStr);
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        // Fallback: nếu getName() trả về UUID string
-        try {
-            return UUID.fromString(authentication.getName());
-        } catch (Exception e) {
-            return null;
-        }
+        return studydocs.util.SecurityUtils.getCurrentUserId();
     }
 
     public ReviewResponse createReview(CreateReviewRequest req) {
@@ -56,9 +36,8 @@ public class ReviewCommandService {
 
         Review review = new Review(
                 req.getDocumentId(),
-                userId,           // <-- lấy từ JWT
-                req.getComment()
-        );
+                userId, // <-- lấy từ JWT
+                req.getComment());
 
         reviewRepository.save(review);
         return new ReviewResponse(review);

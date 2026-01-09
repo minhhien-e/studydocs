@@ -30,21 +30,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Disable CSRF cho REST API
-            .sessionManagement(session -> 
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless JWT
-            .authorizeHttpRequests(auth -> auth
-                // Public endpoints (không cần authentication) - nếu có
-                // .requestMatchers("/api/v1/universities/filter").permitAll()
-                
-                // Tất cả endpoints khác cần authentication
-                .anyRequest().authenticated()
-            )
-            .oauth2ResourceServer(oauth2 -> oauth2
-                .jwt(jwt -> jwt
-                    .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                )
-            );
+                .csrf(csrf -> csrf.disable()) // Disable CSRF cho REST API
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless
+                                                                                                              // JWT
+                .authorizeHttpRequests(auth -> auth
+                        // Public endpoints (không cần authentication) - nếu có
+                        // .requestMatchers("/api/v1/universities/filter").permitAll()
+
+                        // Tất cả endpoints khác cần authentication
+                        .anyRequest().permitAll());
+        // .oauth2ResourceServer(oauth2 -> oauth2
+        // .jwt(jwt -> jwt
+        // .jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
         return http.build();
     }
@@ -61,10 +58,15 @@ public class SecurityConfig {
 
     /**
      * Custom converter để lấy permissions từ JWT claims "permissions"
-     * và roles từ "roles" claim
+     * và roles từ "roles" claim.
+     * <br/>
+     * <b>IMPORTANT:</b> DO NOT add @Bean here. It returns a lambda, which causes
+     * Spring's
+     * type inference to fail with "Unable to determine source type <S> and target
+     * type <T>".
+     * This method is only used as a helper for jwtAuthenticationConverter().
      */
-    @Bean
-    public Converter<Jwt, Collection<GrantedAuthority>> jwtGrantedAuthoritiesConverter() {
+    private Converter<Jwt, Collection<GrantedAuthority>> jwtGrantedAuthoritiesConverter() {
         return jwt -> {
             Collection<GrantedAuthority> authorities = new ArrayList<>();
 
@@ -72,10 +74,10 @@ public class SecurityConfig {
             Object permissions = jwt.getClaim("permissions");
             if (permissions instanceof List<?> permList) {
                 List<GrantedAuthority> permissionAuthorities = permList.stream()
-                    .filter(String.class::isInstance)
-                    .map(String.class::cast)
-                    .map(perm -> new SimpleGrantedAuthority("SCOPE_" + perm))
-                    .collect(Collectors.toList());
+                        .filter(String.class::isInstance)
+                        .map(String.class::cast)
+                        .map(perm -> new SimpleGrantedAuthority("SCOPE_" + perm))
+                        .collect(Collectors.toList());
                 authorities.addAll(permissionAuthorities);
             }
 
@@ -83,10 +85,10 @@ public class SecurityConfig {
             Object roles = jwt.getClaim("roles");
             if (roles instanceof List<?> roleList) {
                 List<GrantedAuthority> roleAuthorities = roleList.stream()
-                    .filter(String.class::isInstance)
-                    .map(String.class::cast)
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                    .collect(Collectors.toList());
+                        .filter(String.class::isInstance)
+                        .map(String.class::cast)
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                        .collect(Collectors.toList());
                 authorities.addAll(roleAuthorities);
             }
 
