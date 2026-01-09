@@ -11,18 +11,18 @@ import studydocs.dto.response.ApiResponse;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/admin/stats")
+@RequestMapping("/api/v1/documents/admin/stats")
 @RequiredArgsConstructor
 public class AdminStatsController {
 
     private final AdminStatsService adminStatsService;
 
-    @GetMapping("/documents/today")
+    @GetMapping("/today")
     public ResponseEntity<ApiResponse<Long>> getDocumentsUploadedToday() {
         return ResponseEntity.ok(ApiResponse.success(200, adminStatsService.getDocumentsUploadedToday()));
     }
 
-    @GetMapping("/documents/system")
+    @GetMapping("/system")
     public ResponseEntity<ApiResponse<Long>> getSystemUploadStats(
             @org.springframework.web.bind.annotation.RequestParam(defaultValue = "day") String period) {
         return ResponseEntity.ok(ApiResponse.success(200, adminStatsService.getSystemUploads(period)));
