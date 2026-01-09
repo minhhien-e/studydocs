@@ -1,84 +1,115 @@
 package studydocs.application;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import studydocs.client.RemoteApiCaller;
 import studydocs.domain.Document;
+import studydocs.dto.projection.FileProjection;
+import studydocs.dto.request.UploadDocumentRequest;
+import studydocs.dto.response.ApiResponse;
 import studydocs.exception.DocumentNotFoundException;
 import studydocs.exception.DocumentProcessingException;
 import studydocs.repository.DocumentRepository;
-import studydocs.dto.UploadDocumentRequest;
-import studydocs.dto.ApiResponse;
 
-import java.util.HashMap;
+import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DocumentService {
 
     private final DocumentRepository documentRepository;
-    private final RestTemplate restTemplate;
-    private final RabbitTemplate rabbitTemplate;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final RemoteApiCaller remoteApiCaller;
+
     @Value("${upload.service.url}")
     private String uploadServiceUrl;
+
+    @Value("${notification.service.url}")
+    private String notificationServiceUrl;
 
     @Transactional
     public Document createAndUploadDocument(UploadDocumentRequest req, MultipartFile file) {
         try {
-            // 1) Tạo record document với trạng thái UPLOADING
             Document document = new Document(req.getUserId(), req.getTitle(), req.getDescription());
             document.markUploading();
             document = documentRepository.save(document);
 
-            Long documentId = document.getId();
-            System.out.println("DocumentService: Tạo document id=" + documentId + " và đặt trạng thái UPLOADING");
+            UUID documentId = document.getId();
+            log.info("DocumentService: Tạo document id={} và đặt trạng thái UPLOADING", documentId);
 
-            // 2) Publish event started (informational)
-            Map<String, Object> startedPayload = new HashMap<>();
-            startedPayload.put("documentId", documentId);
-            startedPayload.put("userId", req.getUserId());
-            startedPayload.put("title", req.getTitle());
-            rabbitTemplate.convertAndSend("upload_started", objectMapper.writeValueAsString(startedPayload));
-
-            // 3) Gửi file tới UploadService (multipart) kèm documentId
+            // Upload to external service
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-            body.add("file", file.getResource());
+            // Wrap the file to ensure filename is preserved
+            org.springframework.core.io.Resource fileResource = new org.springframework.core.io.ByteArrayResource(
+                    file.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return file.getOriginalFilename();
+                }
+            };
+            HttpHeaders fileHeaders = new HttpHeaders();
+            fileHeaders.setContentType(MediaType.parseMediaType(file.getContentType()));
+            HttpEntity<org.springframework.core.io.Resource> filePart = new HttpEntity<>(fileResource, fileHeaders);
+            body.add("file", filePart);
+
             body.add("documentId", documentId.toString());
 
-            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-            ResponseEntity<String> response = restTemplate.postForEntity(uploadServiceUrl, requestEntity, String.class);
+            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body);
+            ApiResponse<FileProjection> responseEntity = remoteApiCaller.post(
+                    uploadServiceUrl,
+                    body,
+                    MediaType.MULTIPART_FORM_DATA,
+                    new ParameterizedTypeReference<>() {
+                    });
 
-            if (!response.getStatusCode().is2xxSuccessful()) {
-                // Nếu upload thất bại ngay lập tức -> mark failed
-                document.markFailed("UploadService returned non-2xx");
+            if (!(responseEntity.errorCode() == null)) {
+                document.markFailed("UploadService returned non-2xx: " + responseEntity.errorCode());
                 documentRepository.save(document);
-                throw new DocumentProcessingException("UploadService trả về lỗi: " + response.getStatusCode());
+
+                sendNotification(req.getUserId(), "Document upload failed: " + responseEntity.errorCode());
+                throw new DocumentProcessingException("UploadService trả về lỗi: " + responseEntity.errorCode());
             }
 
-            // Trả về document (client sẽ nhận là đang upload; kết quả cuối cùng được cập nhật khi RabbitMQ message tới)
+            // Success case
+            document.markUploaded();
+            documentRepository.save(document);
+            sendNotification(req.getUserId(), "Document upload successful: " + req.getTitle());
+
             return document;
         } catch (Exception ex) {
-            throw new DocumentProcessingException("Lỗi khi upload tài liệu: " + ex.getMessage());
+            log.error("Lỗi khi upload tài liệu: " + ex.getMessage(), ex);
+            try {
+                sendNotification(req.getUserId(), "Document upload processing failed");
+            } catch (Exception notifyEx) {
+                log.error("Failed to send failure notification", notifyEx);
+            }
+            throw new DocumentProcessingException("Lỗi khi upload tài liệu: " + ex.getMessage(), ex);
         }
     }
 
     @Transactional(readOnly = true)
-    public Document getDocumentById(Long id) {
+    public Document getDocumentById(UUID id) {
         return documentRepository.findById(id)
+                .filter(doc -> !doc.getIsDeleted())
                 .orElseThrow(() -> new DocumentNotFoundException(id));
     }
 
@@ -88,18 +119,57 @@ public class DocumentService {
     }
 
     @Transactional
-    public Document updateDocument(Long id, String title, String description) {
-        Document document = documentRepository.findById(id)
-                .orElseThrow(() -> new DocumentNotFoundException(id));
+    public Document updateDocument(UUID id, String title, String description) {
+        Document document = getDocumentById(id);
         document.update(title, description);
         return documentRepository.save(document);
     }
 
     @Transactional
-    public void deleteDocument(Long id) {
-        Document document = documentRepository.findById(id)
-                .orElseThrow(() -> new DocumentNotFoundException(id));
+    public void deleteDocument(UUID id) {
+        Document document = getDocumentById(id);
         document.markAsDeleted();
         documentRepository.save(document);
+    }
+
+    @Scheduled(fixedRate = 60000)
+    @Transactional
+    public void cleanupStuckUploads() {
+        List<Document> stuckDocs = documentRepository.findByStatusAndUpdatedAtBefore(
+                Document.Status.UPLOADING, LocalDateTime.now().minusMinutes(5));
+
+        for (Document doc : stuckDocs) {
+            doc.markFailed("Upload timeout after 5 minutes");
+            documentRepository.save(doc);
+            log.warn("Marked document {} as FAILED due to timeout", doc.getId());
+        }
+    }
+
+    public boolean existsByIdAndNotDeleted(UUID id) {
+        return documentRepository.existsByIdAndIsDeletedFalse(id);
+    }
+
+    private void sendNotification(UUID userId, String message) {
+        try {
+            Map<String, Object> notificationBody = new HashMap<>();
+            notificationBody.put("userId", userId);
+            notificationBody.put("senderId", userId); // Use userId as sender for now to satisfy requirement
+            notificationBody.put("subject", "Thông báo từ hệ thống");
+            notificationBody.put("body", message);
+            notificationBody.put("type", "UPLOAD_COMPLETED");
+            notificationBody.put("isRead", false);
+
+            remoteApiCaller.post(
+                    notificationServiceUrl,
+                    notificationBody,
+                    MediaType.APPLICATION_JSON,
+                    new ParameterizedTypeReference<ApiResponse<Object>>() {
+                    });
+            log.info("Sent notification to user {}", userId);
+        } catch (Exception e) {
+            // Log warning but don't fail the transaction since DB update is already
+            // committed/flushed
+            log.warn("Non-blocking error: Could not send notification -> {}", e.getMessage());
+        }
     }
 }

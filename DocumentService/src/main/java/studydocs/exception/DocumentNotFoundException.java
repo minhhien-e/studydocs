@@ -1,7 +1,15 @@
 package studydocs.exception;
 
+
+import lombok.Getter;
+
+import java.util.UUID;
+
+
+@Getter
 public class DocumentNotFoundException extends RuntimeException {
-    public DocumentNotFoundException(Long id) {
-        super("Không tìm thấy tài liệu có id: " + id);
+    private final int errorCode = 404;
+    public DocumentNotFoundException(UUID id) {
+        super("Document not found: " + id);
     }
 }

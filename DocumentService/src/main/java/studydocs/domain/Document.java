@@ -5,21 +5,24 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "documents")
 @Getter
 @NoArgsConstructor
 public class Document {
-    public enum Status { PENDING, UPLOADING, UPLOADED, FAILED }
+    public enum Status {
+        PENDING, UPLOADING, UPLOADED, FAILED
+    }
 
+    @Getter
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "BIGINT")
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    @Column(nullable = false, columnDefinition = "BIGINT")
-    private Long userId;
+    @Column(nullable = false, columnDefinition = "BINARY(16)")
+    private UUID userId;
 
     @Column(nullable = false, length = 255)
     private String title;
@@ -27,14 +30,12 @@ public class Document {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(length = 500)
-    private String fileUrl;
 
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
     @Column(updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     private LocalDateTime updatedAt;
 
@@ -44,12 +45,10 @@ public class Document {
     @Column(nullable = false)
     private Status status = Status.PENDING;
 
-    public Document(Long userId, String title, String description) {
+    public Document(UUID userId, String title, String description) {
         this.userId = userId;
         this.title = title;
         this.description = description;
-        this.createdAt = LocalDateTime.now();
-        this.status = Status.PENDING;
     }
 
     public void markUploading() {
@@ -57,8 +56,7 @@ public class Document {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void markUploaded(String fileUrl) {
-        this.fileUrl = fileUrl;
+    public void markUploaded() {
         this.status = Status.UPLOADED;
         this.updatedAt = LocalDateTime.now();
     }
@@ -77,5 +75,7 @@ public class Document {
     public void markAsDeleted() {
         this.isDeleted = true;
         this.deletedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
+
 }
