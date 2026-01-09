@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Controller để xử lý các HTTP requests liên quan đến Major
@@ -23,7 +24,7 @@ public class MajorController {
      * Lấy thông tin ngành theo ID
      */
     @GetMapping("/id/{id}")
-    public MajorResponse getMajorById(@PathVariable Long id) {
+    public MajorResponse getMajorById(@PathVariable UUID id) {
         return majorService.getMajorById(id);
     }
 
@@ -40,8 +41,8 @@ public class MajorController {
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
     @PutMapping("/id/{id}")
-    public MajorResponse updateMajorById(@PathVariable Long id,
-                                        @RequestParam Long universityId,
+    public MajorResponse updateMajorById(@PathVariable UUID id,
+                                        @RequestParam UUID universityId,
                                         @RequestBody MajorUpdateRequest request) {
         return majorService.updateMajor(id, universityId, request);
     }
@@ -52,8 +53,8 @@ public class MajorController {
      */
     @PutMapping("/slug/{slug}")
     public MajorResponse updateMajorBySlug(@PathVariable String slug,
-                                          @RequestParam Long universityId,
-                                          @RequestParam Long departmentId,
+                                          @RequestParam UUID universityId,
+                                          @RequestParam UUID departmentId,
                                           @RequestBody MajorUpdateRequest request) {
         return majorService.updateMajorBySlug(universityId, departmentId, slug, request);
     }
@@ -63,7 +64,7 @@ public class MajorController {
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
     @DeleteMapping("/id/{id}")
-    public void deleteMajorById(@PathVariable Long id, @RequestParam Long universityId) {
+    public void deleteMajorById(@PathVariable UUID id, @RequestParam UUID universityId) {
         majorService.deleteMajorById(id, universityId);
     }
 
@@ -73,8 +74,8 @@ public class MajorController {
      */
     @DeleteMapping("/slug/{slug}")
     public void deleteMajorBySlug(@PathVariable String slug,
-                                 @RequestParam Long universityId,
-                                 @RequestParam Long departmentId) {
+                                 @RequestParam UUID universityId,
+                                 @RequestParam UUID departmentId) {
         majorService.deleteMajorBySlug(universityId, departmentId, slug);
     }
 
@@ -93,11 +94,11 @@ public class MajorController {
      */
     @GetMapping("/filter")
     public List<MajorResponse> filterMajors(
-            @RequestParam(required = false) Long universityId,
+            @RequestParam(required = false) UUID universityId,
             @RequestParam(required = false) String universitySlug,
-            @RequestParam(required = false) Long facultyId,
+            @RequestParam(required = false) UUID facultyId,
             @RequestParam(required = false) String facultySlug,
-            @RequestParam(required = false) Long departmentId,
+            @RequestParam(required = false) UUID departmentId,
             @RequestParam(required = false) String departmentSlug,
             @RequestParam(required = false) Boolean isActive) {
         return majorService.filter(universityId, universitySlug, facultyId, 

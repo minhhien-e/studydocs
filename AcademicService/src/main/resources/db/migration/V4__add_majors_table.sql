@@ -1,6 +1,6 @@
 CREATE TABLE majors (
-                        id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                        department_id BIGINT NOT NULL,
+                        id CHAR(36) NOT NULL PRIMARY KEY,
+                        department_id CHAR(36) NOT NULL,
                         name VARCHAR(255) NOT NULL,
                         slug VARCHAR(100) NOT NULL,
                         description TEXT,
@@ -11,7 +11,7 @@ CREATE TABLE majors (
 
                         UNIQUE KEY uq_major_department_slug (department_id, slug),
 
-                        FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE CASCADE,
+                        CONSTRAINT fk_major_department FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE CASCADE,
 
     --  Index lọc nhanh theo department + trạng thái
                         INDEX idx_major_department_active (department_id, is_active),

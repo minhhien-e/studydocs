@@ -1,5 +1,5 @@
 CREATE TABLE universities (
-                              id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                              id CHAR(36) NOT NULL PRIMARY KEY,
                               name VARCHAR(255) NOT NULL UNIQUE,
                               slug VARCHAR(100) NOT NULL UNIQUE,
                               description TEXT,

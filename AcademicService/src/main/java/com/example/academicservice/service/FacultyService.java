@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -38,7 +39,7 @@ public class FacultyService {
      * Lấy thông tin khoa theo ID
      */
     @Transactional(readOnly = true)
-    public FacultyResponse getFacultyById(Long id) {
+    public FacultyResponse getFacultyById(UUID id) {
         log.info("Fetching faculty with id: {}", id);
         Faculty faculty = facultyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Faculty", "id", id));
@@ -78,7 +79,7 @@ public class FacultyService {
      * Cập nhật thông tin khoa theo ID
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa
      */
-    public FacultyResponse updateFaculty(Long id, Long universityId, FacultyUpdateRequest request) {
+    public FacultyResponse updateFaculty(UUID id, UUID universityId, FacultyUpdateRequest request) {
         log.info("Updating faculty with id: {} and universityId: {}", id, universityId);
 
         Faculty faculty = facultyRepository.findById(id)
@@ -96,7 +97,7 @@ public class FacultyService {
      * Xóa khoa theo ID
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa
      */
-    public void deleteFacultyById(Long id, Long universityId) {
+    public void deleteFacultyById(UUID id, UUID universityId) {
         log.info("Deleting faculty with id: {} and universityId: {}", id, universityId);
 
         Faculty faculty = facultyRepository.findById(id)
@@ -115,7 +116,7 @@ public class FacultyService {
      * Cập nhật thông tin khoa theo slug
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa
      */
-    public FacultyResponse updateFacultyBySlug(Long universityId, String slug, FacultyUpdateRequest request) {
+    public FacultyResponse updateFacultyBySlug(UUID universityId, String slug, FacultyUpdateRequest request) {
         log.info("Updating faculty with slug: {} and universityId: {}", slug, universityId);
 
         Faculty faculty = facultyRepository.findByUniversityIdAndSlug(universityId, slug)
@@ -133,7 +134,7 @@ public class FacultyService {
      * Xóa khoa theo slug
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa
      */
-    public void deleteFacultyBySlug(Long universityId, String slug) {
+    public void deleteFacultyBySlug(UUID universityId, String slug) {
         log.info("Deleting faculty with slug: {} and universityId: {}", slug, universityId);
 
         Faculty faculty = facultyRepository.findByUniversityIdAndSlug(universityId, slug)
@@ -155,13 +156,16 @@ public class FacultyService {
         // Kiểm tra slug mới (nếu có thay đổi tên)
         if (request.getName() != null && !request.getName().equals(faculty.getName())) {
             String newSlug = StringUtil.toSlug(request.getName());
-            Long universityId = faculty.getUniversity().getId();
-            
-            // Kiểm tra slug đã tồn tại trong university chưa
-            if (facultyRepository.existsByUniversityIdAndSlug(universityId, newSlug)) {
-                throw new DuplicateResourceException("Slug: " + newSlug + " đã tồn tại");
+            UUID universityId = faculty.getUniversity().getId();
+
+            // Nếu slug mới giống slug hiện tại (khác dấu/case...), bỏ qua check trùng để tránh false-positive
+            if (!newSlug.equals(faculty.getSlug())) {
+                // Kiểm tra slug đã tồn tại trong university chưa
+                if (facultyRepository.existsByUniversityIdAndSlug(universityId, newSlug)) {
+                    throw new DuplicateResourceException("Slug: " + newSlug + " đã tồn tại");
+                }
+                faculty.setSlug(newSlug);
             }
-            faculty.setSlug(newSlug);
         }
 
         // Cập nhật thông tin từ request
@@ -185,7 +189,7 @@ public class FacultyService {
      * @return Danh sách faculties
      */
     @Transactional(readOnly = true)
-    public List<FacultyResponse> filter(Long universityId, String universitySlug, Boolean isActive) {
+    public List<FacultyResponse> filter(UUID universityId, String universitySlug, Boolean isActive) {
         log.info("Filtering faculties with universityId: {}, universitySlug: {}, isActive: {}", 
                 universityId, universitySlug, isActive);
         

@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
 @Entity
 @Table(
@@ -27,14 +28,15 @@ import java.sql.Timestamp;
 public class Department {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "CHAR(36)")
+    private UUID id;
 
     /**
      * Mối quan hệ N-1 (nhiều department thuộc 1 faculty)
      */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "faculty_id", nullable = false,
+    @JoinColumn(name = "faculty_id", nullable = false, columnDefinition = "CHAR(36)",
             foreignKey = @ForeignKey(name = "fk_department_faculty"))
     private Faculty faculty;
 

@@ -1,6 +1,6 @@
 CREATE TABLE departments (
-                             id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                             faculty_id BIGINT NOT NULL,
+                             id CHAR(36) NOT NULL PRIMARY KEY,
+                             faculty_id CHAR(36) NOT NULL,
                              name VARCHAR(255) NOT NULL,
                              slug VARCHAR(100) NOT NULL,
                              description TEXT,
@@ -11,7 +11,7 @@ CREATE TABLE departments (
 
                              UNIQUE KEY uq_department_faculty_slug (faculty_id, slug),
 
-                             FOREIGN KEY (faculty_id) REFERENCES faculties(id) ON DELETE CASCADE,
+                             CONSTRAINT fk_department_faculty FOREIGN KEY (faculty_id) REFERENCES faculties(id) ON DELETE CASCADE,
 
     --  Tối ưu lọc department theo khoa và trạng thái
                              INDEX idx_department_faculty_active (faculty_id, is_active),

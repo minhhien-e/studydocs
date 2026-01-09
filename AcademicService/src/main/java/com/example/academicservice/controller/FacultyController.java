@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Controller để xử lý các HTTP requests liên quan đến Faculty
@@ -23,7 +24,7 @@ public class FacultyController {
      * Lấy thông tin khoa theo ID
      */
     @GetMapping("/id/{id}")
-    public FacultyResponse getFacultyById(@PathVariable Long id) {
+    public FacultyResponse getFacultyById(@PathVariable UUID id) {
         return facultyService.getFacultyById(id);
     }
 
@@ -40,8 +41,8 @@ public class FacultyController {
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa
      */
     @PutMapping("/id/{id}")
-    public FacultyResponse updateFacultyById(@PathVariable Long id,
-                                            @RequestParam Long universityId,
+    public FacultyResponse updateFacultyById(@PathVariable UUID id,
+                                            @RequestParam UUID universityId,
                                             @RequestBody FacultyUpdateRequest request) {
         return facultyService.updateFaculty(id, universityId, request);
     }
@@ -52,7 +53,7 @@ public class FacultyController {
      */
     @PutMapping("/slug/{slug}")
     public FacultyResponse updateFacultyBySlug(@PathVariable String slug,
-                                              @RequestParam Long universityId,
+                                              @RequestParam UUID universityId,
                                               @RequestBody FacultyUpdateRequest request) {
         return facultyService.updateFacultyBySlug(universityId, slug, request);
     }
@@ -62,7 +63,7 @@ public class FacultyController {
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa
      */
     @DeleteMapping("/id/{id}")
-    public void deleteFacultyById(@PathVariable Long id, @RequestParam Long universityId) {
+    public void deleteFacultyById(@PathVariable UUID id, @RequestParam UUID universityId) {
         facultyService.deleteFacultyById(id, universityId);
     }
 
@@ -71,7 +72,7 @@ public class FacultyController {
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa
      */
     @DeleteMapping("/slug/{slug}")
-    public void deleteFacultyBySlug(@PathVariable String slug, @RequestParam Long universityId) {
+    public void deleteFacultyBySlug(@PathVariable String slug, @RequestParam UUID universityId) {
         facultyService.deleteFacultyBySlug(universityId, slug);
     }
 
@@ -86,7 +87,7 @@ public class FacultyController {
      */
     @GetMapping("/filter")
     public List<FacultyResponse> filterFaculties(
-            @RequestParam(required = false) Long universityId,
+            @RequestParam(required = false) UUID universityId,
             @RequestParam(required = false) String universitySlug,
             @RequestParam(required = false) Boolean isActive) {
         return facultyService.filter(universityId, universitySlug, isActive);

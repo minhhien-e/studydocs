@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Specification class để tạo các điều kiện truy vấn động cho Major entity
@@ -25,11 +26,11 @@ public class MajorSpecifications {
      * @return Specification cho truy vấn động
      */
     public static Specification<Major> filterBy(
-            Long universityId, 
+            UUID universityId, 
             String universitySlug,
-            Long facultyId, 
+            UUID facultyId, 
             String facultySlug,
-            Long departmentId,
+            UUID departmentId,
             String departmentSlug,
             Boolean isActive) {
         

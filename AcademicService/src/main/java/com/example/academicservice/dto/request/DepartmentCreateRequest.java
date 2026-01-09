@@ -1,6 +1,7 @@
 package com.example.academicservice.dto.request;
 
 import lombok.Data;
+import java.util.UUID;
 
 /**
  * DTO để tạo mới Department
@@ -8,7 +9,7 @@ import lombok.Data;
 @Data
 public class DepartmentCreateRequest {
 
-    private Long facultyId;        // ID của khoa
+    private UUID facultyId;        // ID của khoa
 
     private String name;           // Tên bộ môn
 

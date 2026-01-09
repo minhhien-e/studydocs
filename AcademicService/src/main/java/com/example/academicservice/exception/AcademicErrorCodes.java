@@ -48,6 +48,9 @@ public final class AcademicErrorCodes {
     /** Major ID mismatch (resource doesn't belong to specified major/department/faculty/university). */
     public static final int MAJOR_ID_MISMATCH = 212;
 
+    /** Invalid UUID format. */
+    public static final int INVALID_UUID = 213;
+
     /** Unknown academic error (fallback). */
     public static final int UNKNOWN_ACADEMIC_ERROR = 299;
 }

@@ -9,19 +9,20 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Repository để truy vấn Major entity
  */
 @Repository
-public interface MajorRepository extends JpaRepository<Major, Long>, JpaSpecificationExecutor<Major> {
+public interface MajorRepository extends JpaRepository<Major, UUID>, JpaSpecificationExecutor<Major> {
 
     // === ID-based queries ===
 
     // Tìm ngành theo slug trong 1 bộ môn
-    Optional<Major> findByDepartmentIdAndSlug(Long departmentId, String slug);
+    Optional<Major> findByDepartmentIdAndSlug(UUID departmentId, String slug);
 
     // Kiểm tra slug đã tồn tại trong bộ môn chưa
-    boolean existsByDepartmentIdAndSlug(Long departmentId, String slug);
+    boolean existsByDepartmentIdAndSlug(UUID departmentId, String slug);
 }
 

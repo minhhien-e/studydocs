@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Specification class để tạo các điều kiện truy vấn động cho University entity
@@ -20,7 +21,7 @@ public class UniversitySpecifications {
      * @param isActive - Lọc theo trạng thái active (optional, null = lấy tất cả)
      * @return Specification cho truy vấn động
      */
-    public static Specification<University> filterBy(Long id, String slug, Boolean isActive) {
+    public static Specification<University> filterBy(UUID id, String slug, Boolean isActive) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             

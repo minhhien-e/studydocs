@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Controller để xử lý các HTTP requests liên quan đến Department
@@ -23,7 +24,7 @@ public class DepartmentController {
      * Lấy thông tin bộ môn theo ID
      */
     @GetMapping("/id/{id}")
-    public DepartmentResponse getDepartmentById(@PathVariable Long id) {
+    public DepartmentResponse getDepartmentById(@PathVariable UUID id) {
         return departmentService.getDepartmentById(id);
     }
 
@@ -41,8 +42,8 @@ public class DepartmentController {
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
     @PutMapping("/id/{id}")
-    public DepartmentResponse updateDepartmentById(@PathVariable Long id,
-                                                    @RequestParam Long universityId,
+    public DepartmentResponse updateDepartmentById(@PathVariable UUID id,
+                                                    @RequestParam UUID universityId,
                                                     @RequestBody DepartmentUpdateRequest request) {
         return departmentService.updateDepartment(id, universityId, request);
     }
@@ -53,8 +54,8 @@ public class DepartmentController {
      */
     @PutMapping("/slug/{slug}")
     public DepartmentResponse updateDepartmentBySlug(@PathVariable String slug,
-                                                     @RequestParam Long universityId,
-                                                     @RequestParam Long facultyId,
+                                                     @RequestParam UUID universityId,
+                                                     @RequestParam UUID facultyId,
                                                      @RequestBody DepartmentUpdateRequest request) {
         return departmentService.updateDepartmentBySlug(universityId, facultyId, slug, request);
     }
@@ -64,7 +65,7 @@ public class DepartmentController {
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
     @DeleteMapping("/id/{id}")
-    public void deleteDepartmentById(@PathVariable Long id, @RequestParam Long universityId) {
+    public void deleteDepartmentById(@PathVariable UUID id, @RequestParam UUID universityId) {
         departmentService.deleteDepartmentById(id, universityId);
     }
 
@@ -74,8 +75,8 @@ public class DepartmentController {
      */
     @DeleteMapping("/slug/{slug}")
     public void deleteDepartmentBySlug(@PathVariable String slug,
-                                      @RequestParam Long universityId,
-                                      @RequestParam Long facultyId) {
+                                      @RequestParam UUID universityId,
+                                      @RequestParam UUID facultyId) {
         departmentService.deleteDepartmentBySlug(universityId, facultyId, slug);
     }
 
@@ -92,9 +93,9 @@ public class DepartmentController {
      */
     @GetMapping("/filter")
     public List<DepartmentResponse> filterDepartments(
-            @RequestParam(required = false) Long universityId,
+            @RequestParam(required = false) UUID universityId,
             @RequestParam(required = false) String universitySlug,
-            @RequestParam(required = false) Long facultyId,
+            @RequestParam(required = false) UUID facultyId,
             @RequestParam(required = false) String facultySlug,
             @RequestParam(required = false) Boolean isActive) {
         return departmentService.filter(universityId, universitySlug, facultyId, facultySlug, isActive);

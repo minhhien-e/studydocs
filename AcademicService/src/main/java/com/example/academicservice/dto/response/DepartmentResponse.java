@@ -1,6 +1,7 @@
 package com.example.academicservice.dto.response;
 
 import lombok.Data;
+import java.util.UUID;
 
 /**
  * DTO để trả về thông tin Department
@@ -8,9 +9,9 @@ import lombok.Data;
 @Data
 public class DepartmentResponse {
 
-    private Long id;                   // ID của bộ môn
+    private UUID id;                   // ID của bộ môn
 
-    private Long facultyId;            // ID của khoa
+    private UUID facultyId;            // ID của khoa
 
     private String facultyName;        // Tên khoa
 

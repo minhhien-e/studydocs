@@ -1,6 +1,7 @@
 package com.example.academicservice.dto.response;
 
 import lombok.Data;
+import java.util.UUID;
 
 /**
  * DTO để trả về thông tin Major
@@ -8,9 +9,9 @@ import lombok.Data;
 @Data
 public class MajorResponse {
 
-    private Long id;                       // ID của ngành
+    private UUID id;                       // ID của ngành
 
-    private Long departmentId;             // ID của bộ môn
+    private UUID departmentId;             // ID của bộ môn
 
     private String departmentName;         // Tên bộ môn
 

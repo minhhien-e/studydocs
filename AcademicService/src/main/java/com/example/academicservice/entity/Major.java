@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
 @Entity
 @Table(
@@ -27,14 +28,16 @@ import java.sql.Timestamp;
 public class Major {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "CHAR(36)")
+    private UUID id;
 
     // Quan hệ: nhiều Major thuộc 1 Department
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
             name = "department_id",
             nullable = false,
+            columnDefinition = "CHAR(36)",
             foreignKey = @ForeignKey(name = "fk_major_department")
     )
     private Department department;

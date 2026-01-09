@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -38,7 +39,7 @@ public class MajorService {
      * Lấy thông tin ngành theo ID
      */
     @Transactional(readOnly = true)
-    public MajorResponse getMajorById(Long id) {
+    public MajorResponse getMajorById(UUID id) {
         log.info("Fetching major with id: {}", id);
         Major major = majorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Major", "id", id));
@@ -74,7 +75,7 @@ public class MajorService {
      * Cập nhật thông tin ngành theo ID
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    public MajorResponse updateMajor(Long id, Long universityId, MajorUpdateRequest request) {
+    public MajorResponse updateMajor(UUID id, UUID universityId, MajorUpdateRequest request) {
         log.info("Updating major with id: {} and universityId: {}", id, universityId);
 
         Major major = majorRepository.findById(id)
@@ -92,7 +93,7 @@ public class MajorService {
      * Xóa ngành theo ID
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    public void deleteMajorById(Long id, Long universityId) {
+    public void deleteMajorById(UUID id, UUID universityId) {
         log.info("Deleting major with id: {} and universityId: {}", id, universityId);
 
         Major major = majorRepository.findById(id)
@@ -111,7 +112,7 @@ public class MajorService {
      * Cập nhật thông tin ngành theo slug
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    public MajorResponse updateMajorBySlug(Long universityId, Long departmentId, String slug, MajorUpdateRequest request) {
+    public MajorResponse updateMajorBySlug(UUID universityId, UUID departmentId, String slug, MajorUpdateRequest request) {
         log.info("Updating major with slug: {} in department: {} and universityId: {}", slug, departmentId, universityId);
 
         Major major = majorRepository.findByDepartmentIdAndSlug(departmentId, slug)
@@ -129,7 +130,7 @@ public class MajorService {
      * Xóa ngành theo slug
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    public void deleteMajorBySlug(Long universityId, Long departmentId, String slug) {
+    public void deleteMajorBySlug(UUID universityId, UUID departmentId, String slug) {
         log.info("Deleting major with slug: {} in department: {} and universityId: {}", slug, departmentId, universityId);
 
         Major major = majorRepository.findByDepartmentIdAndSlug(departmentId, slug)
@@ -150,13 +151,15 @@ public class MajorService {
     private MajorResponse updateMajorInternal(Major major, MajorUpdateRequest request) {
         if (request.getName() != null && !request.getName().equals(major.getName())) {
             String newSlug = StringUtil.toSlug(request.getName());
-            Long departmentId = major.getDepartment().getId();
+            UUID departmentId = major.getDepartment().getId();
 
-            if (majorRepository.existsByDepartmentIdAndSlug(departmentId, newSlug)) {
-                throw new DuplicateResourceException("Slug: " + newSlug + " đã tồn tại");
+            // Nếu slug mới giống slug hiện tại (khác dấu/case...), bỏ qua check trùng để tránh false-positive
+            if (!newSlug.equals(major.getSlug())) {
+                if (majorRepository.existsByDepartmentIdAndSlug(departmentId, newSlug)) {
+                    throw new DuplicateResourceException("Slug: " + newSlug + " đã tồn tại");
+                }
+                major.setSlug(newSlug);
             }
-
-            major.setSlug(newSlug);
         }
 
         majorMapper.updateEntityFromRequest(request, major);
@@ -182,9 +185,9 @@ public class MajorService {
      * @return Danh sách majors
      */
     @Transactional(readOnly = true)
-    public List<MajorResponse> filter(Long universityId, String universitySlug,
-                                     Long facultyId, String facultySlug,
-                                     Long departmentId, String departmentSlug,
+    public List<MajorResponse> filter(UUID universityId, String universitySlug,
+                                     UUID facultyId, String facultySlug,
+                                     UUID departmentId, String departmentSlug,
                                      Boolean isActive) {
         log.info("Filtering majors with universityId: {}, universitySlug: {}, " +
                 "facultyId: {}, facultySlug: {}, departmentId: {}, departmentSlug: {}, isActive: {}",

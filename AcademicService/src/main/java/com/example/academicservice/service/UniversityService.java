@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -45,7 +46,7 @@ public class UniversityService {
      * Lấy thông tin trường đại học theo ID
      */
     @Transactional(readOnly = true)
-    public UniversityResponse getUniversityById(Long id) {
+    public UniversityResponse getUniversityById(UUID id) {
         log.info("Fetching university with id: {}", id);
         University university = universityRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("University", "id", id));
@@ -92,7 +93,7 @@ public class UniversityService {
     /**
      * Cập nhật thông tin trường đại học theo ID
      */
-    public UniversityResponse updateUniversity(Long id, UniversityCreateRequest request) {
+    public UniversityResponse updateUniversity(UUID id, UniversityCreateRequest request) {
         log.info("Updating university with id: {}", id);
         
         University university = universityRepository.findById(id)
@@ -120,10 +121,16 @@ public class UniversityService {
         // Kiểm tra slug mới (nếu có thay đổi tên)
         if (request.getName() != null && !request.getName().equals(university.getName())) {
             String newSlug = StringUtil.toSlug(request.getName());
-            if (universityRepository.findBySlug(newSlug).isPresent()) {
-                throw new DuplicateResourceException("Slug: " + newSlug + " đã tồn tại");
+            // Nếu slug mới giống slug hiện tại (khác dấu/case...), bỏ qua check trùng để tránh false-positive
+            if (!newSlug.equals(university.getSlug())) {
+                universityRepository.findBySlug(newSlug).ifPresent(existing -> {
+                    // Exclude chính record đang update
+                    if (!existing.getId().equals(university.getId())) {
+                        throw new DuplicateResourceException("Slug: " + newSlug + " đã tồn tại");
+                    }
+                });
+                university.setSlug(newSlug);
             }
-            university.setSlug(newSlug);
         }
 
         // Cập nhật thông tin từ request
@@ -139,7 +146,7 @@ public class UniversityService {
     /**
      * Xóa trường đại học theo ID
      */
-    public void deleteUniversityById(Long id) {
+    public void deleteUniversityById(UUID id) {
         log.info("Deleting university with id: {}", id);
 
         if (!universityRepository.existsById(id)) {
@@ -173,7 +180,7 @@ public class UniversityService {
      * @return Danh sách universities
      */
     @Transactional(readOnly = true)
-    public List<UniversityResponse> filter(Long id, String slug, Boolean isActive) {
+    public List<UniversityResponse> filter(UUID id, String slug, Boolean isActive) {
         log.info("Filtering universities with id: {}, slug: {}, isActive: {}", id, slug, isActive);
         
         Specification<University> spec = UniversitySpecifications.filterBy(id, slug, isActive);

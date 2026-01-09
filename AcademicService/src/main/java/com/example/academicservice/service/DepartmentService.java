@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -38,7 +39,7 @@ public class DepartmentService {
      * Lấy thông tin bộ môn theo ID
      */
     @Transactional(readOnly = true)
-    public DepartmentResponse getDepartmentById(Long id) {
+    public DepartmentResponse getDepartmentById(UUID id) {
         log.info("Fetching department with id: {}", id);
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Department", "id", id));
@@ -74,7 +75,7 @@ public class DepartmentService {
      * Cập nhật thông tin bộ môn theo ID
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    public DepartmentResponse updateDepartment(Long id, Long universityId, DepartmentUpdateRequest request) {
+    public DepartmentResponse updateDepartment(UUID id, UUID universityId, DepartmentUpdateRequest request) {
         log.info("Updating department with id: {} and universityId: {}", id, universityId);
 
         Department department = departmentRepository.findById(id)
@@ -92,7 +93,7 @@ public class DepartmentService {
      * Xóa bộ môn theo ID
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    public void deleteDepartmentById(Long id, Long universityId) {
+    public void deleteDepartmentById(UUID id, UUID universityId) {
         log.info("Deleting department with id: {} and universityId: {}", id, universityId);
 
         Department department = departmentRepository.findById(id)
@@ -111,7 +112,7 @@ public class DepartmentService {
      * Cập nhật thông tin bộ môn theo slug
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    public DepartmentResponse updateDepartmentBySlug(Long universityId, Long facultyId, String slug, DepartmentUpdateRequest request) {
+    public DepartmentResponse updateDepartmentBySlug(UUID universityId, UUID facultyId, String slug, DepartmentUpdateRequest request) {
         log.info("Updating department with slug: {} in faculty: {} and universityId: {}", slug, facultyId, universityId);
 
         Department department = departmentRepository.findByFacultyIdAndSlug(facultyId, slug)
@@ -129,7 +130,7 @@ public class DepartmentService {
      * Xóa bộ môn theo slug
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
-    public void deleteDepartmentBySlug(Long universityId, Long facultyId, String slug) {
+    public void deleteDepartmentBySlug(UUID universityId, UUID facultyId, String slug) {
         log.info("Deleting department with slug: {} in faculty: {} and universityId: {}", slug, facultyId, universityId);
 
         Department department = departmentRepository.findByFacultyIdAndSlug(facultyId, slug)
@@ -150,13 +151,15 @@ public class DepartmentService {
     private DepartmentResponse updateDepartmentInternal(Department department, DepartmentUpdateRequest request) {
         if (request.getName() != null && !request.getName().equals(department.getName())) {
             String newSlug = StringUtil.toSlug(request.getName());
-            Long facultyId = department.getFaculty().getId();
+            UUID facultyId = department.getFaculty().getId();
 
-            if (departmentRepository.existsByFacultyIdAndSlug(facultyId, newSlug)) {
-                throw new DuplicateResourceException("Slug: " + newSlug + " đã tồn tại");
+            // Nếu slug mới giống slug hiện tại (khác dấu/case...), bỏ qua check trùng để tránh false-positive
+            if (!newSlug.equals(department.getSlug())) {
+                if (departmentRepository.existsByFacultyIdAndSlug(facultyId, newSlug)) {
+                    throw new DuplicateResourceException("Slug: " + newSlug + " đã tồn tại");
+                }
+                department.setSlug(newSlug);
             }
-
-            department.setSlug(newSlug);
         }
 
         departmentMapper.updateEntityFromRequest(request, department);
@@ -179,8 +182,8 @@ public class DepartmentService {
      * @return Danh sách departments
      */
     @Transactional(readOnly = true)
-    public List<DepartmentResponse> filter(Long universityId, String universitySlug,
-                                          Long facultyId, String facultySlug,
+    public List<DepartmentResponse> filter(UUID universityId, String universitySlug,
+                                          UUID facultyId, String facultySlug,
                                           Boolean isActive) {
         log.info("Filtering departments with universityId: {}, universitySlug: {}, " +
                 "facultyId: {}, facultySlug: {}, isActive: {}",

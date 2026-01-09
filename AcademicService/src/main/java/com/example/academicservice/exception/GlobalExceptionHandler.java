@@ -7,6 +7,9 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import java.util.UUID;
 
 /**
  * Global exception handler để handle các exception và trả về error response chuẩn.
@@ -24,11 +27,18 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error(status.value(), ex.getErrorCode()));
     }
 
+    /**
+     * Handle invalid UUID format (for programmatic UUID parsing)
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiResponse<Void>> handleIllegalArgumentException(IllegalArgumentException ex) {
+        int errorCode = (ex.getMessage() != null && ex.getMessage().contains("Invalid UUID"))
+            ? AcademicErrorCodes.INVALID_UUID
+            : CommonErrorCodes.BAD_REQUEST;
+            
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(), CommonErrorCodes.BAD_REQUEST));
+                .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(), errorCode));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -38,12 +48,46 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(), CommonErrorCodes.VALIDATION_FAILED));
     }
 
+    /**
+     * Handle invalid UUID format in request body (JSON deserialization)
+     * When Jackson cannot parse string to UUID, it throws HttpMessageNotReadableException
+     */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiResponse<Void>> handleNotReadable(HttpMessageNotReadableException ex) {
-        // JSON parse/type mismatch (e.g., permissionNames expected array but got string)
+        // Check if the error is related to UUID parsing
+        String message = ex.getMessage();
+        boolean isUuidError = message != null && (
+            message.contains("UUID") || 
+            message.contains("java.util.UUID") ||
+            message.contains("Invalid UUID")
+        );
+        
+        int errorCode = isUuidError 
+            ? AcademicErrorCodes.INVALID_UUID 
+            : CommonErrorCodes.VALIDATION_FAILED;
+            
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(), CommonErrorCodes.VALIDATION_FAILED));
+                .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(), errorCode));
+    }
+
+    /**
+     * Handle invalid UUID format in path variables or query parameters
+     * When Spring cannot convert string to UUID, it throws MethodArgumentTypeMismatchException
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        // Check if the required type is UUID (AcademicService uses UUID for IDs)
+        boolean isUuidError = ex.getRequiredType() != null && 
+                              UUID.class.isAssignableFrom(ex.getRequiredType());
+        
+        int errorCode = isUuidError 
+            ? AcademicErrorCodes.INVALID_UUID 
+            : CommonErrorCodes.VALIDATION_FAILED;
+            
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(), errorCode));
     }
 
     @ExceptionHandler(Exception.class)

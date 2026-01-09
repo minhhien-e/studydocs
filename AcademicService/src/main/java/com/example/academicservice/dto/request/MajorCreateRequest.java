@@ -1,6 +1,7 @@
 package com.example.academicservice.dto.request;
 
 import lombok.Data;
+import java.util.UUID;
 
 /**
  * DTO để tạo mới Major
@@ -8,7 +9,7 @@ import lombok.Data;
 @Data
 public class MajorCreateRequest {
 
-    private Long departmentId;     // ID của bộ môn
+    private UUID departmentId;     // ID của bộ môn
 
     private String name;           // Tên ngành
 

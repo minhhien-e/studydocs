@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Controller để xử lý các HTTP requests liên quan đến University
@@ -23,8 +24,8 @@ public class UniversityController {
      * Lấy trường đại học theo ID
      */
     @GetMapping("/id/{id}")
-    @PreAuthorize("hasAnyAuthority('READ_USER')")
-    public UniversityResponse getUniversityById(@PathVariable Long id) {
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+    public UniversityResponse getUniversityById(@PathVariable UUID id) {
         return universityService.getUniversityById(id);
     }
 
@@ -40,7 +41,7 @@ public class UniversityController {
      * Cập nhật thông tin trường đại học theo ID
      */
     @PutMapping("/id/{id}")
-    public UniversityResponse updateUniversityById(@PathVariable Long id,
+    public UniversityResponse updateUniversityById(@PathVariable UUID id,
                                                    @RequestBody UniversityCreateRequest request) {
         return universityService.updateUniversity(id, request);
     }
@@ -58,7 +59,7 @@ public class UniversityController {
      * Xóa trường đại học theo ID
      */
     @DeleteMapping("/id/{id}")
-    public void deleteUniversityById(@PathVariable Long id) {
+    public void deleteUniversityById(@PathVariable UUID id) {
         universityService.deleteUniversityById(id);
     }
 
@@ -82,7 +83,7 @@ public class UniversityController {
     @GetMapping("/filter")
     @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public List<UniversityResponse> filterUniversities(
-            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) UUID id,
             @RequestParam(required = false) String slug,
             @RequestParam(required = false) Boolean isActive) {
         return universityService.filter(id, slug, isActive);

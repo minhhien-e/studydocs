@@ -1,6 +1,6 @@
 CREATE TABLE faculties (
-                           id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                           university_id BIGINT NOT NULL,
+                           id CHAR(36) NOT NULL PRIMARY KEY,
+                           university_id CHAR(36) NOT NULL,
                            name VARCHAR(255) NOT NULL,
                            slug VARCHAR(100) NOT NULL,
                            description TEXT,
@@ -12,7 +12,7 @@ CREATE TABLE faculties (
     -- Mỗi khoa có slug duy nhất trong cùng 1 trường
                            UNIQUE KEY uq_faculty_university_slug (university_id, slug),
 
-                           FOREIGN KEY (university_id) REFERENCES universities(id) ON DELETE CASCADE,
+                           CONSTRAINT fk_faculty_university FOREIGN KEY (university_id) REFERENCES universities(id) ON DELETE CASCADE,
 
     --  Index kết hợp giúp lọc nhanh khoa theo trường và trạng thái
                            INDEX idx_faculty_university_active (university_id, is_active),

@@ -9,20 +9,21 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Repository để truy vấn Department entity
  */
 @Repository
-public interface DepartmentRepository extends JpaRepository<Department, Long>, JpaSpecificationExecutor<Department> {
+public interface DepartmentRepository extends JpaRepository<Department, UUID>, JpaSpecificationExecutor<Department> {
 
     // === ID-based queries ===
 
     // Tìm bộ môn theo slug trong 1 khoa
-    Optional<Department> findByFacultyIdAndSlug(Long facultyId, String slug);
+    Optional<Department> findByFacultyIdAndSlug(UUID facultyId, String slug);
 
     // Kiểm tra slug đã tồn tại trong khoa chưa
-    boolean existsByFacultyIdAndSlug(Long facultyId, String slug);
+    boolean existsByFacultyIdAndSlug(UUID facultyId, String slug);
 
 }
 
