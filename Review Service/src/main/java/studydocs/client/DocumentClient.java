@@ -21,8 +21,8 @@ public class DocumentClient {
 
     public void validateDocumentId(UUID documentId) {
         String url = documentServiceUrl + "/{id}/exists";
-        ParameterizedTypeReference<ApiResponse<Boolean>> type =
-                new ParameterizedTypeReference<>() {};
+        ParameterizedTypeReference<ApiResponse<Boolean>> type = new ParameterizedTypeReference<>() {
+        };
 
         try {
             Boolean exists = remoteApiCaller.get(url, type, documentId);

@@ -21,3 +21,4 @@ security:
     resourceserver:
       jwt:
         issuer-uri: ${SECURITY_OAUTH2_JWT_ISSUER_URI}
+        jwk-set-uri: ${AUTH_SERVICE_JWKS_URL}
