@@ -26,25 +26,45 @@ public class DocumentController {
      * Yêu cầu quyền WRITE_USER
      */
     @PostMapping(consumes = "multipart/form-data")
-//    @PreAuthorize("hasAuthority('WRITE_USER')")
+    // @PreAuthorize("hasAuthority('WRITE_USER')")
     public ResponseEntity<ApiResponse<DocumentResponse>> uploadDocument(
             @RequestPart("data") UploadDocumentRequest data,
-            @RequestPart("file") MultipartFile file
-    ) throws JsonProcessingException {
+            @RequestPart("file") MultipartFile file) throws JsonProcessingException {
 
         Document doc = documentService.createAndUploadDocument(data, file);
         return ResponseEntity.accepted()
                 .body(ApiResponse.success(202, new DocumentResponse(doc)));
     }
 
+    @GetMapping
+    public ResponseEntity<ApiResponse<org.springframework.data.domain.Page<DocumentResponse>>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        org.springframework.data.domain.Page<Document> docPage = documentService.getAllDocuments(
+                org.springframework.data.domain.PageRequest.of(page, size,
+                        org.springframework.data.domain.Sort.by("createdAt").descending()));
+        return ResponseEntity.ok(ApiResponse.success(200, docPage.map(DocumentResponse::new)));
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<ApiResponse<org.springframework.data.domain.Page<DocumentResponse>>> getByUser(
+            @PathVariable UUID userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        org.springframework.data.domain.Page<Document> docPage = documentService.getDocumentsByUser(
+                userId,
+                org.springframework.data.domain.PageRequest.of(page, size,
+                        org.springframework.data.domain.Sort.by("createdAt").descending()));
+        return ResponseEntity.ok(ApiResponse.success(200, docPage.map(DocumentResponse::new)));
+    }
+
     /**
      * Get document by id
      */
     @GetMapping("/{id}")
-//    @PreAuthorize("hasAuthority('WRITE_USER')")
+    // @PreAuthorize("hasAuthority('WRITE_USER')")
     public ResponseEntity<ApiResponse<DocumentResponse>> getDocumentById(
-            @PathVariable UUID id
-    ) {
+            @PathVariable UUID id) {
         Document document = documentService.getDocumentById(id);
         return ResponseEntity.ok(ApiResponse.success(200, new DocumentResponse(document)));
     }
@@ -53,10 +73,9 @@ public class DocumentController {
      * Check document exists
      */
     @GetMapping("/{id}/exists")
-//    @PreAuthorize("hasAuthority('WRITE_USER')")
+    // @PreAuthorize("hasAuthority('WRITE_USER')")
     public ResponseEntity<ApiResponse<Boolean>> exists(
-            @PathVariable UUID id
-    ) {
+            @PathVariable UUID id) {
         boolean exists = documentService.existsByIdAndNotDeleted(id);
         return ResponseEntity.ok(ApiResponse.success(200, exists));
     }
@@ -65,12 +84,11 @@ public class DocumentController {
      * Update document
      */
     @PutMapping("/{id}")
-//    @PreAuthorize("hasAuthority('WRITE_USER')")
+    // @PreAuthorize("hasAuthority('WRITE_USER')")
     public ResponseEntity<ApiResponse<DocumentResponse>> updateDocument(
             @PathVariable UUID id,
             @RequestParam String title,
-            @RequestParam String description
-    ) {
+            @RequestParam String description) {
         Document document = documentService.updateDocument(id, title, description);
         return ResponseEntity.ok(ApiResponse.success(200, new DocumentResponse(document)));
     }
@@ -79,13 +97,11 @@ public class DocumentController {
      * Delete document
      */
     @DeleteMapping("/{id}")
-//    @PreAuthorize("hasAuthority('WRITE_USER')")
+    // @PreAuthorize("hasAuthority('WRITE_USER')")
     public ResponseEntity<ApiResponse<String>> deleteDocument(
-            @PathVariable UUID id
-    ) {
+            @PathVariable UUID id) {
         documentService.deleteDocument(id);
         return ResponseEntity.ok(
-                ApiResponse.success(200, "Document deleted: " + id)
-        );
+                ApiResponse.success(200, "Document deleted: " + id));
     }
 }

@@ -118,6 +118,18 @@ public class DocumentService {
         return documentRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
+    public org.springframework.data.domain.Page<Document> getAllDocuments(
+            org.springframework.data.domain.Pageable pageable) {
+        return documentRepository.findByIsDeletedFalse(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public org.springframework.data.domain.Page<Document> getDocumentsByUser(UUID userId,
+            org.springframework.data.domain.Pageable pageable) {
+        return documentRepository.findByUserIdAndIsDeletedFalse(userId, pageable);
+    }
+
     @Transactional
     public Document updateDocument(UUID id, String title, String description) {
         Document document = getDocumentById(id);
