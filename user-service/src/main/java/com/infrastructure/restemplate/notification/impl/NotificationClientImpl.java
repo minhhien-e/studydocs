@@ -42,9 +42,8 @@ public class NotificationClientImpl implements NotificationClient {
                 log.error("lỗi khi gọi đến notifycation");
                 throw new HttpExeption(res.statusCode(), res.errorCode());
             }
-        } catch (HttpExeption ex) {
-            log.error("lỗi ở NotificationClientImpl");
-            throw ex;
+        } catch (Exception ex) {
+            log.error("lỗi khi gọi service thông báo: {}", ex.getMessage());
         }
 
     }
