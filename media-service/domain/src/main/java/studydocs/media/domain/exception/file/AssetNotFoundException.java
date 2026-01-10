@@ -5,9 +5,8 @@ import studydocs.media.domain.exception.base.DomainException;
 
 import java.util.UUID;
 
-public class FileNotFoundException extends DomainException {
-    public FileNotFoundException(UUID id) {
-        super("File not found: " + id, DomainErrorCode.FILE_NOT_FOUND);
+public class AssetNotFoundException extends DomainException {
+    public AssetNotFoundException(UUID id) {
+        super("Asset not found: " + id, DomainErrorCode.FILE_NOT_FOUND);
     }
 }
-

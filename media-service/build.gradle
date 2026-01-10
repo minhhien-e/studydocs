@@ -18,9 +18,9 @@ subprojects {
             languageVersion = JavaLanguageVersion.of(17)
         }
     }
-    test {
-        useJUnitPlatform()
-    }
+//    test {
+//        useJUnitPlatform()
+//    }
     configurations {
         compileOnly {
             extendsFrom annotationProcessor

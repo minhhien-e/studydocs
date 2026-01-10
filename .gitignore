@@ -35,6 +35,5 @@ out/
 
 ### VS Code ###
 .vscode/
-media-service/launcher/src/main/resources/.env
-notification-service/bootstrap/src/main/resources/.env
-notification-service/bootstrap/src/main/resources/firebase/firebase-adminsdk.json
+**/.env
+**/firebase-adminsdk.json

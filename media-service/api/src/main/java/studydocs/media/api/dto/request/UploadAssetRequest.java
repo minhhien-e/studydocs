@@ -4,5 +4,5 @@ import lombok.Builder;
 import org.springframework.web.multipart.MultipartFile;
 
 @Builder
-public record UploadFileRequest(MultipartFile file) {
+public record UploadAssetRequest(MultipartFile file) {
 }
