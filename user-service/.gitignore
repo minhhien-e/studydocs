@@ -1,0 +1,66 @@
+# ========================
+# Build / output
+# ========================
+/build/
+/out/
+/target/
+
+# Gradle cache
+/.gradle/
+/gradle/
+
+# ========================
+# IDE / editor
+# ========================
+# IntelliJ
+/.idea/
+/*.iml
+/*.ipr
+/*.iws
+
+# Eclipse
+/.classpath
+/.project
+/.settings/
+
+# VSCode
+/.vscode/
+
+# ========================
+# Environment / secret
+# ========================
+.env
+*.env
+*.local
+
+# ========================
+# OS files
+# ========================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ========================
+# Logs
+# ========================
+*.log
+
+# ========================
+# Temporary files
+# ========================
+*.tmp
+*.swp
+*.swo
+*.bak
+*.orig
+
+# ========================
+# Others
+# ========================
+*.class
+*.jar
+*.war
+*.ear
+*.db
+*.sqlite
