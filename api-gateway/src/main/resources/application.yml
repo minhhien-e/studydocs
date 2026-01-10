@@ -1,29 +1,169 @@
 server:
-  port: 8080
+  address: ${SERVER_ADDRESS:0.0.0.0}
+  port: ${SERVER_PORT:8080}
 
 spring:
   application:
-    name: api-gateway
+    name: ${APP_NAME:api-gateway}
+
   cloud:
     gateway:
       routes:
-#        - id: user-service
-#          uri: lb://user-service
-#          predicates:
-#            - Path=/users/**
 
-#        - id: mock-test
-#          uri: http://httpbin.org
-#          predicates:
-#            - Path=/mock
+        # =========================
+        # USER SERVICE
+        # =========================
+        - id: user-service
+          uri: ${USER_SERVICE_URI:http://user-service:8082}
+          predicates:
+            - Path=${USER_SERVICE_PATH:/api/v1/users/**}
+          filters:
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: ${USER_RATE_REPLENISH:5}
+                redis-rate-limiter.burstCapacity: ${USER_RATE_BURST:10}
+            - name: CircuitBreaker
+              args:
+                name: ${USER_CIRCUIT_NAME:userCircuitBreaker}
+                fallbackUri: ${USER_FALLBACK_URI:forward:/fallback/users}
 
+        # =========================
+        # AUTHENTICA SERVICE
+        # =========================
+        - id: authentica-service
+          uri: ${AUTHENTICA_SERVICE_URI:http://auth-service:8081}
+          predicates:
+            - Path=${AUTHENTICA_SERVICE_PATH:/api/v1/auth/**}
+          filters:
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: ${AUTHENTICA_RATE_REPLENISH:10}
+                redis-rate-limiter.burstCapacity: ${AUTHENTICA_RATE_BURST:20}
+            - name: CircuitBreaker
+              args:
+                name: ${AUTHENTICA_CIRCUIT_NAME:authenticaCircuitBreaker}
+                fallbackUri: ${AUTHENTICA_FALLBACK_URI:forward:/fallback/authentica}
 
-#eureka:
-#  client:
-#    service-url:
-#      defaultZone: http://localhost:8761/eureka
+        # =========================
+        # NOTIFICATION SERVICE
+        # =========================
+        - id: notification-service
+          uri: ${NOTIFICATION_SERVICE_URI:http://notification-service:8087}
+          predicates:
+            - Path=${NOTIFICATION_SERVICE_PATH:/api/v1/notifications/**}
+          filters:
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: ${NOTIFY_RATE_REPLENISH:5}
+                redis-rate-limiter.burstCapacity: ${NOTIFY_RATE_BURST:10}
+            - name: CircuitBreaker
+              args:
+                name: ${NOTIFY_CIRCUIT_NAME:notificationCircuitBreaker}
+                fallbackUri: ${NOTIFY_FALLBACK_URI:forward:/fallback/notifications}
 
+        # =========================
+        # UPLOAD SERVICE
+        # =========================
+        - id: upload-service
+          uri: ${UPLOAD_SERVICE_URI:http://upload-service:8084}
+          predicates:
+            - Path=${UPLOAD_SERVICE_PATH:/api/v1/upload/**}
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: ${UPLOAD_CIRCUIT_NAME:uploadCircuitBreaker}
+                fallbackUri: ${UPLOAD_FALLBACK_URI:forward:/fallback/upload}
+
+        # =========================
+        # REVIEW SERVICE
+        # =========================
+        - id: review-service
+          uri: ${REVIEW_SERVICE_URI:http://review-service:8086}
+          predicates:
+            - Path=${REVIEW_SERVICE_PATH:/api/v1/review/**}
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: ${REVIEW_CIRCUIT_NAME:reviewCircuitBreaker}
+                fallbackUri: ${REVIEW_FALLBACK_URI:forward:/fallback/review}
+
+        # =========================
+        # FOLLOW SERVICE
+        # =========================
+        - id: follow-service
+          uri: ${FOLLOW_SERVICE_URI:http://follow-service:8089}
+          predicates:
+            - Path=${FOLLOW_SERVICE_PATH:/api/v1/follow/**}
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: ${FOLLOW_CIRCUIT_NAME:followCircuitBreaker}
+                fallbackUri: ${FOLLOW_FALLBACK_URI:forward:/fallback/follow}
+
+        # =========================
+        # ACADEMIC SERVICE
+        # =========================
+        - id: academic-service
+          uri: ${ACADEMIC_SERVICE_URI:http://academic-service:8083}
+          predicates:
+            - Path=${ACADEMIC_SERVICE_PATH:/api/v1/academic/**}
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: ${ACADEMIC_CIRCUIT_NAME:academicCircuitBreaker}
+                fallbackUri: ${ACADEMIC_FALLBACK_URI:forward:/fallback/academic}
+
+        # =========================
+        # SEARCH SERVICE
+        # =========================
+        - id: search-service
+          uri: ${SEARCH_SERVICE_URI:http://search-service:8088}
+          predicates:
+            - Path=${SEARCH_SERVICE_PATH:/api/v1/search/**}
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: ${SEARCH_CIRCUIT_NAME:searchCircuitBreaker}
+                fallbackUri: ${SEARCH_FALLBACK_URI:forward:/fallback/search}
+
+        # =========================
+        # DOCUMENT SERVICE
+        # =========================
+        - id: document-service
+          uri: ${DOCUMENT_SERVICE_URI:http://document-service:8085}
+          predicates:
+            - Path=${DOCUMENT_SERVICE_PATH:/api/v1/documents/**}
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: ${DOCUMENT_CIRCUIT_NAME:documentCircuitBreaker}
+                fallbackUri: ${DOCUMENT_FALLBACK_URI:forward:/fallback/document}
+
+  # =========================
+  # REDIS (Rate Limiter)
+  # =========================
+  data:
+    redis:
+      host: ${REDIS_HOST:redis-service}
+      port: ${REDIS_PORT:6379}
+
+  # =========================
+  # SECURITY (JWT Validation)
+  # =========================
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${AUTH_SERVICE_JWKS_URL}
+          issuer-uri: ${AUTH_SERVICE_ISSUER}
+
+# =========================
+# LOGGING
+# =========================
 logging:
   level:
-    org.springframework.cloud.gateway: DEBUG
-    reactor.netty.http.server: DEBUG
+    org.springframework.cloud.gateway: ${LOG_GATEWAY:DEBUG}
+    reactor.netty.http.server: ${LOG_NETTY:DEBUG}
