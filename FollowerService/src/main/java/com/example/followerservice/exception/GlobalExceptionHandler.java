@@ -76,7 +76,7 @@ public class GlobalExceptionHandler {
         
         int errorCode = isUuidError 
             ? FollowErrorCodes.INVALID_UUID 
-            : CommonErrorCodes.VALIDATION_FAILED;
+            : FollowErrorCodes.REQUEST_VALIDATION_ERROR;
             
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -95,7 +95,7 @@ public class GlobalExceptionHandler {
         
         int errorCode = isUuidError 
             ? FollowErrorCodes.INVALID_UUID 
-            : CommonErrorCodes.BAD_REQUEST;
+            : FollowErrorCodes.INVALID_REQUEST_FORMAT;
             
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -109,7 +109,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleInvalidUUID(IllegalArgumentException ex) {
         int errorCode = (ex.getMessage() != null && ex.getMessage().contains("Invalid UUID"))
             ? FollowErrorCodes.INVALID_UUID
-            : CommonErrorCodes.BAD_REQUEST;
+            : FollowErrorCodes.INVALID_REQUEST_FORMAT;
             
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -123,7 +123,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleValidation(MethodArgumentNotValidException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(), CommonErrorCodes.VALIDATION_FAILED));
+                .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(), FollowErrorCodes.REQUEST_VALIDATION_ERROR));
     }
 
     /**
@@ -134,6 +134,6 @@ public class GlobalExceptionHandler {
         // Log the exception for debugging (message not sent to client)
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonErrorCodes.INTERNAL_ERROR));
+                .body(ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), FollowErrorCodes.FOLLOW_UNKNOWN));
     }
 }
