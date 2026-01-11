@@ -36,6 +36,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneral() {
         return ResponseEntity.internalServerError()
-                .body(ApiResponse.error(500, 499));
+                .body(ApiResponse.error(500, -1));
     }
 }
