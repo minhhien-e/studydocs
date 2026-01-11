@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import studydocs.media.application.port.out.processing.PageCounterPort;
 import studydocs.media.domain.enums.FileExtension;
-import studydocs.media.domain.exception.file.FileNotSupportedException;
+import studydocs.media.domain.exception.asset.AssetNotSupportedException;
 
 import java.io.InputStream;
 import java.util.List;
@@ -19,6 +19,6 @@ public class PageCounterResolver {
                 .filter(counter -> counter.supports(fileExtension))
                 .findFirst()
                 .map(counter -> counter.countPages(fileContent))
-                .orElseThrow(() -> new FileNotSupportedException(fileExtension.name()));
+                .orElseThrow(() -> new AssetNotSupportedException(fileExtension.name()));
     }
 }

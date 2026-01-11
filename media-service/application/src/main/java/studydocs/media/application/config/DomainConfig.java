@@ -1,14 +1,11 @@
 package studydocs.media.application.config;
 
-import org.springframework.context.annotation.Bean;
+import io.github.ddd.core.annotation.DomainService;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import studydocs.media.domain.policy.FileSupportPolicy;
-import studydocs.media.domain.service.DefaultFileSupportPolicy;
+import org.springframework.context.annotation.FilterType;
 
 @Configuration
+@ComponentScan(basePackages = "studydocs.media.domain", includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = DomainService.class))
 public class DomainConfig {
-    @Bean
-    public FileSupportPolicy fileSupportPolicy() {
-        return new DefaultFileSupportPolicy();
-    }
 }

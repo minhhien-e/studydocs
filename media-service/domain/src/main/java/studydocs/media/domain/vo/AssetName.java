@@ -1,7 +1,7 @@
 package studydocs.media.domain.vo;
 
 import io.github.ddd.core.vo.ValueObject;
-import studydocs.media.domain.exception.file.InvalidAssetNameException;
+import studydocs.media.domain.exception.asset.InvalidAssetNameException;
 
 public record AssetName(String value) implements ValueObject {
     private static final int MAX_LENGTH = 255;

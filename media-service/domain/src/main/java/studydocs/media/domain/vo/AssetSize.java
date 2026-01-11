@@ -1,7 +1,7 @@
 package studydocs.media.domain.vo;
 
 import io.github.ddd.core.vo.ValueObject;
-import studydocs.media.domain.exception.file.InvalidAssetSizeException;
+import studydocs.media.domain.exception.asset.InvalidAssetSizeException;
 
 public record AssetSize(Long value) implements ValueObject {
     private static final long MAX_SIZE = 50 * 1024 * 1024; // 50MB

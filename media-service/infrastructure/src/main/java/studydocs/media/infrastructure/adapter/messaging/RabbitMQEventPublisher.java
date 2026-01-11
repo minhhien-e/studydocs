@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
-import studydocs.media.domain.port.EventPublisherPort;
+import studydocs.media.application.port.out.messaging.EventPublisherPort;
 
 @Component
 @RequiredArgsConstructor

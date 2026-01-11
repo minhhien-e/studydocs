@@ -1,7 +1,7 @@
 package studydocs.media.domain.vo;
 
 import io.github.ddd.core.vo.ValueObject;
-import studydocs.media.domain.exception.file.InvalidAssetContentTypeException;
+import studydocs.media.domain.exception.asset.InvalidAssetContentTypeException;
 
 public record AssetContentType(String value) implements ValueObject {
 

@@ -19,19 +19,17 @@ public class AssetMapper {
     /// Command
     public static UploadAssetCommand toCommand(UUID userId, UploadAssetRequest request) {
         MultipartFile file = request.file();
-        return UploadAssetCommand.builder()
-                .contentProvider(() -> {
-                    try {
-                        return file.getInputStream();
-                    } catch (IOException e) {
-                        throw new RuntimeException("Failed to open input stream", e);
-                    }
-                })
-                .assetName(file.getOriginalFilename())
-                .contentType(file.getContentType())
-                .fileSize(file.getSize())
-                .uploaderId(userId)
-                .build();
+        try {
+            return UploadAssetCommand.builder()
+                    .fileContent(file.getInputStream())
+                    .fileName(file.getOriginalFilename())
+                    .contentType(file.getContentType())
+                    .fileSize(file.getSize())
+                    .uploaderId(userId)
+                    .build();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to get input stream", e);
+        }
     }
 
     public static DeleteAssetByIdCommand toCommand(UUID userId, DeleteAssetByIdRequest request) {
@@ -57,11 +55,13 @@ public class AssetMapper {
                 .size(projection.size())
                 .contentType(projection.contentType())
                 .totalPages(projection.totalPages())
-                .previewDataView(PreviewDataView.builder()
+                .previewDataView(projection.previewData() != null ? PreviewDataView.builder()
                         .baseUrl(projection.previewData().baseUrl())
                         .key(projection.previewData().key())
-                        .build())
-                .downloadUrl(projection.downloadUrl())
+                        .build() : null)
+                .downloadUrl(projection.downloadUrl() != null ? projection.downloadUrl() : null)
+                .status(projection.status())
+                .uploadProgress(projection.uploadProgress())
                 .build();
     }
 

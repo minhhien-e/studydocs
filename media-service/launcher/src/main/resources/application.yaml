@@ -29,6 +29,10 @@ cloudinary:
 app:
   error:
     code: ${ERROR_CODE}
+  outbox:
+    schedule:
+      fixed-delay: 5000
+    batch-size: 20
 
 logging:
   level:

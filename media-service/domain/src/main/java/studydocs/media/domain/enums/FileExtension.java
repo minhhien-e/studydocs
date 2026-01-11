@@ -1,7 +1,7 @@
 package studydocs.media.domain.enums;
 
-import studydocs.media.domain.exception.file.AssetNotSupportedException;
-import studydocs.media.domain.exception.file.InvalidAssetFormatException;
+import studydocs.media.domain.exception.asset.AssetNotSupportedException;
+import studydocs.media.domain.exception.asset.InvalidAssetFormatException;
 
 import java.util.Locale;
 

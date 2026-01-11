@@ -1,0 +1,42 @@
+version: "3.8"
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: media-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongo-init:
+    image: mongo:6.0
+    container_name: media-mongo-init
+    depends_on:
+      mongo:
+        condition: service_healthy
+    entrypoint: >
+      /bin/bash -c "
+      mongosh --host mongo:27017 --eval '
+        try {
+          rs.status();
+          print(\"Replica Set already initialized\");
+        } catch (e) {
+          print(\"Initializing Replica Set...\");
+          rs.initiate({
+            _id: \"rs0\",
+            members: [{ _id: 0, host: \"mongo:27017\" }]
+          });
+          print(\"Replica Set initialized successfully\");
+        }
+      '
+      "
+
+volumes:
+  mongo_data:

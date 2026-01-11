@@ -1,7 +1,7 @@
 package studydocs.media.domain.vo;
 
 import io.github.ddd.core.vo.ValueObject;
-import studydocs.media.domain.exception.file.InvalidAssetTotalPagesException;
+import studydocs.media.domain.exception.asset.InvalidAssetTotalPagesException;
 
 public record TotalPages(Integer value) implements ValueObject {
     private static final int MAX_PAGES = 10000;

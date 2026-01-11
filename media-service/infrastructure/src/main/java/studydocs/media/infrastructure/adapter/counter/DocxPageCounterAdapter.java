@@ -6,6 +6,7 @@ import studydocs.media.application.port.out.processing.PageCounterPort;
 import studydocs.media.domain.enums.FileExtension;
 
 import java.io.InputStream;
+
 @Component
 public class DocxPageCounterAdapter implements PageCounterPort {
     @Override
@@ -21,7 +22,8 @@ public class DocxPageCounterAdapter implements PageCounterPort {
             return pages;
         } catch (Exception e) {
             throw new RuntimeException("Failed to count DOCX pages", e);
-        }    }
+        }
+    }
 
     @Override
     public boolean supports(FileExtension ext) {

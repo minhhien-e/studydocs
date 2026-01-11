@@ -1,6 +1,7 @@
 package studydocs.media.domain.aggregate;
 
 import io.github.ddd.core.aggregate.AggregateRoot;
+import studydocs.media.domain.enums.AssetStatus;
 import studydocs.media.domain.event.AssetUploadedEvent;
 import studydocs.media.domain.vo.*;
 
@@ -15,14 +16,15 @@ public class Asset extends AggregateRoot<UUID> {
     private TotalPages totalPages;
     private AssetCreationTime creationTime;
 
-    private StorageLocation storageLocation;
+    private AssetStatus status;
+    private int uploadProgress;
 
+    private StorageLocation storageLocation;
 
     /// Constructor
     private Asset(UUID id, long version) {
         super(id, version);
     }
-
 
     /// Factory method
     public static Asset create(
@@ -32,22 +34,50 @@ public class Asset extends AggregateRoot<UUID> {
             AssetSize size,
             AssetContentType contentType,
             TotalPages totalPages,
-            StorageLocation storageLocation
-    ) {
+            StorageLocation storageLocation) {
         Asset asset = new Asset(id, 0);
         asset.uploaderId = uploaderId;
         asset.assetName = assetName;
         asset.size = size;
         asset.contentType = contentType;
-        asset.totalPages = totalPages;
+        asset.totalPages = totalPages != null ? totalPages : TotalPages.of(0);
         asset.storageLocation = storageLocation;
+        asset.status = AssetStatus.PENDING;
+        asset.uploadProgress = 0;
         asset.creationTime = AssetCreationTime.now();
 
         asset.addDomainEvent(new AssetUploadedEvent(
                 asset.getId(),
-                asset.uploaderId
-        ));
+                asset.uploaderId));
         return asset;
+    }
+
+    public void markAsUploading() {
+        this.status = AssetStatus.UPLOADING;
+        this.uploadProgress = 0;
+    }
+
+    public void updateProgress(int percent) {
+        if (this.status != AssetStatus.UPLOADING) {
+            return;
+        }
+        this.uploadProgress = percent;
+    }
+
+    public void setTotalPages(TotalPages totalPages) {
+        this.totalPages = totalPages;
+    }
+
+    public void completeUpload(StorageLocation location) {
+        this.status = AssetStatus.UPLOADED;
+        this.uploadProgress = 100;
+        this.storageLocation = location;
+        this.addDomainEvent(new AssetUploadedEvent(this.getId(), this.uploaderId));
+    }
+
+    public void failUpload() {
+        this.status = AssetStatus.FAILED;
+        this.uploadProgress = 0;
     }
 
     public static Asset reconstruct(
@@ -60,8 +90,9 @@ public class Asset extends AggregateRoot<UUID> {
             Integer totalPages,
             LocalDateTime createdAt,
             String publicId,
-            String resourceType
-    ) {
+            String resourceType,
+            String status,
+            Integer uploadProgress) {
         Asset asset = new Asset(id, version);
         asset.uploaderId = uploaderId;
         asset.assetName = AssetName.of(assetName);
@@ -69,7 +100,11 @@ public class Asset extends AggregateRoot<UUID> {
         asset.contentType = AssetContentType.of(contentType);
         asset.totalPages = TotalPages.of(totalPages);
         asset.creationTime = AssetCreationTime.of(createdAt);
-        asset.storageLocation = StorageLocation.of(publicId, resourceType);
+        if (publicId != null && resourceType != null) {
+            asset.storageLocation = StorageLocation.of(publicId, resourceType);
+        }
+        asset.status = status != null ? AssetStatus.valueOf(status) : AssetStatus.PENDING;
+        asset.uploadProgress = uploadProgress != null ? uploadProgress : 0;
         return asset;
     }
 
@@ -98,15 +133,15 @@ public class Asset extends AggregateRoot<UUID> {
         return creationTime;
     }
 
-    public String getPublicId() {
-        return storageLocation.key();
-    }
-
-    public String getResourceType() {
-        return storageLocation.namespace();
-    }
-
     public StorageLocation getStorageLocation() {
         return storageLocation;
+    }
+
+    public AssetStatus getStatus() {
+        return status;
+    }
+
+    public int getUploadProgress() {
+        return uploadProgress;
     }
 }

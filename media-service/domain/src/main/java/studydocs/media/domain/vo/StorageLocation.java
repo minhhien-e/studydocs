@@ -1,7 +1,7 @@
 package studydocs.media.domain.vo;
 
 import io.github.ddd.core.vo.ValueObject;
-import studydocs.media.domain.exception.file.InvalidStorageLocationException;
+import studydocs.media.domain.exception.asset.InvalidStorageLocationException;
 
 public record StorageLocation(String key, String namespace) implements ValueObject {
 

@@ -2,7 +2,7 @@ package studydocs.media.domain.vo;
 
 import io.github.ddd.core.vo.ValueObject;
 
-import studydocs.media.domain.exception.file.InvalidAssetCreationTimeException;
+import studydocs.media.domain.exception.asset.InvalidAssetCreationTimeException;
 
 import java.time.LocalDateTime;
 
