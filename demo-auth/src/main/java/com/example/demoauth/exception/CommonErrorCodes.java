@@ -29,6 +29,6 @@ public final class CommonErrorCodes {
     /* ========== System Errors (500+) ========== */
     
     /** Unhandled server error. */
-    public static final int INTERNAL_ERROR = 500;
+    public static final int INTERNAL_ERROR = -1;
 }
 
