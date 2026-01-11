@@ -11,7 +11,7 @@ import studydocs.service.AdminStatsService;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/admin/stats")
+@RequestMapping("/api/v1/reviews/admin/stats")
 @RequiredArgsConstructor
 public class AdminStatsController {
 
