@@ -5,6 +5,30 @@
 **Environment**: Standard Java Spring Boot
 
 ### Mã lỗi (Error Codes) - Range: 400-499
+See `ERRORCODE.md`.
+
+### API Endpoints
+#### Public (`/api/v1/documents/public`)
+- `GET /`: GetAll (List documents)
+- `GET /{id}`: Detail (Records view if authenticated)
+- `GET /{id}/exists`: Check if document exists
+- `GET /newest?limit=10`: Top Newest Documents
+- `GET /most-liked?limit=10`: Top Liked Documents (from ReviewService)
+
+#### User (`/api/v1/documents/user`) - Requires Authentication
+- `POST /`: Upload Document (multipart/form-data)
+- `PUT /{id}`: Update Document (Title, Description)
+- `DELETE /{id}`: Delete Document (Soft delete)
+- `GET /me`: My Documents
+- `GET /me/newest`: My Newest Documents
+- `GET /me/history`: My View History
+
+#### Admin (`/api/v1/documents/admin/stats`) - Requires Admin Role
+- `GET /system?period={day,month,year}`: System Upload Stats
+- `GET /total`: Total Documents Count
+- `GET /users/{userId}/documents`: User Upload Stats
+- `GET /users/{userId}/total`: User Total Uploads
+- `GET /users/{userId}/likes-received`: Total Likes User Received
 | Code | Message | Mô tả chi tiết (Description) |
 |------|---------|------------------------------|
 | -1   | Unknown Error | Lỗi hệ thống không xác định (Internal Server Error). |
@@ -19,13 +43,19 @@
 
 
 ### Chức năng đã hoàn thiện
-- Upload tài liệu (lưu file + metadata)
-- Lấy thông tin tài liệu theo ID
-- Lấy danh sách tài liệu (phân trang + sort)
-- Lấy tài liệu theo User ID
-- Cập nhật thông tin tài liệu (Title, Desc)
-- Xóa tài liệu (Soft delete hoặc Hard delete tùy logic)
+- Upload tài liệu (lưu file + metadata) - Kèm call Academic Service
+- Lấy thông tin tài liệu theo ID (Public)
+- Lấy danh sách tài liệu (phân trang + sort) (Public)
+- Lấy tài liệu theo User ID (User)
+- Cập nhật thông tin tài liệu (Title, Desc) (User)
+- Xóa tài liệu (Soft delete) (User)
 - Admin Stats: Thống kê upload theo ngày, tháng, user
+- **New Features**:
+    - Thêm trường School Year
+    - Get Newest Documents (Public)
+    - Get Most Liked Documents (Public - Call ReviewService)
+    - View History (User)
+    - Record View (Public/User)
 
 ### Cấu trúc thư mục
 ```

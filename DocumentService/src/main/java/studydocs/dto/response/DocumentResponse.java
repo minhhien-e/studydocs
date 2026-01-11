@@ -12,9 +12,9 @@ public record DocumentResponse(
         String description,
         String status,
         boolean isDeleted,
+        String schoolYear,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt
-) {
+        LocalDateTime updatedAt) {
     public DocumentResponse(Document doc) {
         this(
                 doc.getId(),
@@ -23,8 +23,8 @@ public record DocumentResponse(
                 doc.getDescription(),
                 doc.getStatus().name(),
                 doc.getIsDeleted(),
+                doc.getSchoolYear(),
                 doc.getCreatedAt(),
-                doc.getUpdatedAt()
-        );
+                doc.getUpdatedAt());
     }
 }

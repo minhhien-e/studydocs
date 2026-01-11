@@ -30,6 +30,9 @@ public class Document {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    // thêm trường năm học (ví dụ : 2025-2026)
+    @Column(name = "school_year")
+    private String schoolYear;
 
     @Column(nullable = false)
     private Boolean isDeleted = false;
@@ -45,10 +48,11 @@ public class Document {
     @Column(nullable = false)
     private Status status = Status.PENDING;
 
-    public Document(UUID userId, String title, String description) {
+    public Document(UUID userId, String title, String description, String schoolYear) {
         this.userId = userId;
         this.title = title;
         this.description = description;
+        this.schoolYear = schoolYear;
     }
 
     public void markUploading() {

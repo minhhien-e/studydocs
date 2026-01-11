@@ -35,16 +35,16 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless JWT
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints (không cần authentication) - nếu có
-                // .requestMatchers("/api/v1/universities/filter").permitAll()
+//                 .requestMatchers("/api/v1/universities/filter").permitAll()
 
                 // Tất cả endpoints khác cần authentication
                 .anyRequest().permitAll()
+            )
+            .oauth2ResourceServer(oauth2 -> oauth2
+                .jwt(jwt -> jwt
+                    .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                )
             );
-//            .oauth2ResourceServer(oauth2 -> oauth2
-//                .jwt(jwt -> jwt
-//                    .jwtAuthenticationConverter(jwtAuthenticationConverter())
-//                )
-//            );
 
         return http.build();
     }

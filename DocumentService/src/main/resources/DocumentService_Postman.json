@@ -1,418 +1,189 @@
 {
-    "info": {
-        "_postman_id": "document-service-id",
-        "name": "Document Service API",
-        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-    },
-    "item": [
-        {
-            "name": "Upload Document",
-            "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                    "mode": "formdata",
-                    "formdata": [
-                        {
-                            "key": "data",
-                            "value": "{\"title\":\"Doc Title\", \"description\": \"Doc Desc\"}",
-                            "type": "text",
-                            "contentType": "application/json"
-                        },
-                        {
-                            "key": "file",
-                            "type": "file",
-                            "src": []
-                        }
-                    ]
-                },
-                "url": {
-                    "raw": "http://localhost:9050/api/v1/documents",
-                    "protocol": "http",
-                    "host": [
-                        "localhost"
-                    ],
-                    "port": "9050",
-                    "path": [
-                        "api",
-                        "v1",
-                        "documents"
-                    ]
-                }
-            },
-            "response": []
-        },
-        {
-            "name": "Get All Documents",
-            "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                    "raw": "http://localhost:9050/api/v1/documents?page=0&size=10",
-                    "protocol": "http",
-                    "host": [
-                        "localhost"
-                    ],
-                    "port": "9050",
-                    "path": [
-                        "api",
-                        "v1",
-                        "documents"
-                    ],
-                    "query": [
-                        {
-                            "key": "page",
-                            "value": "0"
-                        },
-                        {
-                            "key": "size",
-                            "value": "10"
-                        }
-                    ]
-                }
-            },
-            "response": []
-        },
-        {
-            "name": "Get Documents By User",
-            "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                    "raw": "http://localhost:9050/api/v1/documents/user/:userId?page=0&size=10",
-                    "protocol": "http",
-                    "host": [
-                        "localhost"
-                    ],
-                    "port": "9050",
-                    "path": [
-                        "api",
-                        "v1",
-                        "documents",
-                        "user",
-                        ":userId"
-                    ],
-                    "query": [
-                        {
-                            "key": "page",
-                            "value": "0"
-                        },
-                        {
-                            "key": "size",
-                            "value": "10"
-                        }
-                    ],
-                    "variable": [
-                        {
-                            "key": "userId",
-                            "value": ""
-                        }
-                    ]
-                }
-            },
-            "response": []
-        },
-        {
-            "name": "Get Document By ID",
-            "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                    "raw": "http://localhost:9050/api/v1/documents/:id",
-                    "protocol": "http",
-                    "host": [
-                        "localhost"
-                    ],
-                    "port": "9050",
-                    "path": [
-                        "api",
-                        "v1",
-                        "documents",
-                        ":id"
-                    ],
-                    "variable": [
-                        {
-                            "key": "id",
-                            "value": ""
-                        }
-                    ]
-                }
-            },
-            "response": []
-        },
-        {
-            "name": "Check Document Exists",
-            "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                    "raw": "http://localhost:9050/api/v1/documents/:id/exists",
-                    "protocol": "http",
-                    "host": [
-                        "localhost"
-                    ],
-                    "port": "9050",
-                    "path": [
-                        "api",
-                        "v1",
-                        "documents",
-                        ":id",
-                        "exists"
-                    ],
-                    "variable": [
-                        {
-                            "key": "id",
-                            "value": ""
-                        }
-                    ]
-                }
-            },
-            "response": []
-        },
-        {
-            "name": "Update Document",
-            "request": {
-                "method": "PUT",
-                "header": [],
-                "url": {
-                    "raw": "http://localhost:9050/api/v1/documents/:id?title=New Title&description=New Desc",
-                    "protocol": "http",
-                    "host": [
-                        "localhost"
-                    ],
-                    "port": "9050",
-                    "path": [
-                        "api",
-                        "v1",
-                        "documents",
-                        ":id"
-                    ],
-                    "query": [
-                        {
-                            "key": "title",
-                            "value": "New Title"
-                        },
-                        {
-                            "key": "description",
-                            "value": "New Desc"
-                        }
-                    ],
-                    "variable": [
-                        {
-                            "key": "id",
-                            "value": ""
-                        }
-                    ]
-                }
-            },
-            "response": []
-        },
-        {
-            "name": "Delete Document",
-            "request": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                    "raw": "http://localhost:9050/api/v1/documents/:id",
-                    "protocol": "http",
-                    "host": [
-                        "localhost"
-                    ],
-                    "port": "9050",
-                    "path": [
-                        "api",
-                        "v1",
-                        "documents",
-                        ":id"
-                    ],
-                    "variable": [
-                        {
-                            "key": "id",
-                            "value": ""
-                        }
-                    ]
-                }
-            },
-            "response": []
-        },
-        {
-            "name": "[Admin] Monthly Uploads",
-            "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                    "raw": "http://localhost:9050/api/v1/admin/stats/documents/uploads-by-month",
-                    "protocol": "http",
-                    "host": [
-                        "localhost"
-                    ],
-                    "port": "9050",
-                    "path": [
-                        "api",
-                        "v1",
-                        "admin",
-                        "stats",
-                        "documents",
-                        "uploads-by-month"
-                    ]
-                }
-            },
-            "response": []
-        },
-        {
-            "name": "[Admin] Total Documents",
-            "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                    "raw": "http://localhost:9050/api/v1/admin/stats/documents/total",
-                    "protocol": "http",
-                    "host": [
-                        "localhost"
-                    ],
-                    "port": "9050",
-                    "path": [
-                        "api",
-                        "v1",
-                        "admin",
-                        "stats",
-                        "documents",
-                        "total"
-                    ]
-                }
-            },
-            "response": []
-        },
-        {
-            "name": "[Admin] System Uploads (Day/Month/Year)",
-            "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                    "raw": "http://localhost:9050/api/v1/admin/stats/documents/system?period=day",
-                    "protocol": "http",
-                    "host": [
-                        "localhost"
-                    ],
-                    "port": "9050",
-                    "path": [
-                        "api",
-                        "v1",
-                        "admin",
-                        "stats",
-                        "documents",
-                        "system"
-                    ],
-                    "query": [
-                        {
-                            "key": "period",
-                            "value": "day",
-                            "description": "day, month, year"
-                        }
-                    ]
-                }
-            },
-            "response": []
-        },
-        {
-            "name": "[Admin] User Uploads (Day/Month/Year)",
-            "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                    "raw": "http://localhost:9050/api/v1/admin/stats/users/:userId/documents?period=day",
-                    "protocol": "http",
-                    "host": [
-                        "localhost"
-                    ],
-                    "port": "9050",
-                    "path": [
-                        "api",
-                        "v1",
-                        "admin",
-                        "stats",
-                        "users",
-                        ":userId",
-                        "documents"
-                    ],
-                    "query": [
-                        {
-                            "key": "period",
-                            "value": "day",
-                            "description": "day, month, year"
-                        }
-                    ],
-                    "variable": [
-                        {
-                            "key": "userId",
-                            "value": ""
-                        }
-                    ]
-                }
-            },
-            "response": []
-        },
-        {
-            "name": "[Admin] User Total Uploads",
-            "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                    "raw": "http://localhost:9050/api/v1/admin/stats/users/:userId/total",
-                    "protocol": "http",
-                    "host": [
-                        "localhost"
-                    ],
-                    "port": "9050",
-                    "path": [
-                        "api",
-                        "v1",
-                        "admin",
-                        "stats",
-                        "users",
-                        ":userId",
-                        "total"
-                    ],
-                    "variable": [
-                        {
-                            "key": "userId",
-                            "value": ""
-                        }
-                    ]
-                }
-            },
-            "response": []
-        },
-        {
-            "name": "[Admin] User Likes Received",
-            "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                    "raw": "http://localhost:9050/api/v1/admin/stats/users/:userId/likes-received",
-                    "protocol": "http",
-                    "host": [
-                        "localhost"
-                    ],
-                    "port": "9050",
-                    "path": [
-                        "api",
-                        "v1",
-                        "admin",
-                        "stats",
-                        "users",
-                        ":userId",
-                        "likes-received"
-                    ],
-                    "variable": [
-                        {
-                            "key": "userId",
-                            "value": ""
-                        }
-                    ]
-                }
-            },
-            "response": []
-        }
-    ]
+	"info": {
+		"_postman_id": "document-service-id",
+		"name": "Document Service API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Public",
+			"item": [
+				{
+					"name": "Get All Documents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085/api/v1/documents/public?page=0&size=10",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8085",
+							"path": ["api", "v1", "documents", "public"],
+							"query": [
+								{ "key": "page", "value": "0" },
+								{ "key": "size", "value": "10" }
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Newest Documents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8085/api/v1/documents/public/newest?limit=10"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Most Liked Documents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8085/api/v1/documents/public/most-liked?limit=10"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Document By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8085/api/v1/documents/public/:id",
+						"variable": [{ "key": "id", "value": "" }]
+					},
+					"response": []
+				},
+				{
+					"name": "Check Exists",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8085/api/v1/documents/public/:id/exists",
+						"variable": [{ "key": "id", "value": "" }]
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Upload Document",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "data",
+									"value": "{\"title\":\"Doc Title\", \"description\": \"Doc Desc\", \"schoolYear\": \"2025-2026\"}",
+									"type": "text",
+									"contentType": "application/json"
+								},
+								{ "key": "file", "type": "file", "src": [] }
+							]
+						},
+						"url": "http://localhost:8085/api/v1/documents/user"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Document",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": "http://localhost:8085/api/v1/documents/user/:id?title=New Title&description=New Desc",
+						"variable": [{ "key": "id", "value": "" }]
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Document",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "http://localhost:8085/api/v1/documents/user/:id",
+						"variable": [{ "key": "id", "value": "" }]
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Documents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8085/api/v1/documents/user/me?page=0&size=10"
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Newest",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8085/api/v1/documents/user/me/newest?limit=10"
+					},
+					"response": []
+				},
+				{
+					"name": "Get View History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8085/api/v1/documents/user/me/history?page=0&size=10"
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{ "key": "token", "value": "", "type": "string" }
+				]
+			}
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Total Documents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8085/api/v1/documents/admin/stats/total"
+					},
+					"response": []
+				},
+				{
+					"name": "User Total Uploads",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8085/api/v1/documents/admin/stats/users/:userId/total",
+						"variable": [{ "key": "userId", "value": "" }]
+					},
+					"response": []
+				},
+				{
+					"name": "System Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8085/api/v1/documents/admin/stats/system?period=day"
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{ "key": "token", "value": "", "type": "string" }
+				]
+			}
+		}
+	]
 }
