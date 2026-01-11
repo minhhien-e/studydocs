@@ -1,0 +1,30 @@
+package studydocs.dto.response;
+
+import studydocs.domain.Document;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+public record DocumentResponse(
+        UUID id,
+        UUID userId,
+        String title,
+        String description,
+        String status,
+        boolean isDeleted,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
+) {
+    public DocumentResponse(Document doc) {
+        this(
+                doc.getId(),
+                doc.getUserId(),
+                doc.getTitle(),
+                doc.getDescription(),
+                doc.getStatus().name(),
+                doc.getIsDeleted(),
+                doc.getCreatedAt(),
+                doc.getUpdatedAt()
+        );
+    }
+}
