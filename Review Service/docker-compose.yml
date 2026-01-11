@@ -19,13 +19,16 @@ services:
       - "${REVIEW_SERVICE_PORT}:${SERVER_PORT}"
     environment:
       SERVER_PORT: ${SERVER_PORT}
-      SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}
-      DOCUMENT_SERVICE_URL: ${DOCUMENT_SERVICE_URL}
-      SECURITY_OAUTH2_JWT_ISSUER_URI: ${SECURITY_OAUTH2_JWT_ISSUER_URI}
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/reviews
+      DOCUMENT_SERVICE_URL: http://host.docker.internal:8085/api/v1/documents
+      SECURITY_OAUTH2_JWT_ISSUER_URI: http://host.docker.internal:8081
+      AUTH_SERVICE_JWKS_URL: http://host.docker.internal:8081/.well-known/jwks.json
       LOGGING_LEVEL_ORG_SPRINGFRAMEWORK: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK}
       LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_DATA_MONGODB: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_DATA_MONGODB}
     depends_on:
       - mongo
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 volumes:
   mongo-data:
