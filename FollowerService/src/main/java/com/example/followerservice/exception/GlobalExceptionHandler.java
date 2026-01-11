@@ -76,7 +76,7 @@ public class GlobalExceptionHandler {
         
         int errorCode = isUuidError 
             ? FollowErrorCodes.INVALID_UUID 
-            : FollowErrorCodes.REQUEST_VALIDATION_ERROR;
+            : FollowErrorCodes.FOLLOW_UNKNOWN;
             
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -95,7 +95,7 @@ public class GlobalExceptionHandler {
         
         int errorCode = isUuidError 
             ? FollowErrorCodes.INVALID_UUID 
-            : FollowErrorCodes.INVALID_REQUEST_FORMAT;
+            : FollowErrorCodes.FOLLOW_UNKNOWN;
             
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -109,7 +109,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleInvalidUUID(IllegalArgumentException ex) {
         int errorCode = (ex.getMessage() != null && ex.getMessage().contains("Invalid UUID"))
             ? FollowErrorCodes.INVALID_UUID
-            : FollowErrorCodes.INVALID_REQUEST_FORMAT;
+            : FollowErrorCodes.FOLLOW_UNKNOWN;
             
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -123,7 +123,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleValidation(MethodArgumentNotValidException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(), FollowErrorCodes.REQUEST_VALIDATION_ERROR));
+                .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(), FollowErrorCodes.FOLLOW_UNKNOWN));
     }
 
     /**

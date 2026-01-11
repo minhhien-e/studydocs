@@ -54,12 +54,6 @@ public final class FollowErrorCodes {
     /** Duplicate follow relationship. */
     public static final int DUPLICATE_FOLLOW = 816;
 
-
-    public static final int INVALID_REQUEST_FORMAT = 817;
-
-    /** Request validation failed (e.g. @Valid). */
-    public static final int REQUEST_VALIDATION_ERROR = 818;
-
     /** Unknown follow error (fallback). */
     public static final int FOLLOW_UNKNOWN = -1;
 }

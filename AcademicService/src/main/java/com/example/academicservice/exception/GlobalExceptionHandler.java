@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleIllegalArgumentException(IllegalArgumentException ex) {
         int errorCode = (ex.getMessage() != null && ex.getMessage().contains("Invalid UUID"))
             ? AcademicErrorCodes.INVALID_UUID
-            : CommonErrorCodes.BAD_REQUEST;
+            : AcademicErrorCodes.UNKNOWN_ACADEMIC_ERROR;
             
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleValidation(MethodArgumentNotValidException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(), CommonErrorCodes.VALIDATION_FAILED));
+                .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(), AcademicErrorCodes.UNKNOWN_ACADEMIC_ERROR));
     }
 
     /**
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
         
         int errorCode = isUuidError 
             ? AcademicErrorCodes.INVALID_UUID 
-            : CommonErrorCodes.VALIDATION_FAILED;
+            : AcademicErrorCodes.UNKNOWN_ACADEMIC_ERROR;
             
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -83,7 +83,7 @@ public class GlobalExceptionHandler {
         
         int errorCode = isUuidError 
             ? AcademicErrorCodes.INVALID_UUID 
-            : CommonErrorCodes.VALIDATION_FAILED;
+            : AcademicErrorCodes.UNKNOWN_ACADEMIC_ERROR;
             
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -94,7 +94,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleUnexpected(Exception ex) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonErrorCodes.INTERNAL_ERROR));
+                .body(ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), AcademicErrorCodes.UNKNOWN_ACADEMIC_ERROR));
     }
 
     @ExceptionHandler(RequestApiException.class)
