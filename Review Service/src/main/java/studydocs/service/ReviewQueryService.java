@@ -49,6 +49,10 @@ public class ReviewQueryService {
                 .map(this::toResponseWithReaction);
     }
 
+    public long countReviewsByUser(UUID userId) {
+        return reviewRepo.countByUserIdAndIsDeletedFalseAndIsHiddenFalse(userId);
+    }
+
     private ReviewResponse toResponseWithReaction(Review review) {
         ReviewResponse resp = new ReviewResponse(review);
         UUID currentUserId = getCurrentUserId();

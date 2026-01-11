@@ -35,13 +35,13 @@ public class SecurityConfig {
                                                                                                               // JWT
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints (không cần authentication) - nếu có
-                        // .requestMatchers("/api/v1/universities/filter").permitAll()
+//                        .requestMatchers("/api/v1/universities/filter").permitAll()
 
                         // Tất cả endpoints khác cần authentication
-                        .anyRequest().permitAll());
-        // .oauth2ResourceServer(oauth2 -> oauth2
-        // .jwt(jwt -> jwt
-        // .jwtAuthenticationConverter(jwtAuthenticationConverter())));
+                        .anyRequest().permitAll())
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
         return http.build();
     }
@@ -58,41 +58,39 @@ public class SecurityConfig {
 
     /**
      * Custom converter để lấy permissions từ JWT claims "permissions"
-     * và roles từ "roles" claim.
-     * <br/>
-     * <b>IMPORTANT:</b> DO NOT add @Bean here. It returns a lambda, which causes
-     * Spring's
-     * type inference to fail with "Unable to determine source type <S> and target
-     * type <T>".
-     * This method is only used as a helper for jwtAuthenticationConverter().
+     * và roles từ "roles" claim
      */
-    private Converter<Jwt, Collection<GrantedAuthority>> jwtGrantedAuthoritiesConverter() {
-        return jwt -> {
-            Collection<GrantedAuthority> authorities = new ArrayList<>();
+    @Bean
+    public Converter<Jwt, Collection<GrantedAuthority>> jwtGrantedAuthoritiesConverter() {
+        return new Converter<Jwt, Collection<GrantedAuthority>>() {
+            @Override
+            public Collection<GrantedAuthority> convert(Jwt jwt) {
+                Collection<GrantedAuthority> authorities = new ArrayList<>();
 
-            // Lấy permissions từ claim "permissions"
-            Object permissions = jwt.getClaim("permissions");
-            if (permissions instanceof List<?> permList) {
-                List<GrantedAuthority> permissionAuthorities = permList.stream()
-                        .filter(String.class::isInstance)
-                        .map(String.class::cast)
-                        .map(perm -> new SimpleGrantedAuthority("SCOPE_" + perm))
-                        .collect(Collectors.toList());
-                authorities.addAll(permissionAuthorities);
+                // Lấy permissions từ claim "permissions"
+                Object permissions = jwt.getClaim("permissions");
+                if (permissions instanceof List<?> permList) {
+                    List<GrantedAuthority> permissionAuthorities = permList.stream()
+                            .filter(String.class::isInstance)
+                            .map(String.class::cast)
+                            .map(perm -> new SimpleGrantedAuthority("SCOPE_" + perm))
+                            .collect(Collectors.toList());
+                    authorities.addAll(permissionAuthorities);
+                }
+
+                // Lấy roles từ claim "roles" (optional)
+                Object roles = jwt.getClaim("roles");
+                if (roles instanceof List<?> roleList) {
+                    List<GrantedAuthority> roleAuthorities = roleList.stream()
+                            .filter(String.class::isInstance)
+                            .map(String.class::cast)
+                            .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                            .collect(Collectors.toList());
+                    authorities.addAll(roleAuthorities);
+                }
+
+                return authorities;
             }
-
-            // Lấy roles từ claim "roles" (optional)
-            Object roles = jwt.getClaim("roles");
-            if (roles instanceof List<?> roleList) {
-                List<GrantedAuthority> roleAuthorities = roleList.stream()
-                        .filter(String.class::isInstance)
-                        .map(String.class::cast)
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                        .collect(Collectors.toList());
-                authorities.addAll(roleAuthorities);
-            }
-
-            return authorities;
         };
     }
 }

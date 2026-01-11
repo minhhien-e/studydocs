@@ -24,4 +24,6 @@ public interface ReviewRepository extends MongoRepository<Review, UUID> {
 
     // @SuppressWarnings("unused")
     Page<Review> findByDocumentIdAndIsDeletedFalse(UUID documentId, Pageable pageable);
+
+    long countByUserIdAndIsDeletedFalseAndIsHiddenFalse(UUID userId);
 }

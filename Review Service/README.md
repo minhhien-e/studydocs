@@ -19,15 +19,29 @@
 | 508  | Permission Denied | Không có quyền sửa/xóa bài đánh giá của người khác. |
 
 
-### Chức năng đã hoàn thiện
-- Tạo review mới (validate documentId tồn tại trước khi tạo)
-- Lấy review theo ID
-- Lấy tất cả review (phân trang)
-- Lấy review theo documentId (phân trang + filter theo rating)
-- Lấy review theo userId (phân trang)
-- Tính điểm trung bình rating của document
-- Cập nhật rating & comment
-- Xóa review (soft delete)
+### Chức năng và Endpoints
+#### Public/User (`/api/v1/reviews`)
+- `POST /`: Create Review
+- `GET /{id}`: Get Review By ID
+- `GET /`: Get All Reviews
+- `GET /document/{docId}`: Get Reviews by Document
+- `GET /user/{userId}`: Get Reviews by User
+- `PUT /{id}`: Update Review
+- `DELETE /{id}`: Delete Review
+- `POST /{id}/react`: React to Review (like/dislike)
+- `POST /document/{docId}/react`: React to Document
+- `GET /document/{docId}/stats`: Get Document Like/Dislike Stats
+- `GET /document/{docId}/reaction`: Get My Reaction
+- `GET /user/{userId}/count`: **[NEW]** Total Reviews by User (Requires Auth)
+
+#### Internal (`/api/v1/internal/reactions`) - For Inter-service communication
+- `POST /count-batch`: Count likes for list of documents
+- `GET /top-liked`: **[NEW]** Get Top Liked Documents
+
+#### Admin (`/api/v1/reviews/admin/stats`)
+- `PUT /{id}/hidden`: Hide/Unhide Review
+- `GET /reviews/total`: Total Reviews
+- `GET /reactions/total-likes`: Total Document Likes
 
 ### Cấu trúc thư mục
 ```

@@ -12,6 +12,7 @@ public class AdminStatsService {
 
     private final ReviewRepository reviewRepository;
     private final DocumentReactionRepository documentReactionRepository;
+    private final studydocs.repository.DocumentStatsRepository documentStatsRepository;
 
     public long getTotalReviews() {
         return reviewRepository.count();
@@ -26,4 +27,14 @@ public class AdminStatsService {
             return 0;
         return documentReactionRepository.countByDocumentIdInAndType(documentIds, ReactionType.LIKE);
     }
+
+    public java.util.List<studydocs.model.DocumentStats> getTopLikedDocuments() {
+        return documentStatsRepository.findTop10ByOrderByLikeCountDesc();
+    }
 }
+// Note: BeanUtils is a hack if I can't easily inject. But wait, I can inject
+// DocumentStatsRepository.
+// Let me check if DocumentStatsRepository is already injected.
+// Looking at the file content from step 104, it is NOT injected. Only
+// ReviewRepository and DocumentReactionRepository.
+// So I should inject it using constructor.

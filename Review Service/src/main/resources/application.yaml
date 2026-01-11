@@ -1,29 +1,29 @@
 server:
-  port: ${SERVER_PORT}
+  port: ${SERVER_PORT:8086}
 
 spring:
   data:
     mongodb:
-      uri: ${SPRING_DATA_MONGODB_URI}
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/reviews}
       uuid-representation: standard
 
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${SECURITY_OAUTH2_JWT_ISSUER_URI}
-          jwk-set-uri: ${AUTH_SERVICE_JWKS_URL}
+          issuer-uri: ${SECURITY_OAUTH2_JWT_ISSUER_URI:http://localhost:8081}
+          jwk-set-uri: ${AUTH_SERVICE_JWKS_URL:http://localhost:8081/.well-known/jwks.json}
 
 
 document:
   service:
-    url: ${DOCUMENT_SERVICE_URL}
+    url: ${DOCUMENT_SERVICE_URL:http://127.0.0.1:8085/api/v1/documents}
 
 logging:
   level:
-    org.springframework: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK}
+    org.springframework: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK:INFO}
     org.springframework.security: TRACE
     org.springframework.security.oauth2: TRACE
-    org.springframework.data.mongodb: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_DATA_MONGODB}
+    org.springframework.data.mongodb: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_DATA_MONGODB:INFO}
 
 

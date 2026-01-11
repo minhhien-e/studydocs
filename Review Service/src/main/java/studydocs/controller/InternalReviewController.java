@@ -23,4 +23,12 @@ public class InternalReviewController {
     public ResponseEntity<ApiResponse<Long>> countLikesForDocuments(@RequestBody List<UUID> documentIds) {
         return ResponseEntity.ok(ApiResponse.success(200, adminStatsService.countLikesForDocuments(documentIds)));
     }
+
+    @org.springframework.web.bind.annotation.GetMapping("/top-liked")
+    public ResponseEntity<ApiResponse<List<studydocs.model.DocumentStats>>> getTopLikedDocuments(
+            @org.springframework.web.bind.annotation.RequestParam(defaultValue = "10") int limit) {
+        // limit is not used in service for now (fixed to 10), but good to have in
+        // signature
+        return ResponseEntity.ok(ApiResponse.success(200, adminStatsService.getTopLikedDocuments()));
+    }
 }
