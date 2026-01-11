@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y wget \
     && rm dockerize-linux-amd64-v0.6.1.tar.gz
 
 # Expose port
-EXPOSE 9050
+EXPOSE 8085
 
 # Wait for MySQL (assume host 'mysql') and start
 ENTRYPOINT ["dockerize", "-wait", "tcp://mysql:3306", "-timeout", "60s", "java", "-jar", "app.jar"]
