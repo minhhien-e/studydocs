@@ -30,7 +30,9 @@ public class Document {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    // thêm trường năm học (ví dụ : 2025-2026)
+    @Column(nullable = false, columnDefinition = "BINARY(16)")
+    private UUID fileId;
+
     @Column(name = "school_year")
     private String schoolYear;
 
@@ -53,6 +55,10 @@ public class Document {
         this.title = title;
         this.description = description;
         this.schoolYear = schoolYear;
+    }
+
+    public void setFileId(UUID fileId) {
+        this.fileId = fileId;
     }
 
     public void markUploading() {

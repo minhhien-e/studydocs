@@ -30,21 +30,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Disable CSRF cho REST API
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless JWT
-            .authorizeHttpRequests(auth -> auth
-                // Public endpoints (không cần authentication) - nếu có
-//                 .requestMatchers("/api/v1/universities/filter").permitAll()
+                .csrf(csrf -> csrf.disable()) // Disable CSRF cho REST API
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless
+                                                                                                              // JWT
+                .authorizeHttpRequests(auth -> auth
+                        // Public endpoints (không cần authentication) - nếu có
+                        .requestMatchers("/api/v1/documents/public").permitAll()
 
-                // Tất cả endpoints khác cần authentication
-                .anyRequest().permitAll()
-            )
-            .oauth2ResourceServer(oauth2 -> oauth2
-                .jwt(jwt -> jwt
-                    .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                )
-            );
+                        // Tất cả endpoints khác cần authentication
+                        .anyRequest().permitAll());
+        // .oauth2ResourceServer(oauth2 -> oauth2
+        // .jwt(jwt -> jwt
+        // .jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
         return http.build();
     }
@@ -72,10 +69,10 @@ public class SecurityConfig {
             Object permissions = jwt.getClaim("permissions");
             if (permissions instanceof List<?> permList) {
                 List<GrantedAuthority> permissionAuthorities = permList.stream()
-                    .filter(String.class::isInstance)
-                    .map(String.class::cast)
-                    .map(perm -> new SimpleGrantedAuthority("SCOPE_" + perm))
-                    .collect(Collectors.toList());
+                        .filter(String.class::isInstance)
+                        .map(String.class::cast)
+                        .map(perm -> new SimpleGrantedAuthority("SCOPE_" + perm))
+                        .collect(Collectors.toList());
                 authorities.addAll(permissionAuthorities);
             }
 
@@ -83,10 +80,10 @@ public class SecurityConfig {
             Object roles = jwt.getClaim("roles");
             if (roles instanceof List<?> roleList) {
                 List<GrantedAuthority> roleAuthorities = roleList.stream()
-                    .filter(String.class::isInstance)
-                    .map(String.class::cast)
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                    .collect(Collectors.toList());
+                        .filter(String.class::isInstance)
+                        .map(String.class::cast)
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                        .collect(Collectors.toList());
                 authorities.addAll(roleAuthorities);
             }
 

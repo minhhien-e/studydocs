@@ -81,6 +81,8 @@ public class DocumentService {
 
             body.add("documentId", documentId.toString());
 
+            body.add("documentId", documentId.toString());
+
             ApiResponse<FileProjection> responseEntity = remoteApiCaller.post(
                     uploadServiceUrl,
                     body,
@@ -88,42 +90,44 @@ public class DocumentService {
                     new ParameterizedTypeReference<>() {
                     });
 
-            if (!(responseEntity.errorCode() == null)) {
-                document.markFailed("UploadService returned non-2xx: " + responseEntity.errorCode());
+            if (responseEntity.statusCode() != 200) {
+                document.markFailed("UploadService returned non-2xx: " +
+                        responseEntity.statusCode());
                 documentRepository.save(document);
-                // viết thêm 1 dòng gọi qua Academic service(808x) - kèm DocumentId của mình -
-                // và kèm theo 2 private UUID universityId & private UUID majorId của
-                // UploadDocumentRequest của request
-                sendNotification(req.getUserId(), "Document upload failed: " + responseEntity.errorCode());
-                throw new DocumentProcessingException("UploadService trả về lỗi: " + responseEntity.errorCode());
+                sendNotification(req.getUserId(), "Document upload failed: " +
+                        responseEntity.statusCode());
+                throw new DocumentProcessingException("UploadService trả về lỗi: " +
+                        responseEntity.statusCode());
             }
 
-            // Success case
+            // Construct and save File Metadata
+            if (responseEntity.data() != null) {
+                FileProjection proj = responseEntity.data();
+
+                // Save File ID purely
+                document.setFileId(proj.id());
+            } // Success case
             document.markUploaded();
             documentRepository.save(document);
-            sendNotification(req.getUserId(), "Document upload successful: " + req.getTitle());
+            sendNotification(req.getUserId(), "Tải lên tài liệu thành công: " + req.getTitle());
 
             // Call Academic Service
             try {
-                if (req.getUniversityId() != null && req.getMajorId() != null) {
+                if (req.getUniversityId() != null && req.getSubjectId() != null) {
                     Map<String, Object> academicBody = new HashMap<>();
                     academicBody.put("documentId", documentId);
                     academicBody.put("universityId", req.getUniversityId());
-                    academicBody.put("majorId", req.getMajorId());
-                    // Assuming endpoint is /api/v1/academic/document-links or similar. User said
-                    // "api/v1/academic/"
-                    // I will append "document-links" to be safe, or just POST to base if that's the
-                    // design.
-                    // Given ambiguous "Academic là 8083 api/v1/academic/", I'll assume a
-                    // resource-like endpoint.
-                    // Let's guess /document-links.
-                    remoteApiCaller.post(
-                            academicServiceUrl + "/document-links",
+                    academicBody.put("subjectId", req.getSubjectId());
+                    log.info("Preparing to call Academic Service. URL: {}, Body: {}", academicServiceUrl, academicBody);
+                    var responseLink = remoteApiCaller.post(
+                            academicServiceUrl,
                             academicBody,
                             MediaType.APPLICATION_JSON,
                             new ParameterizedTypeReference<ApiResponse<Object>>() {
                             });
-                    log.info("Linked document {} to Academic Service", documentId);
+                    log.info("Linked document {} to Academic Service. Response: {}", documentId, responseLink.data());
+                } else {
+                    log.warn("Skipping Academic Service call. UniversityId or MajorId is null. Req: {}", req);
                 }
             } catch (Exception e) {
                 log.error("Failed to link document to Academic Service", e);
@@ -133,7 +137,7 @@ public class DocumentService {
         } catch (Exception ex) {
             log.error("Lỗi khi upload tài liệu: " + ex.getMessage(), ex);
             try {
-                sendNotification(req.getUserId(), "Document upload processing failed");
+                sendNotification(req.getUserId(), "Xử lý tải lên thất bại");
             } catch (Exception notifyEx) {
                 log.error("Failed to send failure notification", notifyEx);
             }
@@ -198,13 +202,15 @@ public class DocumentService {
 
     private void sendNotification(UUID userId, String message) {
         try {
-            Map<String, Object> notificationBody = new HashMap<>();
-            notificationBody.put("userId", userId);
-            notificationBody.put("senderId", userId); // Use userId as sender for now to satisfy requirement
-            notificationBody.put("subject", "Thông báo từ hệ thống");
-            notificationBody.put("body", message);
-            notificationBody.put("type", "UPLOAD_COMPLETED");
-            notificationBody.put("isRead", false);
+            studydocs.dto.request.NotificationRequest notificationBody = studydocs.dto.request.NotificationRequest
+                    .builder()
+                    .userId(userId)
+                    .senderId(userId)
+                    .subject("Thông báo từ hệ thống")
+                    .body(message)
+                    .type("UPLOAD_COMPLETED")
+                    .isRead(false)
+                    .build();
 
             remoteApiCaller.post(
                     notificationServiceUrl,
@@ -237,7 +243,15 @@ public class DocumentService {
     @Transactional(readOnly = true)
     public List<Document> getMostLikedDocuments(int limit) {
         try {
-            String url = reviewServiceUrl + "/api/v1/internal/reactions/top-liked?limit=" + limit;
+            String url = reviewServiceUrl + "/internal/reactions/top-liked?limit=" + limit;
+            // ApiResponse<List<Map<String, Object>>> response = remoteApiCaller.get(
+            // url,
+            // new ParameterizedTypeReference<ApiResponse<List<Map<String, Object>>>>() {
+            // });
+
+            // Temporary fix if remoteApiCaller.get is problematic with List<Map>:
+            // Use RestTemplate directly or simplified wrapper if available.
+            // But let's assume get works if I use correct type
             ApiResponse<List<Map<String, Object>>> response = remoteApiCaller.get(
                     url,
                     new ParameterizedTypeReference<ApiResponse<List<Map<String, Object>>>>() {

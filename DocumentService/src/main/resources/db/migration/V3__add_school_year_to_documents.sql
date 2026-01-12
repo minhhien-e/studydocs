@@ -1,0 +1,2 @@
+-- ALTER TABLE documents
+-- ADD COLUMN school_year VARCHAR(255);

@@ -21,13 +21,14 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
+    repair-on-migrate: true
 
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${SECURITY_OAUTH2_JWT_ISSUER_URI:http://localhost:8081}
-          jwk-set-uri: ${AUTH_SERVICE_JWKS_URL:http://localhost:8081/.well-known/jwks.json}
+          issuer-uri: ${SECURITY_OAUTH2_JWT_ISSUER_URI:http://192.168.1.33:8081}
+          jwk-set-uri: ${AUTH_SERVICE_JWKS_URL:http://192.168.1.33:8081/.well-known/jwks.json}
 
 upload:
   service:
@@ -39,10 +40,14 @@ notification:
 
 academic:
   service:
-    url: ${ACADEMIC_SERVICE_URL:http://localhost:8083/api/v1/academic}
+    url: ${ACADEMIC_SERVICE_URL:http://192.168.1.33:8083/api/v1/academics/documents}
 
 review:
   service:
     url: ${REVIEW_SERVICE_URL:http://localhost:8086}
 
 
+
+logging:
+  level:
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG

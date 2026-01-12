@@ -9,6 +9,6 @@ public class UploadDocumentRequest {
     private String title;
     private String description;
     private UUID universityId;
-    private UUID majorId;
+    private UUID subjectId;
     private String schoolYear;
 }
