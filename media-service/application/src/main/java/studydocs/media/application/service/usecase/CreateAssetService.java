@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import studydocs.media.application.dto.command.CreateAssetCommand;
 import studydocs.media.application.dto.payload.AssetUploadRequestedPayload;
-import studydocs.media.application.port.in.usecase.CreateAssetUseCasePort;
+import studydocs.media.application.port.in.usecase.CreateAssetUseCase;
 import studydocs.media.application.port.out.messaging.PublishAssetEventPort;
 import studydocs.media.application.port.out.storage.AssetTempStoragePort;
 import studydocs.media.application.port.out.validation.AssetContentValidationPort;
@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class CreateAssetUseCase implements CreateAssetUseCasePort {
+public class CreateAssetService implements CreateAssetUseCase {
     private final AssetWriter assetWriter;
     private final PublishAssetEventPort publishAssetEventPort;
     private final AssetContentValidationPort assetContentValidationPort;

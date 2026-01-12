@@ -1,7 +1,6 @@
 package studydocs.media.infrastructure.mapper;
 
 import studydocs.media.domain.aggregate.Asset;
-import studydocs.media.domain.vo.*;
 import studydocs.media.infrastructure.persistence.entity.AssetEntity;
 
 public class AssetMapper {
@@ -43,12 +42,4 @@ public class AssetMapper {
                 .build();
     }
 
-    public static AssetEntity toEntity(Asset domain) {
-        // Default behavior: assume new if version is 0 (legacy behavior, but dangerous)
-        // Or better: deprecate this and force usage of the boolean.
-        // For now, let's delegate with the old logic to match existing calls we might
-        // miss,
-        // but typically we should switch to the explicit one.
-        return toEntity(domain, domain.getVersion() == 0);
-    }
 }

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import studydocs.media.api.dto.request.DeleteAssetByIdRequest;
@@ -25,35 +24,32 @@ public class AssetController {
     private final RequestExecutor requestExecutor;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Object uploadFile(@RequestParam("file") MultipartFile file) {
         var request = new UploadAssetRequest(file);
         return requestExecutor.executeWithCurrentUserAndMapView(
                 AssetMapper::toCommand,
                 request,
-                projection -> AssetMapper.toView((AssetProjection) projection),
-                HttpStatus.CREATED
-        );
+                projection -> AssetMapper.toView((AssetProjection) projection));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getFile(@PathVariable("id") UUID id) {
+    @ResponseStatus(HttpStatus.OK)
+    public Object getFile(@PathVariable("id") UUID id) {
         var request = GetAssetByIdRequest.builder().id(id).build();
         return requestExecutor.executeAndMapView(
                 AssetMapper::toQuery,
                 request,
-                projection -> AssetMapper.toView((AssetProjection) projection),
-                HttpStatus.OK
-        );
+                projection -> AssetMapper.toView((AssetProjection) projection));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteFile(@PathVariable("id") UUID id) {
+    @ResponseStatus(HttpStatus.OK)
+    public Object deleteFile(@PathVariable("id") UUID id) {
         var request = DeleteAssetByIdRequest.builder().id(id).build();
         return requestExecutor.executeWithCurrentUser(
                 AssetMapper::toCommand,
-                request,
-                HttpStatus.OK
-        );
+                request);
     }
 
 }

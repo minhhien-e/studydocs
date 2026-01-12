@@ -3,11 +3,11 @@ server:
 
 spring:
   application:
-    name: file-service
+    name: media-service
   servlet:
     multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
+      max-file-size: ${MAX_FILE_SIZE}
+      max-request-size: ${MAX_REQUEST_SIZE}
   data:
     mongodb:
       uri: ${MONGODB_URI}
@@ -19,7 +19,7 @@ spring:
     password: ${RABBIT_PASSWORD}
     virtual-host: ${RABBIT_VIRTUAL_HOST}
     ssl:
-      enabled: true
+      enabled: ${RABBIT_SSL}
 
 cloudinary:
   cloud_name: ${CLOUDINARY_CLOUD_NAME}
@@ -31,10 +31,5 @@ app:
     code: ${ERROR_CODE}
   outbox:
     schedule:
-      fixed-delay: 5000
-    batch-size: 20
-
-logging:
-  level:
-    org.springframework.web: DEBUG
-    org.springframework.security.oauth2: DEBUG
+      fixed-delay: ${SCHEDULE_DELAY}
+    batch-size: ${BATCH_SIZE}

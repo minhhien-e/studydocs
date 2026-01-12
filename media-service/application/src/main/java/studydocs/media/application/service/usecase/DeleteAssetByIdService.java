@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import studydocs.media.application.dto.command.DeleteAssetByIdCommand;
 import studydocs.media.application.dto.payload.AssetDeletionFailedPayload;
-import studydocs.media.application.port.in.usecase.DeleteAssetByIdUseCasePort;
+import studydocs.media.application.port.in.usecase.DeleteAssetByIdUseCase;
 import studydocs.media.application.port.out.messaging.PublishAssetEventPort;
 import studydocs.media.application.port.out.storage.AssetStoragePort;
 import studydocs.media.domain.repository.AssetWriter;
@@ -14,7 +14,7 @@ import studydocs.media.domain.repository.AssetWriter;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class DeleteAssetByIdUseCase implements DeleteAssetByIdUseCasePort {
+public class DeleteAssetByIdService implements DeleteAssetByIdUseCase {
     private final AssetWriter assetWriter;
     private final AssetStoragePort assetStoragePort;
     private final PublishAssetEventPort publishAssetEventPort;

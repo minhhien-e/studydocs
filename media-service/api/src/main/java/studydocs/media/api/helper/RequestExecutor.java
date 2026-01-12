@@ -1,14 +1,10 @@
 package studydocs.media.api.helper;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import studydocs.media.application.dto.base.Request;
 import studydocs.media.application.port.in.bus.MediatorBusPort;
-import studydocs.media.application.port.in.provider.CurrentTraceIdProvider;
 import studydocs.media.application.port.in.provider.CurrentUserProviderPort;
-import studydocs.media.shared.web.ApiResponse;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,62 +16,49 @@ import java.util.function.Function;
 public class RequestExecutor {
     private final MediatorBusPort mediatorBusPort;
     private final CurrentUserProviderPort currentUserProvider;
-    private final CurrentTraceIdProvider traceIdProvider;
 
-    public <R, C> ResponseEntity<ApiResponse<?>> execute(Function<R, C> mapper, R request, HttpStatus status) {
+    public <R, C> Object execute(Function<R, C> mapper, R request) {
         var command = mapper.apply(request);
-        return handleRequest(command, status);
+        return handleRequest(command);
     }
 
-    // BusRequest có userId
-    public <R, C> ResponseEntity<ApiResponse<?>> executeWithCurrentUser(BiFunction<UUID, R, C> mapper, R request, HttpStatus status) {
+    public <R, C> Object executeWithCurrentUser(BiFunction<UUID, R, C> mapper, R request) {
         var userId = currentUserProvider.getCurrentUserId();
         var params = mapper.apply(userId, request);
-        return handleRequest(params, status);
+        return handleRequest(params);
     }
 
-    public <R, C, P, V> ResponseEntity<ApiResponse<?>> executeAndMapView(
+    public <R, C, P, V> V executeAndMapView(
             Function<R, C> requestMapper,
             R request,
-            Function<P, V> viewMapper,
-            HttpStatus status
-    ) {
+            Function<P, V> viewMapper) {
         var command = requestMapper.apply(request);
         var result = mediatorBusPort.send((Request<?>) command);
-        var mappedResult = mapResult(result, viewMapper);
-        return ResponseEntity.status(status).body(
-                ApiResponse.success(status.value(), mappedResult, traceIdProvider.getCurrentTraceId())
-        );
+        return mapResult(result, viewMapper);
     }
 
-    public <R, C, P, V> ResponseEntity<ApiResponse<?>> executeWithCurrentUserAndMapView(
+    public <R, C, P, V> V executeWithCurrentUserAndMapView(
             BiFunction<UUID, R, C> requestMapper,
             R request,
-            Function<P, V> viewMapper,
-            HttpStatus status
-    ) {
+            Function<P, V> viewMapper) {
         var userId = currentUserProvider.getCurrentUserId();
         var command = requestMapper.apply(userId, request);
         var result = mediatorBusPort.send((Request<?>) command);
-        var mappedResult = mapResult(result, viewMapper);
-        return ResponseEntity.status(status).body(
-                ApiResponse.success(status.value(), mappedResult, traceIdProvider.getCurrentTraceId())
-        );
+        return mapResult(result, viewMapper);
     }
 
-    private <C> ResponseEntity<ApiResponse<?>> handleRequest(C command, HttpStatus status) {
-        var result = mediatorBusPort.send((Request<?>) command);
-        return ResponseEntity.status(status).body(ApiResponse.success(status.value(), result, traceIdProvider.getCurrentTraceId()));
+    private <C> Object handleRequest(C command) {
+        return mediatorBusPort.send((Request<?>) command);
     }
 
     @SuppressWarnings("unchecked")
-    private <P, V> Object mapResult(Object result, Function<P, V> viewMapper) {
+    private <P, V> V mapResult(Object result, Function<P, V> viewMapper) {
         if (result == null) {
             return null;
         }
 
         if (result instanceof List<?> list) {
-            return list.stream()
+            return (V) list.stream()
                     .map(item -> viewMapper.apply((P) item))
                     .toList();
         }

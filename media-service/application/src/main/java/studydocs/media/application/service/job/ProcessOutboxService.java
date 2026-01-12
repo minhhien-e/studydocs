@@ -23,7 +23,11 @@ public class ProcessOutboxService implements ProcessOutboxUseCase {
 
     @Override
     public void processOutbox() {
+        log.debug("Checking for pending outbox events...");
         List<OutboxMessage> events = outboxWriter.findPendingEvents(batchSize);
+        if (!events.isEmpty()) {
+            log.debug("Found {} pending events. Processing...", events.size());
+        }
         events.forEach(this::processEvent);
     }
 
@@ -42,6 +46,7 @@ public class ProcessOutboxService implements ProcessOutboxUseCase {
             }
 
             outboxWriter.markAsProcessed(event.id());
+            log.debug("Successfully processed outbox event: {}", event.id());
         } catch (Exception e) {
             log.error("Failed to process outbox event: {}", event.id(), e);
         }

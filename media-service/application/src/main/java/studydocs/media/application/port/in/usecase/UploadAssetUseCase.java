@@ -5,5 +5,5 @@ import studydocs.media.application.port.in.usecase.base.UseCase;
 
 import studydocs.media.application.dto.projection.AssetProjection;
 
-public interface UploadAssetUseCasePort extends UseCase<UploadAssetCommand, AssetProjection> {
+public interface UploadAssetUseCase extends UseCase<UploadAssetCommand, AssetProjection> {
 }

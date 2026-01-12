@@ -5,5 +5,5 @@ import studydocs.media.application.port.in.usecase.base.UseCase;
 
 import java.util.UUID;
 
-public interface CreateAssetUseCasePort extends UseCase<CreateAssetCommand, UUID> {
+public interface CreateAssetUseCase extends UseCase<CreateAssetCommand, UUID> {
 }

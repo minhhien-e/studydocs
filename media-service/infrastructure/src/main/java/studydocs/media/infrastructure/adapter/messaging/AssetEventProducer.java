@@ -24,21 +24,21 @@ public class AssetEventProducer implements PublishAssetEventPort {
 
     @Override
     public void publish(AssetUploadFailedPayload event) {
-        eventPublisherPort.publish(RabbitMQConfig.NOTIFICATION_EXCHANGE,
+        eventPublisherPort.publish(RabbitMQConfig.MEDIA_EXCHANGE,
                 RabbitMQConfig.ASSET_UPLOAD_FAILED_ROUTING_KEY,
                 event);
     }
 
     @Override
     public void publish(AssetUploadRequestedPayload event) {
-        eventPublisherPort.publish(RabbitMQConfig.NOTIFICATION_EXCHANGE,
+        eventPublisherPort.publish(RabbitMQConfig.MEDIA_EXCHANGE,
                 RabbitMQConfig.ASSET_UPLOAD_REQUESTED_ROUTING_KEY, event);
     }
 
     @Override
     public void publish(AssetAnalysisCompletedPayload payload) {
         eventPublisherPort.publish(
-                RabbitMQConfig.NOTIFICATION_EXCHANGE,
+                RabbitMQConfig.MEDIA_EXCHANGE,
                 RabbitMQConfig.ASSET_ANALYSIS_COMPLETED_ROUTING_KEY,
                 payload);
     }
@@ -46,7 +46,7 @@ public class AssetEventProducer implements PublishAssetEventPort {
     @Override
     public void publish(AssetDeletionFailedPayload payload) {
         eventPublisherPort.publish(
-                RabbitMQConfig.NOTIFICATION_EXCHANGE,
+                RabbitMQConfig.MEDIA_EXCHANGE,
                 RabbitMQConfig.ASSET_DELETION_FAILED_ROUTING_KEY,
                 payload);
     }

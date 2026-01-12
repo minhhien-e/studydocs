@@ -8,10 +8,8 @@ import org.springframework.stereotype.Component;
 import studydocs.media.application.port.out.storage.AssetStoragePort;
 import studydocs.media.domain.vo.StorageLocation;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.function.Consumer;
-import studydocs.media.infrastructure.util.ProgressInputStream;
 
 @Component
 @Slf4j
@@ -27,8 +25,6 @@ public class CloudinaryStorageAdapter implements AssetStoragePort {
         try {
             log.info("Starting upload to Cloudinary for file: {}", fileName);
 
-            // Cloudinary SDK automatically handles File uploads efficiently
-            // (streaming/chunking internally).
             var uploadMapping = (Map<String, Object>) cloudinary.uploader().upload(
                     file,
                     ObjectUtils.asMap(
@@ -37,7 +33,6 @@ public class CloudinaryStorageAdapter implements AssetStoragePort {
 
             log.info("Upload to Cloudinary successful. Public ID: {}", uploadMapping.get("public_id"));
 
-            // Invoke callback for completion
             if (progressCallback != null) {
                 progressCallback.accept(100);
             }
