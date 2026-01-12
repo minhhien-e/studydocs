@@ -1,0 +1,2 @@
+com.vanhao.studydocs.config.SecurityConfig
+com.vanhao.studydocs.config.JwtConfig
