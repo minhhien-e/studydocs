@@ -83,32 +83,35 @@ public class SecurityConfig {
      */
     @Bean
     public Converter<Jwt, Collection<GrantedAuthority>> jwtGrantedAuthoritiesConverter() {
-        return jwt -> {
-            Collection<GrantedAuthority> authorities = new ArrayList<>();
+        return new Converter<Jwt, Collection<GrantedAuthority>>() {
+            @Override
+            public Collection<GrantedAuthority> convert(Jwt jwt) {
+                Collection<GrantedAuthority> authorities = new ArrayList<>();
 
-            // Lấy permissions từ claim "permissions"
-            Object permissions = jwt.getClaim("permissions");
-            if (permissions instanceof List<?> permList) {
-                List<GrantedAuthority> permissionAuthorities = permList.stream()
-                        .filter(String.class::isInstance)
-                        .map(String.class::cast)
-                        .map(perm -> new SimpleGrantedAuthority("SCOPE_" + perm))
-                        .collect(Collectors.toList());
-                authorities.addAll(permissionAuthorities);
+                // Lấy permissions từ claim "permissions"
+                Object permissions = jwt.getClaim("permissions");
+                if (permissions instanceof List<?> permList) {
+                    List<GrantedAuthority> permissionAuthorities = permList.stream()
+                            .filter(String.class::isInstance)
+                            .map(String.class::cast)
+                            .map(perm -> new SimpleGrantedAuthority("SCOPE_" + perm))
+                            .collect(Collectors.toList());
+                    authorities.addAll(permissionAuthorities);
+                }
+
+                // Lấy roles từ claim "roles" (optional)
+                Object roles = jwt.getClaim("roles");
+                if (roles instanceof List<?> roleList) {
+                    List<GrantedAuthority> roleAuthorities = roleList.stream()
+                            .filter(String.class::isInstance)
+                            .map(String.class::cast)
+                            .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                            .collect(Collectors.toList());
+                    authorities.addAll(roleAuthorities);
+                }
+
+                return authorities;
             }
-
-            // Lấy roles từ claim "roles" (optional)
-            Object roles = jwt.getClaim("roles");
-            if (roles instanceof List<?> roleList) {
-                List<GrantedAuthority> roleAuthorities = roleList.stream()
-                        .filter(String.class::isInstance)
-                        .map(String.class::cast)
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                        .collect(Collectors.toList());
-                authorities.addAll(roleAuthorities);
-            }
-
-            return authorities;
         };
     }
 }
