@@ -26,4 +26,5 @@ public class UserDTO {
     private String gender;
     private LocalDate dateOfBirth;
     private String address;
+    private String school;
 }

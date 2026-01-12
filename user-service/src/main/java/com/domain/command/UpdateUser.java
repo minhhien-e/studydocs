@@ -20,6 +20,7 @@ public class UpdateUser implements UserCommand {
     String gender;
     LocalDate dateOfBirth;
     String address;
+    String school;
 
     LocalDateTime timestamp = LocalDateTime.now();
 }

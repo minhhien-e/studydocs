@@ -4,6 +4,8 @@ import com.domain.command.*;
 import com.domain.entity.UserEntity;
 import com.domain.repository.UserRepository;
 //import com.infrastructure.JwtCurrentUserProvider;
+//import com.infrastructure.JwtCurrentUserProvider;
+import com.infrastructure.JwtCurrentUserProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +21,7 @@ public class UserDomainService {
 
     private final UserRepository userRepository;
     private final ImageServiceClient imageServiceClient;
-//    private final JwtCurrentUserProvider jwtuse;
+    private final JwtCurrentUserProvider jwtuse;
     /**
      * Đăng ký người dùng mới.
      */
@@ -29,19 +31,8 @@ public class UserDomainService {
             throw userAlreadyExists("registerUser");
         }
 
-//        UserEntity user = new UserEntity(
-//                jwtuse.getCurrentUserId(), // ID sẽ được generate (UUID)
-//                command.getFullName(),
-//                command.getUsername(),
-//                command.getEmail(),
-//                command.getPhoneNumber(),
-//                command.getAvatarUrl(),
-//                command.getGender(),
-//                command.getDateOfBirth(),
-//                command.getAddress()
-//        );
         UserEntity user = new UserEntity(
-                null, // ID sẽ được generate (UUID)
+                jwtuse.getCurrentUserId(), // ID sẽ được generate (UUID)
                 command.getFullName(),
                 command.getUsername(),
                 command.getEmail(),
@@ -51,6 +42,17 @@ public class UserDomainService {
                 command.getDateOfBirth(),
                 command.getAddress()
         );
+//        UserEntity user = new UserEntity(
+//                null, // ID sẽ được generate (UUID)
+//                command.getFullName(),
+//                command.getUsername(),
+//                command.getEmail(),
+//                command.getPhoneNumber(),
+//                command.getAvatarUrl(),
+//                command.getGender(),
+//                command.getDateOfBirth(),
+//                command.getAddress()
+//        );
 
         return userRepository.save(user);
     }
@@ -70,6 +72,7 @@ public class UserDomainService {
         existingUser.setGender(command.getGender());
         existingUser.setDateOfBirth(command.getDateOfBirth());
         existingUser.setAddress(command.getAddress());
+        existingUser.setSchool(command.getSchool());
 
         return userRepository.save(existingUser);
     }

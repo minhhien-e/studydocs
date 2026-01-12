@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     // --- Common ---
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 100),
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, -1),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, 101),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, 102),
     FORBIDDEN(HttpStatus.FORBIDDEN, 103),

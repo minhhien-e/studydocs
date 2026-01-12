@@ -1,6 +1,7 @@
 package com.infrastructure.restemplate.notification.impl;
 
 import com.error.exception.HttpExeption;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infrastructure.restemplate.RemoteApiCaller;
 import com.infrastructure.restemplate.notification.NotificationClient;
@@ -25,10 +26,15 @@ public class NotificationClientImpl implements NotificationClient {
     private String notificationServiceUrl;
 
     @Override
-    public void notifyRegisterSuccess(NotifyRegisterSuccessRequest request) {
-        // Convert DTO sang JSON
-//            String jsonBody = objectMapper.writeValueAsString(request);
+    public void notifyRegisterSuccess(NotifyRegisterSuccessRequest request)  {
+//         Convert DTO sang JSON
 
+//            String jsonBody;
+//            try {
+//                jsonBody = objectMapper.writeValueAsString(request);
+//            }catch (JsonProcessingException e) {
+//                log.error("lỗi khởi tạo jsonbody"+e.getMessage());
+//            }
         try {
             // Gọi RemoteApiCaller (nếu RemoteApiCaller hỗ trợ HttpEntity)
             ApiResponse<Object> res = remoteApiCaller.post(
@@ -45,6 +51,6 @@ public class NotificationClientImpl implements NotificationClient {
         } catch (Exception ex) {
             log.error("lỗi khi gọi service thông báo: {}", ex.getMessage());
         }
-
+        log.info("Thông báo tạm: đã gửi request đến notification");
     }
 }

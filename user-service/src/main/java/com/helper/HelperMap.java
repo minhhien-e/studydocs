@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public enum HelperMap {
 
-    INSTANCE; // ✅ duy nhất một instance
+    INSTANCE; //
 
     // ⚙️ Hàm map từ Entity → DTO
     public UserDTO userToDTO(UserEntity entity) {
@@ -29,6 +29,7 @@ public enum HelperMap {
                 .gender(entity.getGender())
                 .dateOfBirth(entity.getDateOfBirth())
                 .address(entity.getAddress())
+                .school(entity.getSchool())
                 .build();
     }
 
@@ -85,7 +86,8 @@ public enum HelperMap {
                 request.getAvatarUrl(),
                 request.getGender(),
                 request.getDateOfBirth(),
-                request.getAddress()
+                request.getAddress(),
+                request.getSchool()
         );
     }
     public UpdateImage toUpdateImage(UUID userId, MultipartFile file) {

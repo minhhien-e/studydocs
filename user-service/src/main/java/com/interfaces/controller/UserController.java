@@ -32,7 +32,7 @@ public class UserController {
         LOG.info("[traceId: {}] Nhận request đăng ký người dùng", traceId);
         return manageUserService.registerUser(request, traceId);
     }
-    @PreAuthorize("hasAuthority('user.update')")
+//    @PreAuthorize("hasAuthority('user.update')")
     @PutMapping("/update")
     public ApiResponse<?> update(
             @Valid @RequestBody UpdateUserRequest request,
@@ -41,7 +41,7 @@ public class UserController {
         LOG.info("[traceId: {}] Nhận request cập nhật người dùng", traceId);
         return manageUserService.updateUser(request, traceId);
     }
-    @PreAuthorize("hasAuthority('user.read')")
+//    @PreAuthorize("hasAuthority('user.read')")
     @GetMapping("/getUserByID")
     public ApiResponse<?> getUserByID(
             @RequestParam UUID id,
@@ -78,7 +78,7 @@ public class UserController {
         LOG.info("[traceId: {}] Nhận request cập nhật ảnh user id={}", traceId, id);
         return manageUserService.updateImage(id, file, traceId);
     }
-    @PreAuthorize("hasAuthority('user.read.all')")
+//    @PreAuthorize("hasAuthority('user.read.all')")
     /** Lấy danh sách tất cả user */
     @GetMapping("/all")
     public ApiResponse<?> getAllUsers(
@@ -87,7 +87,7 @@ public class UserController {
         LOG.info("[traceId: {}] Nhận request lấy danh sách tất cả người dùng", traceId);
         return manageUserService.getAllUsers(traceId);
     }
-    @PreAuthorize("hasAuthority('user.read.count')")
+//    @PreAuthorize("hasAuthority('user.read.count')")
     /** Lấy tổng số user */
     @GetMapping("/count")
     public ApiResponse<?> getUserCount(
@@ -97,7 +97,7 @@ public class UserController {
         return manageUserService.getUserCount(traceId);
     }
     /** Xóa user theo ID */
-    @PreAuthorize("hasAuthority('user.delete')")
+//    @PreAuthorize("hasAuthority('user.delete')")
     @DeleteMapping("/delete")
     public ApiResponse<?> deleteUser(
             @RequestParam UUID id,
@@ -106,7 +106,7 @@ public class UserController {
         LOG.info("[traceId: {}] Nhận request xóa user id={}", traceId, id);
         return manageUserService.deleteUser(id, traceId);
     }
-    @PreAuthorize("hasAuthority('user.read.all')")
+//    @PreAuthorize("hasAuthority('user.read.all')")
     @GetMapping("/range")
     public ApiResponse<?> getUsersInRange(
             @RequestParam int fromIndex,

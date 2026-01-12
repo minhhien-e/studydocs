@@ -26,7 +26,7 @@ public class UserEntity {
     private String gender;
     private LocalDate dateOfBirth;
     private String address;
-
+    private String school;
     private boolean isprivate;
 
     public UserEntity(UUID id, String fullName, String username, String email,

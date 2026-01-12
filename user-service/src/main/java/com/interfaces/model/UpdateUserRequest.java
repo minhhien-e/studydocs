@@ -50,6 +50,9 @@ public class UpdateUserRequest {
     @Size(max = 255, message = "Địa chỉ không quá 255 ký tự")
     private String address;
 
+    @Size(max = 255, message = "Tên trường không quá 255 ký tự")
+    private String school;
+
     private MultipartFile file; // dùng nếu cập nhật ảnh cùng request
 
 }

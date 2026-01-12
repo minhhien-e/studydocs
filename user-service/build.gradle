@@ -10,6 +10,8 @@ sourceCompatibility = '17'
 
 repositories {
 	mavenCentral()
+	maven { url 'https://jitpack.io' }
+
 }
 
 dependencies {
@@ -37,6 +39,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 //Fallback
 	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+//	Thư viện minh hiển
+//	implementation 'com.github.minhhien-e:studydocs:1.0.0'
 	// Test
 	testImplementation platform('org.junit:junit-bom:5.10.0')
 	testImplementation 'org.junit.jupiter:junit-jupiter'

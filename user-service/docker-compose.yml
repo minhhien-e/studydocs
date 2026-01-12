@@ -1,48 +1,42 @@
 version: "3.8"
 
 services:
-#  MonGoDB
-  mongodb:
-    image: mongo:6.0
-    container_name: mongodb
+  user-service:
+    build: .
+    image: user-service:latest
+    container_name: user-service
+    ports:
+      - "8082:8082"
+    env_file:
+      - .env
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - microservices-network
+
+  mongo:
+    image: mongo:7.0
+    container_name: mongo
     restart: always
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: secret
+      MONGO_INITDB_ROOT_USERNAME: user1
+      MONGO_INITDB_ROOT_PASSWORD: 12345
+      MONGO_INITDB_DATABASE: userDB
     volumes:
       - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - microservices-network
 
-  mongo-express:
-    image: mongo-express:1.0.2
-    container_name: mongo-express
-    restart: always
-    ports:
-      - "8085:8081" # Changed port to avoid conflict with Auth Service (8081) if running locally, though Auth Service is 8081 inside container? Auth Service is 8081 on host. Mongo Express uses 8081 internal. Mapping to 8085 on host to be safe.
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: secret
-      ME_CONFIG_MONGODB_SERVER: mongodb
-    depends_on:
-      - mongodb
-
-  # ---------- User Service ----------
-  user-service:
-    build: .
-    container_name: user-service
-    ports:
-      - "8082:8082"
-    environment:
-      - MONGO_URI=mongodb://admin:secret@mongodb:27017/user-service?authSource=admin
-      - NOTIFICATION_SERVICE_URL=http://host.docker.internal:8083/api/v1/notifications/user-profiles
-      - UPLOADFILE_SERVICE_URL=http://host.docker.internal:8084/api/v1/files
-      - AUTH_SERVICE_JWKS_URL=http://host.docker.internal:8081/oauth2/jwks
-      - AUTH_SERVICE_ISSUER=http://host.docker.internal:8081
-    depends_on:
-      - mongodb
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-
+networks:
+  microservices-network:
+    external: true
 volumes:
   mongo_data:

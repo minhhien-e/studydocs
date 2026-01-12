@@ -40,7 +40,7 @@ public class RegisterUserHandler implements CommandHandler<RegisterUser,UserDTO>
                 );
             } catch (Exception e) {
                 log.error("Notify failed", e);
-                throw e;
+                throw new RuntimeException(e);
             }
         }
 

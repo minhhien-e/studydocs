@@ -28,6 +28,7 @@ public class ManageUserServiceImpl implements ManageUserService {
     public ApiResponse<?> registerUser(RegisterRequest request, String traceId) {
         var command = HelperMap.INSTANCE.toRegisterUser(request);
         var result = commandBus.send(command);
+        log.info(result.toString());
         return ApiResponse.success(result, null);
     }
 
