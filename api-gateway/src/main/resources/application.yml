@@ -27,6 +27,12 @@ spring:
               args:
                 name: ${USER_CIRCUIT_NAME:userCircuitBreaker}
                 fallbackUri: ${USER_FALLBACK_URI:forward:/fallback/users}
+        - id: user-service-internal
+          uri: ${USER_SERVICE_URI:http://localhost:8082}
+          predicates:
+            - Path=${USER_SERVICE_INTERNAL_PATH}
+          filters:
+            - name: CircuitBreaker
 
         # =========================
         # AUTHENTICATION SERVICE
@@ -128,6 +134,12 @@ spring:
               args:
                 name: ${DOCUMENT_CIRCUIT_NAME:documentCircuitBreaker}
                 fallbackUri: ${DOCUMENT_FALLBACK_URI:forward:/fallback/document}
+        - id: document-service-internal
+          uri: ${DOCUMENT_SERVICE_URI:http://document-service:8085}
+          predicates:
+            - Path=${DOCUMENT_SERVICE_INTERNAL_PATH}
+          filters:
+            - name: CircuitBreaker
         # =========================
         # MEDIA SERVICE
         # =========================
@@ -140,7 +152,12 @@ spring:
               args:
                 name: ${MEDIA_CIRCUIT_NAME:mediaCircuitBreaker}
                 fallbackUri: ${MEDIA_FALLBACK_URI:forward:/fallback/media}
-
+        - id: media-service-internal
+          uri: ${MEDIA_SERVICE_URI:http://media-service:8084}
+          predicates:
+            - Path=${MEDIA_SERVICE_INTERNAL_PATH}
+          filters:
+            - name: CircuitBreaker
   # =========================
   # REDIS (Rate Limiter)
   # =========================
@@ -158,6 +175,9 @@ spring:
         jwt:
           jwk-set-uri: ${AUTH_SERVICE_JWKS_URL:http://localhost:8081/api/v1/auth/.well-known/jwks.json}
           issuer-uri: ${AUTH_SERVICE_ISSUER:http://localhost:8081/api/v1/auth}
+gateway:
+  security:
+    public-paths: ${GATEWAY_PUBLIC_PATHS}
 
 # =========================
 # LOGGING
