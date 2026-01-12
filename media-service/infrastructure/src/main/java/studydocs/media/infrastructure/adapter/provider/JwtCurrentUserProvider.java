@@ -1,6 +1,8 @@
 package studydocs.media.infrastructure.adapter.provider;
 
 import org.springframework.stereotype.Component;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import studydocs.media.application.port.in.provider.CurrentUserProviderPort;
 
 import java.util.UUID;
@@ -9,7 +11,19 @@ import java.util.UUID;
 public class JwtCurrentUserProvider implements CurrentUserProviderPort {
     @Override
     public UUID getCurrentUserId() {
-        // Mocked for now, similar to reference
-        return UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
+            String subject = jwt.getSubject();
+            try {
+                return UUID.fromString(subject);
+            } catch (IllegalArgumentException e) {
+                if (jwt.hasClaim("id")) {
+                    return UUID.fromString(jwt.getClaimAsString("id"));
+                }
+            }
+        }
+
+        throw new IllegalStateException("Current user is not authenticated");
     }
 }

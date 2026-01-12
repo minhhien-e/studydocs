@@ -20,6 +20,12 @@ spring:
     virtual-host: ${RABBIT_VIRTUAL_HOST}
     ssl:
       enabled: ${RABBIT_SSL}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${ISSUER_URI}
+          jwk-set-uri: ${JWK_SET_URI}
 
 cloudinary:
   cloud_name: ${CLOUDINARY_CLOUD_NAME}

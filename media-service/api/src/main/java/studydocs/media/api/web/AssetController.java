@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import studydocs.media.api.dto.request.DeleteAssetByIdRequest;
@@ -25,6 +26,7 @@ public class AssetController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('SCOPE_CREATE_ASSET')")
     public Object uploadFile(@RequestParam("file") MultipartFile file) {
         var request = new UploadAssetRequest(file);
         return requestExecutor.executeWithCurrentUserAndMapView(
@@ -35,6 +37,7 @@ public class AssetController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('SCOPE_READ_ASSET')")
     public Object getFile(@PathVariable("id") UUID id) {
         var request = GetAssetByIdRequest.builder().id(id).build();
         return requestExecutor.executeAndMapView(
@@ -45,6 +48,7 @@ public class AssetController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('SCOPE_DELETE_ASSET')")
     public Object deleteFile(@PathVariable("id") UUID id) {
         var request = DeleteAssetByIdRequest.builder().id(id).build();
         return requestExecutor.executeWithCurrentUser(
