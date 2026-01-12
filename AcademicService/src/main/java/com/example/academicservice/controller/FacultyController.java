@@ -5,7 +5,9 @@ import com.example.academicservice.dto.request.FacultyUpdateRequest;
 import com.example.academicservice.dto.response.FacultyResponse;
 import com.example.academicservice.service.FacultyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +17,7 @@ import java.util.UUID;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/faculties")
+@RequestMapping("/api/v1/academics/faculties")
 public class FacultyController {
 
     private final FacultyService facultyService;
@@ -24,6 +26,7 @@ public class FacultyController {
      * Lấy thông tin khoa theo ID
      */
     @GetMapping("/id/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public FacultyResponse getFacultyById(@PathVariable UUID id) {
         return facultyService.getFacultyById(id);
     }
@@ -32,7 +35,8 @@ public class FacultyController {
      * Tạo mới khoa
      */
     @PostMapping
-    public FacultyResponse createFaculty(@RequestBody FacultyCreateRequest request) {
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
+    public FacultyResponse createFaculty(@Valid @RequestBody FacultyCreateRequest request) {
         return facultyService.createFaculty(request);
     }
 
@@ -41,9 +45,10 @@ public class FacultyController {
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa
      */
     @PutMapping("/id/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
     public FacultyResponse updateFacultyById(@PathVariable UUID id,
                                             @RequestParam UUID universityId,
-                                            @RequestBody FacultyUpdateRequest request) {
+                                            @Valid @RequestBody FacultyUpdateRequest request) {
         return facultyService.updateFaculty(id, universityId, request);
     }
 
@@ -52,9 +57,10 @@ public class FacultyController {
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa
      */
     @PutMapping("/slug/{slug}")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
     public FacultyResponse updateFacultyBySlug(@PathVariable String slug,
                                               @RequestParam UUID universityId,
-                                              @RequestBody FacultyUpdateRequest request) {
+                                              @Valid @RequestBody FacultyUpdateRequest request) {
         return facultyService.updateFacultyBySlug(universityId, slug, request);
     }
 
@@ -63,6 +69,7 @@ public class FacultyController {
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa
      */
     @DeleteMapping("/id/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
     public void deleteFacultyById(@PathVariable UUID id, @RequestParam UUID universityId) {
         facultyService.deleteFacultyById(id, universityId);
     }
@@ -72,6 +79,7 @@ public class FacultyController {
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa
      */
     @DeleteMapping("/slug/{slug}")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
     public void deleteFacultyBySlug(@PathVariable String slug, @RequestParam UUID universityId) {
         facultyService.deleteFacultyBySlug(universityId, slug);
     }
@@ -86,6 +94,7 @@ public class FacultyController {
      * @return Danh sách khoa
      */
     @GetMapping("/filter")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public List<FacultyResponse> filterFaculties(
             @RequestParam(required = false) UUID universityId,
             @RequestParam(required = false) String universitySlug,

@@ -18,7 +18,7 @@ public class JwksController {
         this.jwkSet = jwkSet;
     }
 
-    @GetMapping("/.well-known/jwks.json")
+    @GetMapping("/api/v1/auth/.well-known/jwks.json")
     public Map<String, Object> jwks() {
         return jwkSet.toJSONObject();
     }

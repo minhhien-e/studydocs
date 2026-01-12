@@ -130,7 +130,7 @@ public class GlobalExceptionHandler {
 
     /**
      * Determine error code for ResourceNotFoundException based on exception message.
-     * Parses the message to identify resource type (University, Faculty, Department, Major).
+     * Parses the message to identify resource type (University, Faculty, Department, Subject).
      */
     private int determineResourceNotFoundErrorCode(String message) {
         if (message == null) {
@@ -147,8 +147,8 @@ public class GlobalExceptionHandler {
                 return AcademicErrorCodes.FACULTY_ID_MISMATCH;
             } else if (msg.contains("department") || msg.contains("bộ môn")) {
                 return AcademicErrorCodes.DEPARTMENT_ID_MISMATCH;
-            } else if (msg.contains("major") || msg.contains("ngành")) {
-                return AcademicErrorCodes.MAJOR_ID_MISMATCH;
+            } else if (msg.contains("subject") || msg.contains("môn học")) {
+                return AcademicErrorCodes.SUBJECT_ID_MISMATCH;
             }
         }
 
@@ -159,8 +159,8 @@ public class GlobalExceptionHandler {
             return AcademicErrorCodes.FACULTY_NOT_FOUND;
         } else if (msg.startsWith("department") || msg.contains("department") || msg.contains("bộ môn")) {
             return AcademicErrorCodes.DEPARTMENT_NOT_FOUND;
-        } else if (msg.startsWith("major") || msg.contains("major") || msg.contains("ngành")) {
-            return AcademicErrorCodes.MAJOR_NOT_FOUND;
+        } else if (msg.startsWith("subject") || msg.contains("subject") || msg.contains("môn học")) {
+            return AcademicErrorCodes.SUBJECT_NOT_FOUND;
         }
 
         return AcademicErrorCodes.UNKNOWN_ACADEMIC_ERROR;
@@ -183,8 +183,8 @@ public class GlobalExceptionHandler {
             return AcademicErrorCodes.FACULTY_SLUG_EXISTS;
         } else if (msg.contains("department") || msg.contains("bộ môn")) {
             return AcademicErrorCodes.DEPARTMENT_SLUG_EXISTS;
-        } else if (msg.contains("major") || msg.contains("ngành")) {
-            return AcademicErrorCodes.MAJOR_SLUG_EXISTS;
+        } else if (msg.contains("subject") || msg.contains("môn học")) {
+            return AcademicErrorCodes.SUBJECT_SLUG_EXISTS;
         }
 
         return AcademicErrorCodes.UNKNOWN_ACADEMIC_ERROR;

@@ -32,7 +32,7 @@ public class SecurityConfig {
     @Order(1)
     public SecurityFilterChain jwksSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/.well-known/jwks.json")
+                .securityMatcher("/api/v1/auth/.well-known/jwks.json")
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
@@ -47,7 +47,7 @@ public class SecurityConfig {
         http
                 .securityMatcher("/api/**") // chỉ áp dụng cho /api/*
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // login, v.v.
+                        .requestMatchers("/api/v1/auth/**").permitAll() // login, v.v.
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

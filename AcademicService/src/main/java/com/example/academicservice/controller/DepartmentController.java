@@ -5,7 +5,9 @@ import com.example.academicservice.dto.request.DepartmentUpdateRequest;
 import com.example.academicservice.dto.response.DepartmentResponse;
 import com.example.academicservice.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +17,7 @@ import java.util.UUID;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/departments")
+@RequestMapping("/api/v1/academics/departments")
 public class DepartmentController {
 
     private final DepartmentService departmentService;
@@ -24,6 +26,7 @@ public class DepartmentController {
      * Lấy thông tin bộ môn theo ID
      */
     @GetMapping("/id/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public DepartmentResponse getDepartmentById(@PathVariable UUID id) {
         return departmentService.getDepartmentById(id);
     }
@@ -33,7 +36,8 @@ public class DepartmentController {
      */
 
     @PostMapping
-    public DepartmentResponse createDepartment(@RequestBody DepartmentCreateRequest request) {
+//    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
+    public DepartmentResponse createDepartment(@Valid @RequestBody DepartmentCreateRequest request) {
         return departmentService.createDepartment(request);
     }
 
@@ -42,9 +46,10 @@ public class DepartmentController {
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
     @PutMapping("/id/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
     public DepartmentResponse updateDepartmentById(@PathVariable UUID id,
                                                     @RequestParam UUID universityId,
-                                                    @RequestBody DepartmentUpdateRequest request) {
+                                                    @Valid @RequestBody DepartmentUpdateRequest request) {
         return departmentService.updateDepartment(id, universityId, request);
     }
 
@@ -53,10 +58,11 @@ public class DepartmentController {
      * Bắt buộc phải có universityId và facultyId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
     @PutMapping("/slug/{slug}")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
     public DepartmentResponse updateDepartmentBySlug(@PathVariable String slug,
                                                      @RequestParam UUID universityId,
                                                      @RequestParam UUID facultyId,
-                                                     @RequestBody DepartmentUpdateRequest request) {
+                                                     @Valid @RequestBody DepartmentUpdateRequest request) {
         return departmentService.updateDepartmentBySlug(universityId, facultyId, slug, request);
     }
 
@@ -65,6 +71,7 @@ public class DepartmentController {
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
     @DeleteMapping("/id/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
     public void deleteDepartmentById(@PathVariable UUID id, @RequestParam UUID universityId) {
         departmentService.deleteDepartmentById(id, universityId);
     }
@@ -74,6 +81,7 @@ public class DepartmentController {
      * Bắt buộc phải có universityId và facultyId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
     @DeleteMapping("/slug/{slug}")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
     public void deleteDepartmentBySlug(@PathVariable String slug,
                                       @RequestParam UUID universityId,
                                       @RequestParam UUID facultyId) {
@@ -92,6 +100,7 @@ public class DepartmentController {
      * @return Danh sách bộ môn
      */
     @GetMapping("/filter")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public List<DepartmentResponse> filterDepartments(
             @RequestParam(required = false) UUID universityId,
             @RequestParam(required = false) String universitySlug,

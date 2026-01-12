@@ -1,86 +1,94 @@
 package com.example.academicservice.controller;
 
-import com.example.academicservice.dto.request.MajorCreateRequest;
-import com.example.academicservice.dto.request.MajorUpdateRequest;
-import com.example.academicservice.dto.response.MajorResponse;
-import com.example.academicservice.service.MajorService;
+import com.example.academicservice.dto.request.SubjectCreateRequest;
+import com.example.academicservice.dto.request.SubjectUpdateRequest;
+import com.example.academicservice.dto.response.SubjectResponse;
+import com.example.academicservice.service.SubjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.UUID;
 
 /**
- * Controller để xử lý các HTTP requests liên quan đến Major
+ * Controller để xử lý các HTTP requests liên quan đến Subject
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/majors")
-public class MajorController {
+@RequestMapping("/api/v1/academics/subjects")
+public class SubjectController {
 
-    private final MajorService majorService;
+    private final SubjectService subjectService;
 
     /**
-     * Lấy thông tin ngành theo ID
+     * Lấy thông tin môn học theo ID
      */
     @GetMapping("/id/{id}")
-    public MajorResponse getMajorById(@PathVariable UUID id) {
-        return majorService.getMajorById(id);
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+    public SubjectResponse getSubjectById(@PathVariable UUID id) {
+        return subjectService.getSubjectById(id);
     }
 
     /**
-     * Tạo mới ngành
+     * Tạo mới môn học
      */
     @PostMapping
-    public MajorResponse createMajor(@RequestBody MajorCreateRequest request) {
-        return majorService.createMajor(request);
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
+    public SubjectResponse createSubject(@Valid @RequestBody SubjectCreateRequest request) {
+        return subjectService.createSubject(request);
     }
 
     /**
-     * Cập nhật thông tin ngành theo ID
+     * Cập nhật thông tin môn học theo ID
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
     @PutMapping("/id/{id}")
-    public MajorResponse updateMajorById(@PathVariable UUID id,
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
+    public SubjectResponse updateSubjectById(@PathVariable UUID id,
                                         @RequestParam UUID universityId,
-                                        @RequestBody MajorUpdateRequest request) {
-        return majorService.updateMajor(id, universityId, request);
+                                        @Valid @RequestBody SubjectUpdateRequest request) {
+        return subjectService.updateSubject(id, universityId, request);
     }
 
     /**
-     * Cập nhật thông tin ngành theo slug
+     * Cập nhật thông tin môn học theo slug
      * Bắt buộc phải có universityId và departmentId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
     @PutMapping("/slug/{slug}")
-    public MajorResponse updateMajorBySlug(@PathVariable String slug,
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
+    public SubjectResponse updateSubjectBySlug(@PathVariable String slug,
                                           @RequestParam UUID universityId,
                                           @RequestParam UUID departmentId,
-                                          @RequestBody MajorUpdateRequest request) {
-        return majorService.updateMajorBySlug(universityId, departmentId, slug, request);
+                                          @Valid @RequestBody SubjectUpdateRequest request) {
+        return subjectService.updateSubjectBySlug(universityId, departmentId, slug, request);
     }
 
     /**
-     * Xóa ngành theo ID
+     * Xóa môn học theo ID
      * Bắt buộc phải có universityId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
     @DeleteMapping("/id/{id}")
-    public void deleteMajorById(@PathVariable UUID id, @RequestParam UUID universityId) {
-        majorService.deleteMajorById(id, universityId);
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
+    public void deleteSubjectById(@PathVariable UUID id, @RequestParam UUID universityId) {
+        subjectService.deleteSubjectById(id, universityId);
     }
 
     /**
-     * Xóa ngành theo slug
+     * Xóa môn học theo slug
      * Bắt buộc phải có universityId và departmentId để validate tránh conflict khi 2 trường có cùng tên khoa/ngành/môn
      */
     @DeleteMapping("/slug/{slug}")
-    public void deleteMajorBySlug(@PathVariable String slug,
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
+    public void deleteSubjectBySlug(@PathVariable String slug,
                                  @RequestParam UUID universityId,
                                  @RequestParam UUID departmentId) {
-        majorService.deleteMajorBySlug(universityId, departmentId, slug);
+        subjectService.deleteSubjectBySlug(universityId, departmentId, slug);
     }
 
     /**
-     * Filter majors với query parameters
+     * Filter subjects với query parameters
      * Tất cả các tham số đều optional, có thể kết hợp nhiều filter cùng lúc
      * 
      * @param universityId - ID trường đại học (optional)
@@ -90,10 +98,11 @@ public class MajorController {
      * @param departmentId - ID bộ môn (optional)
      * @param departmentSlug - Slug bộ môn (optional)
      * @param isActive - Lọc theo trạng thái active (optional, null = lấy tất cả)
-     * @return Danh sách ngành học
+     * @return Danh sách môn học
      */
     @GetMapping("/filter")
-    public List<MajorResponse> filterMajors(
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+    public List<SubjectResponse> filterSubjects(
             @RequestParam(required = false) UUID universityId,
             @RequestParam(required = false) String universitySlug,
             @RequestParam(required = false) UUID facultyId,
@@ -101,8 +110,7 @@ public class MajorController {
             @RequestParam(required = false) UUID departmentId,
             @RequestParam(required = false) String departmentSlug,
             @RequestParam(required = false) Boolean isActive) {
-        return majorService.filter(universityId, universitySlug, facultyId, 
+        return subjectService.filter(universityId, universitySlug, facultyId, 
                                   facultySlug, departmentId, departmentSlug, isActive);
     }
 }
-

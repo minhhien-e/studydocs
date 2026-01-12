@@ -6,6 +6,7 @@ import com.example.academicservice.service.UniversityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +16,7 @@ import java.util.UUID;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/universities")
+@RequestMapping("/api/v1/academics/universities") 
 public class UniversityController {
 
     private final UniversityService universityService;
@@ -33,7 +34,8 @@ public class UniversityController {
      * Tạo mới trường đại học
      */
     @PostMapping
-    public UniversityResponse createUniversity(@RequestBody UniversityCreateRequest request) {
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
+    public UniversityResponse createUniversity(@Valid @RequestBody UniversityCreateRequest request) {
         return universityService.createUniversity(request);
     }
 
@@ -41,8 +43,9 @@ public class UniversityController {
      * Cập nhật thông tin trường đại học theo ID
      */
     @PutMapping("/id/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
     public UniversityResponse updateUniversityById(@PathVariable UUID id,
-                                                   @RequestBody UniversityCreateRequest request) {
+                                                   @Valid @RequestBody UniversityCreateRequest request) {
         return universityService.updateUniversity(id, request);
     }
 
@@ -50,8 +53,9 @@ public class UniversityController {
      * Cập nhật thông tin trường đại học theo slug
      */
     @PutMapping("/slug/{slug}")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
     public UniversityResponse updateUniversityBySlug(@PathVariable String slug,
-                                                     @RequestBody UniversityCreateRequest request) {
+                                                     @Valid @RequestBody UniversityCreateRequest request) {
         return universityService.updateUniversityBySlug(slug, request);
     }
 
@@ -59,6 +63,7 @@ public class UniversityController {
      * Xóa trường đại học theo ID
      */
     @DeleteMapping("/id/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
     public void deleteUniversityById(@PathVariable UUID id) {
         universityService.deleteUniversityById(id);
     }
@@ -67,6 +72,7 @@ public class UniversityController {
      * Xóa trường đại học theo slug
      */
     @DeleteMapping("/slug/{slug}")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
     public void deleteUniversityBySlug(@PathVariable String slug) {
         universityService.deleteUniversityBySlug(slug);
     }

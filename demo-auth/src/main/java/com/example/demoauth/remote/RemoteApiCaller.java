@@ -2,12 +2,14 @@ package com.example.demoauth.remote;
 
 import com.example.demoauth.shared.web.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class RemoteApiCaller {
@@ -26,14 +28,19 @@ public class RemoteApiCaller {
         headers.setBearerAuth(accessToken);
 
         HttpEntity<Object> entity = new HttpEntity<>(request, headers);
+        ResponseEntity<ApiResponse<T>> response = null;
+        try {
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    entity,
+                    responseType
+            );
 
-        ResponseEntity<ApiResponse<T>> response = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                entity,
-                responseType
-        );
-
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        log.error(response.toString() + "-------------------");
         return response.getBody();
     }
 
@@ -52,9 +59,11 @@ public class RemoteApiCaller {
 
         return response.getBody();
     }
+
     public void postWithoutResponse(String url, Object request) {
         restTemplate.postForLocation(url, request);
     }
+
     public <T> ResponseEntity<T> exchange(
             String url,
             HttpMethod method,

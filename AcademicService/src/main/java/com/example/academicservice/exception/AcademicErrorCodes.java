@@ -21,8 +21,8 @@ public final class AcademicErrorCodes {
     /** Department not found. */
     public static final int DEPARTMENT_NOT_FOUND = 203;
 
-    /** Major not found. */
-    public static final int MAJOR_NOT_FOUND = 204;
+    /** Subject not found. */
+    public static final int SUBJECT_NOT_FOUND = 204;
 
     /** University slug already exists (duplicate). */
     public static final int UNIVERSITY_SLUG_EXISTS = 205;
@@ -33,8 +33,8 @@ public final class AcademicErrorCodes {
     /** Department slug already exists (duplicate). */
     public static final int DEPARTMENT_SLUG_EXISTS = 207;
 
-    /** Major slug already exists (duplicate). */
-    public static final int MAJOR_SLUG_EXISTS = 208;
+    /** Subject slug already exists (duplicate). */
+    public static final int SUBJECT_SLUG_EXISTS = 208;
 
     /** University ID mismatch (resource doesn't belong to specified university). */
     public static final int UNIVERSITY_ID_MISMATCH = 209;
@@ -45,8 +45,8 @@ public final class AcademicErrorCodes {
     /** Department ID mismatch (resource doesn't belong to specified department/faculty/university). */
     public static final int DEPARTMENT_ID_MISMATCH = 211;
 
-    /** Major ID mismatch (resource doesn't belong to specified major/department/faculty/university). */
-    public static final int MAJOR_ID_MISMATCH = 212;
+    /** Subject ID mismatch (resource doesn't belong to specified subject/department/faculty/university). */
+    public static final int SUBJECT_ID_MISMATCH = 212;
 
     /** Invalid UUID format. */
     public static final int INVALID_UUID = 213;

@@ -12,33 +12,33 @@ import java.util.UUID;
 
 @Entity
 @Table(
-        name = "majors",
+        name = "subjects",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uq_major_department_slug", columnNames = {"department_id", "slug"})
+                @UniqueConstraint(name = "uq_subject_department_slug", columnNames = {"department_id", "slug"})
         },
         indexes = {
-                @Index(name = "idx_major_department_active", columnList = "department_id, is_active"),
-                @Index(name = "idx_major_department_created", columnList = "department_id, created_at DESC"),
-                @Index(name = "idx_major_department_code", columnList = "department_id, code")
+                @Index(name = "idx_subject_department_active", columnList = "department_id, is_active"),
+                @Index(name = "idx_subject_department_created", columnList = "department_id, created_at DESC"),
+                @Index(name = "idx_subject_department_code", columnList = "department_id, code")
         }
 )
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Major {
+public class Subject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(columnDefinition = "CHAR(36)")
     private UUID id;
 
-    // Quan hệ: nhiều Major thuộc 1 Department
+    // Quan hệ: nhiều Subject thuộc 1 Department
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
             name = "department_id",
             nullable = false,
             columnDefinition = "CHAR(36)",
-            foreignKey = @ForeignKey(name = "fk_major_department")
+            foreignKey = @ForeignKey(name = "fk_subject_department")
     )
     private Department department;
 

@@ -1,6 +1,6 @@
 package com.example.academicservice.repository.specification;
 
-import com.example.academicservice.entity.Major;
+import com.example.academicservice.entity.Subject;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Specification class để tạo các điều kiện truy vấn động cho Major entity
+ * Specification class để tạo các điều kiện truy vấn động cho Subject entity
  */
-public class MajorSpecifications {
+public class SubjectSpecifications {
 
     /**
-     * Tạo Specification để filter majors với các điều kiện optional
+     * Tạo Specification để filter subjects với các điều kiện optional
      * 
      * @param universityId - ID trường đại học (optional)
      * @param universitySlug - Slug trường đại học (optional)
@@ -25,7 +25,7 @@ public class MajorSpecifications {
      * @param isActive - Lọc theo trạng thái active (optional, null = lấy tất cả)
      * @return Specification cho truy vấn động
      */
-    public static Specification<Major> filterBy(
+    public static Specification<Subject> filterBy(
             UUID universityId, 
             String universitySlug,
             UUID facultyId, 
@@ -93,4 +93,3 @@ public class MajorSpecifications {
         };
     }
 }
-

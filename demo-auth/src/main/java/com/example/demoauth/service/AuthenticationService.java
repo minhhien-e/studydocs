@@ -9,6 +9,7 @@ import com.example.demoauth.repository.RoleRepository;
 import com.example.demoauth.repository.UserRepository;
 import com.nimbusds.oauth2.sdk.TokenResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -93,6 +95,9 @@ public class AuthenticationService {
         String accessToken = token.getAccessToken();
 
 
+        log.error("--------------------------------------------------------");
+        log.error("Access Token khi tạo user local: " + accessToken);
+        log.error("--------------------------------------------------------");
         remoteUserService.call(requestAPI,accessToken);
         return token;
     }
