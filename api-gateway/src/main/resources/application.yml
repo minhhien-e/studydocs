@@ -29,22 +29,22 @@ spring:
                 fallbackUri: ${USER_FALLBACK_URI:forward:/fallback/users}
 
         # =========================
-        # AUTHENTICA SERVICE
+        # AUTHENTICATION SERVICE
         # =========================
-        - id: authentica-service
-          uri: ${AUTHENTICA_SERVICE_URI:http://localhost:8081}
+        - id: authentication-service
+          uri: ${AUTHENTICATION_SERVICE_URI:http://localhost:8081}
           predicates:
-            - Path=${AUTHENTICA_SERVICE_PATH:/api/v1/auth/**}
+            - Path=${AUTHENTICATION_SERVICE_PATH:/api/v1/auth/**}
           filters:
             - name: RequestRateLimiter
               args:
                 key-resolver: "#{@ipKeyResolver}"
-                redis-rate-limiter.replenishRate: ${AUTHENTICA_RATE_REPLENISH:10}
-                redis-rate-limiter.burstCapacity: ${AUTHENTICA_RATE_BURST:20}
+                redis-rate-limiter.replenishRate: ${AUTHENTICATION_RATE_REPLENISH:10}
+                redis-rate-limiter.burstCapacity: ${AUTHENTICATION_RATE_BURST:20}
             - name: CircuitBreaker
               args:
-                name: ${AUTHENTICA_CIRCUIT_NAME:authenticaCircuitBreaker}
-                fallbackUri: ${AUTHENTICA_FALLBACK_URI:forward:/fallback/authentica}
+                name: ${AUTHENTICATION_CIRCUIT_NAME:authenticationCircuitBreaker}
+                fallbackUri: ${AUTHENTICATION_FALLBACK_URI:forward:/fallback/authentication}
 
         # =========================
         # NOTIFICATION SERVICE
@@ -63,19 +63,6 @@ spring:
               args:
                 name: ${NOTIFY_CIRCUIT_NAME:notificationCircuitBreaker}
                 fallbackUri: ${NOTIFY_FALLBACK_URI:forward:/fallback/notifications}
-
-        # =========================
-        # UPLOAD SERVICE
-        # =========================
-        - id: upload-service
-          uri: ${UPLOAD_SERVICE_URI:http://upload-service:8084}
-          predicates:
-            - Path=${UPLOAD_SERVICE_PATH:/api/v1/upload/**}
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: ${UPLOAD_CIRCUIT_NAME:uploadCircuitBreaker}
-                fallbackUri: ${UPLOAD_FALLBACK_URI:forward:/fallback/upload}
 
         # =========================
         # REVIEW SERVICE
@@ -145,7 +132,7 @@ spring:
         # MEDIA SERVICE
         # =========================
         - id: media-service
-          uri: ${MEDIA_SERVICE_URI:http://media-service:8085}
+          uri: ${MEDIA_SERVICE_URI:http://media-service:8084}
           predicates:
             - Path=${MEDIA_SERVICE_PATH:/api/v1/assets/**}
           filters:
@@ -169,8 +156,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: ${AUTH_SERVICE_JWKS_URL:http://localhost:8081/.well-known/jwks.json}
-          issuer-uri: ${AUTH_SERVICE_ISSUER:http://localhost:8081}
+          jwk-set-uri: ${AUTH_SERVICE_JWKS_URL:http://localhost:8081/api/v1/auth/.well-known/jwks.json}
+          issuer-uri: ${AUTH_SERVICE_ISSUER:http://localhost:8081/api/v1/auth}
 
 # =========================
 # LOGGING
