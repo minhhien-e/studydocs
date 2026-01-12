@@ -20,7 +20,7 @@ public class DocumentClient {
     private String documentServiceUrl;
 
     public void validateDocumentId(UUID documentId) {
-        String url = documentServiceUrl + "/{id}/exists";
+        String url = documentServiceUrl + "/public/" + documentId + "/exists";
         ParameterizedTypeReference<ApiResponse<Boolean>> type = new ParameterizedTypeReference<>() {
         };
 
@@ -33,6 +33,22 @@ public class DocumentClient {
 
         } catch (RemoteException ex) {
             throw ex;
+        }
+    }
+
+    public studydocs.dto.response.DocumentResponse getDocumentById(UUID documentId) {
+        String url = documentServiceUrl + "/public/" + documentId;
+        ParameterizedTypeReference<ApiResponse<studydocs.dto.response.DocumentResponse>> type = new ParameterizedTypeReference<>() {
+        };
+
+        try {
+            studydocs.dto.response.DocumentResponse response = remoteApiCaller.get(url, type, documentId);
+            return response;
+        } catch (RemoteException ex) {
+            // If fetching failed, maybe return null or propagate. Propagating is better.
+            throw ex;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch document details: " + e.getMessage());
         }
     }
 }

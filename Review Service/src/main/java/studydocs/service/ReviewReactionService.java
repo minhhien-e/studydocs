@@ -17,6 +17,7 @@ public class ReviewReactionService {
 
     private final ReviewReactionRepository reactionRepo;
     private final ReviewRepository reviewRepo;
+    private final NotificationService notificationService;
 
     @Transactional
     public void react(UUID reviewId, UUID userId, String typeStr) {
@@ -35,14 +36,27 @@ public class ReviewReactionService {
         if (existing == null) {
             // Thêm mới
             reactionRepo.save(new ReviewReaction(reviewId, userId, type));
-            if (type == ReviewReaction.ReactionType.LIKE) review.incrementLike();
-            else review.incrementDislike();
+            if (type == ReviewReaction.ReactionType.LIKE) {
+                review.incrementLike();
+                // Notify author if not self
+                if (!review.getUserId().equals(userId)) {
+                    notificationService.send(
+                            review.getUserId(),
+                            userId,
+                            "Tương tác mới",
+                            "Ai đó đã thích đánh giá của bạn",
+                            "REVIEW_REACTION");
+                }
+            } else
+                review.incrementDislike();
 
         } else if (existing.getType() == type) {
             // Bỏ react
             reactionRepo.delete(existing);
-            if (type == ReviewReaction.ReactionType.LIKE) review.decrementLike();
-            else review.decrementDislike();
+            if (type == ReviewReaction.ReactionType.LIKE)
+                review.decrementLike();
+            else
+                review.decrementDislike();
 
         } else {
             // Chuyển từ like ↔ dislike

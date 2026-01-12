@@ -19,6 +19,7 @@ public class ReviewCommandService {
 
     private final ReviewRepository reviewRepository;
     private final DocumentClient documentClient;
+    private final studydocs.service.NotificationService notificationService;
 
     // Method helper lấy userId từ JWT
     private UUID getCurrentUserId() {
@@ -40,6 +41,15 @@ public class ReviewCommandService {
                 req.getComment());
 
         reviewRepository.save(review);
+
+        // Send Notification
+        notificationService.send(
+                userId, // Recipient
+                userId, // Sender
+                "Đánh giá mới",
+                "Bạn đã viết một đánh giá cho tài liệu " + req.getDocumentId(),
+                "REVIEW_CREATED");
+
         return new ReviewResponse(review);
     }
 

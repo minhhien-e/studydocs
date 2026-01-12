@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/internal/reactions")
+@RequestMapping("/api/v1/reviews/internal/reactions")
 @RequiredArgsConstructor
 public class InternalReviewController {
 
@@ -31,4 +31,6 @@ public class InternalReviewController {
         // signature
         return ResponseEntity.ok(ApiResponse.success(200, adminStatsService.getTopLikedDocuments()));
     }
+
+    //thêm hàm api/v1/internal/documents/id
 }

@@ -19,6 +19,10 @@ document:
   service:
     url: ${DOCUMENT_SERVICE_URL:http://127.0.0.1:8085/api/v1/documents}
 
+notification:
+  service:
+    url: ${NOTIFICATION_SERVICE_URL:http://10.0.0.170:8087/api/v1/notifications}
+
 logging:
   level:
     org.springframework: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK:INFO}

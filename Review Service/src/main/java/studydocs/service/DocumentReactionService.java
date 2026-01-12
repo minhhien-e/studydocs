@@ -19,6 +19,7 @@ public class DocumentReactionService {
     private final DocumentReactionRepository reactionRepo;
     private final DocumentStatsRepository statsRepo;
     private final DocumentClient documentClient;
+    private final NotificationService notificationService;
 
     @Transactional
     public void react(UUID documentId, UUID userId, String typeStr) {
@@ -40,9 +41,23 @@ public class DocumentReactionService {
         if (existing == null) {
             // New reaction
             reactionRepo.save(new DocumentReaction(documentId, userId, type));
-            if (type == ReactionType.LIKE)
+            if (type == ReactionType.LIKE) {
                 stats.incrementLike();
-            else
+                // Notify document owner
+                try {
+                    var doc = documentClient.getDocumentById(documentId);
+                    if (doc != null && !doc.getUserId().equals(userId)) {
+                        notificationService.send(
+                                doc.getUserId(),
+                                userId,
+                                "Tương tác mới",
+                                "Ai đó đã thích tài liệu của bạn",
+                                "DOCUMENT_REACTION");
+                    }
+                } catch (Exception e) {
+                    // Ignore if fetch fails
+                }
+            } else
                 stats.incrementDislike();
 
         } else if (existing.getType() == type) {

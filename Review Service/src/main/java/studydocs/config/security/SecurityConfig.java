@@ -35,13 +35,13 @@ public class SecurityConfig {
                                                                                                               // JWT
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints (không cần authentication) - nếu có
-//                        .requestMatchers("/api/v1/universities/filter").permitAll()
+//                        .requestMatchers("/api/v1/internal/reactions").permitAll()
 
                         // Tất cả endpoints khác cần authentication
-                        .anyRequest().permitAll())
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter())));
+                        .anyRequest().permitAll());
+//                .oauth2ResourceServer(oauth2 -> oauth2
+//                        .jwt(jwt -> jwt
+//                                .jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
         return http.build();
     }

@@ -15,12 +15,12 @@ import studydocs.exception.RemoteException;
 public class RemoteApiCaller {
 
     private final RestTemplate restTemplate;
+    private final jakarta.servlet.http.HttpServletRequest currentRequest;
 
     public <T> T get(
             String url,
             ParameterizedTypeReference<ApiResponse<T>> responseType,
-            Object... uriVariables
-    ) {
+            Object... uriVariables) {
         return exchange(HttpMethod.GET, url, responseType, null, uriVariables).data();
     }
 
@@ -28,8 +28,7 @@ public class RemoteApiCaller {
             String url,
             ParameterizedTypeReference<ApiResponse<T>> responseType,
             HttpEntity<?> requestEntity,
-            Object... uriVariables
-    ) {
+            Object... uriVariables) {
         return exchange(HttpMethod.POST, url, responseType, requestEntity, uriVariables).data();
     }
 
@@ -38,15 +37,24 @@ public class RemoteApiCaller {
             String url,
             ParameterizedTypeReference<ApiResponse<T>> responseType,
             HttpEntity<?> requestEntity,
-            Object... uriVariables
-    ) {
+            Object... uriVariables) {
+        // Create headers
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        if (requestEntity != null) {
+            headers.addAll(requestEntity.getHeaders());
+        }
+
+        // Auto-inject Bearer token
+        injectToken(headers);
+
+        HttpEntity<?> newEntity = new HttpEntity<>(requestEntity != null ? requestEntity.getBody() : null, headers);
+
         ResponseEntity<ApiResponse<T>> response = restTemplate.exchange(
                 url,
                 method,
-                requestEntity,
+                newEntity,
                 responseType,
-                uriVariables
-        );
+                uriVariables);
 
         ApiResponse<T> body = response.getBody();
 
@@ -59,5 +67,26 @@ public class RemoteApiCaller {
         }
 
         return body;
+    }
+
+    private void injectToken(org.springframework.http.HttpHeaders headers) {
+        // 1. Try from Security Context (Authenticated Safe Mode)
+        var authentication = org.springframework.security.core.context.SecurityContextHolder.getContext()
+                .getAuthentication();
+        if (authentication != null
+                && authentication.getPrincipal() instanceof org.springframework.security.oauth2.jwt.Jwt jwt) {
+            headers.setBearerAuth(jwt.getTokenValue());
+            return;
+        }
+
+        // 2. Fallback: Try from Raw Request Header (Bypass Mode)
+        try {
+            String authHeader = currentRequest.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                headers.set("Authorization", authHeader);
+            }
+        } catch (Exception ignored) {
+            // Ignore if request context is not available
+        }
     }
 }
