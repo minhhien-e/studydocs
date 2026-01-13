@@ -22,14 +22,10 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
 
                 .authorizeExchange(ex -> {
-                    props.getPublicPaths().forEach(path ->
-                            ex.pathMatchers(path).permitAll()
-                    );
+                    props.getPublicPaths().forEach(path -> ex.pathMatchers(path).permitAll());
                     ex.anyExchange().authenticated();
                 })
-                .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(Customizer.withDefaults())
-                )
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .build();
     }
 }
