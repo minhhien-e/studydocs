@@ -22,6 +22,6 @@ notification:
   service:
     url: ${NOTIFICATION_SERVICE_URL:http://notification-service/api/v1/notifications/user-profiles}
 
-upload-file:
+media:
   service:
-    url: ${UPLOADFILE_SERVICE_URL:http://notification-service/api/v1/notifications/user-profiles}
+    url: ${MEDIA_SERVICE_URL:http://meida-service/api/v1/assets}
