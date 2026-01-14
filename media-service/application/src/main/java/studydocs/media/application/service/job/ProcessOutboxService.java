@@ -18,11 +18,8 @@ public class ProcessOutboxService implements ProcessOutboxUseCase {
     private final OutboxWriter outboxWriter;
     private final List<OutboxEventHandler> eventHandlers;
 
-    @org.springframework.beans.factory.annotation.Value("${app.outbox.batch-size:20}")
-    private int batchSize;
-
     @Override
-    public void processOutbox() {
+    public void processOutbox(int batchSize) {
         log.debug("Checking for pending outbox events...");
         List<OutboxMessage> events = outboxWriter.findPendingEvents(batchSize);
         if (!events.isEmpty()) {

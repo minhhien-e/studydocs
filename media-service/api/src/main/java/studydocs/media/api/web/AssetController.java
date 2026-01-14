@@ -26,7 +26,7 @@ public class AssetController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('SCOPE_CREATE_ASSET')")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public Object uploadFile(@RequestParam("file") MultipartFile file) {
         var request = new UploadAssetRequest(file);
         return requestExecutor.executeWithCurrentUserAndMapView(
@@ -37,7 +37,7 @@ public class AssetController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('SCOPE_READ_ASSET')")
+    @PreAuthorize("permitAll()")
     public Object getFile(@PathVariable("id") UUID id) {
         var request = GetAssetByIdRequest.builder().id(id).build();
         return requestExecutor.executeAndMapView(
@@ -48,7 +48,7 @@ public class AssetController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('SCOPE_DELETE_ASSET')")
+    @PreAuthorize("hasRole('SCOPE_READ_USER')")
     public Object deleteFile(@PathVariable("id") UUID id) {
         var request = DeleteAssetByIdRequest.builder().id(id).build();
         return requestExecutor.executeWithCurrentUser(
