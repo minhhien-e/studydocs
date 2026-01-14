@@ -21,7 +21,7 @@ public class UserEntity {
     private String username;
     private String email;
     private String phoneNumber;
-    private String avatarUrl;
+    private String avatarID;
     private String gender;
     private LocalDate dateOfBirth;
     private String address;
@@ -36,7 +36,7 @@ public class UserEntity {
         this.username = username;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.avatarUrl = avatarUrl;
+        this.avatarID = avatarUrl;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
         this.address = address;

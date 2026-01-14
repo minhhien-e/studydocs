@@ -1,5 +1,6 @@
 package studydocs.user.domain.service;
 
+import lombok.extern.slf4j.Slf4j;
 import studydocs.user.domain.command.*;
 import studydocs.user.domain.entity.UserEntity;
 import studydocs.user.domain.repository.UserRepository;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static studydocs.user.error.factory.ExceptionFactory.*;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserDomainService {
@@ -66,7 +67,7 @@ public class UserDomainService {
         existingUser.setUsername(command.getUsername());
         existingUser.setEmail(command.getEmail());
         existingUser.setPhoneNumber(command.getPhoneNumber());
-        existingUser.setAvatarUrl(command.getAvatarUrl());
+        existingUser.setAvatarID(command.getAvatarUrl());
         existingUser.setGender(command.getGender());
         existingUser.setDateOfBirth(command.getDateOfBirth());
         existingUser.setAddress(command.getAddress());
@@ -104,7 +105,7 @@ public class UserDomainService {
      * Cập nhật ảnh đại diện của người dùng.
      */
     public UserEntity updateImage(UUID userId, MultipartFile image) {
-
+        log.error("uuid domain: "+userId);
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> userNotFound("updateImage"));
 
@@ -113,7 +114,7 @@ public class UserDomainService {
         }
 
         String newAvatarUrl = imageServiceClient.uploadImage(image);
-        user.setAvatarUrl(newAvatarUrl);
+        user.setAvatarID(newAvatarUrl);
 
         return userRepository.save(user);
     }

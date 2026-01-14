@@ -63,7 +63,7 @@ public class UserMongoRepository implements UserRepository {
                     .set("username", user.getUsername())
                     .set("email", user.getEmail())
                     .set("phoneNumber", user.getPhoneNumber())
-                    .set("avatarUrl", user.getAvatarUrl())
+                    .set("avatarUrl", user.getAvatarID())
                     .set("gender", user.getGender())
                     .set("dateOfBirth", user.getDateOfBirth())
                     .set("address", user.getAddress());

@@ -1,5 +1,6 @@
 package studydocs.user.domain.service;
 
+import lombok.extern.slf4j.Slf4j;
 import studydocs.user.error.exception.HttpException;
 import studydocs.user.infrastructure.restemplate.RemoteApiCaller;
 import studydocs.user.interfaces.model.ApiResponse;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ImageServiceClient {
@@ -41,6 +43,7 @@ public class ImageServiceClient {
             });
             if(response.errorCode()!=null){throw new HttpException(response.statusCode(),response.errorCode());
             }
+           log.info("Upload image successful"+"response id = "+response.data().getId().toString());
             return response.data().getId().toString();
 
         } catch (Exception e) {

@@ -1,6 +1,8 @@
 package studydocs.user.interfaces.controller;
 
 import studydocs.user.application.ManageUserService;
+import studydocs.user.domain.repository.UserRepository;
+import studydocs.user.infrastructure.JwtCurrentUserProvider;
 import studydocs.user.interfaces.model.ApiResponse;
 import studydocs.user.interfaces.model.RegisterRequest;
 import studydocs.user.interfaces.model.UpdateUserRequest;
@@ -9,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import studydocs.user.interfaces.security.JwtCurrentTokenProvider;
 
 import java.util.UUID;
 
@@ -18,7 +21,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserController {
     private final ManageUserService manageUserService;
-
+    private final JwtCurrentUserProvider jwtCurrentUserProvider;
     @PostMapping("/register")
     public ApiResponse<?> register(
             @Valid @RequestBody RegisterRequest request,
@@ -29,7 +32,7 @@ public class UserController {
     }
 
     //    @PreAuthorize("hasAuthority('user.update')")
-    @PutMapping("/update")
+    @PatchMapping ("/update")
     public ApiResponse<?> update(
             @Valid @RequestBody UpdateUserRequest request,
             @RequestHeader(value = "X-Trace-Id", required = false) String traceId) {
@@ -68,12 +71,11 @@ public class UserController {
 
     @PostMapping("/updateImage")
     public ApiResponse<?> updateImage(
-            @RequestParam UUID id,
             @RequestParam("file") MultipartFile file,
             @RequestHeader(value = "X-Trace-Id", required = false) String traceId) {
 
-        log.info("[traceId: {}] Nhận request cập nhật ảnh user id={}", traceId, id);
-        return manageUserService.updateImage(id, file, traceId);
+        log.info("[traceId: {}] Nhận request cập nhật ảnh user id={}", traceId, jwtCurrentUserProvider.getCurrentUserId());
+        return manageUserService.updateImage(jwtCurrentUserProvider.getCurrentUserId(), file, traceId);
     }
 //    @PreAuthorize("hasAuthority('user.read.all')")
 

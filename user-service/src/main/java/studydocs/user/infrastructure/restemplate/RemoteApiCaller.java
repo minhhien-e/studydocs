@@ -2,6 +2,7 @@ package studydocs.user.infrastructure.restemplate;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import studydocs.user.interfaces.model.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class RemoteApiCaller {

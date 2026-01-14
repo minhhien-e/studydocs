@@ -7,6 +7,7 @@ import studydocs.user.domain.command.GetAllUser;
 import studydocs.user.domain.command.GetUserCount;
 import studydocs.user.domain.command.GetUsersInRange;
 import studydocs.user.helper.HelperMap;
+import studydocs.user.infrastructure.JwtCurrentUserProvider;
 import studydocs.user.interfaces.model.ApiResponse;
 import studydocs.user.interfaces.model.RegisterRequest;
 import studydocs.user.interfaces.model.UpdateUserRequest;
@@ -23,7 +24,7 @@ import java.util.UUID;
 public class ManageUserServiceImpl implements ManageUserService {
 
     private final SimpleUserCommandBus commandBus;
-
+    private final JwtCurrentUserProvider jwtCurrentUserProvider;
     @Override
     public ApiResponse<?> registerUser(RegisterRequest request, String traceId) {
         var command = HelperMap.INSTANCE.toRegisterUser(request);
@@ -34,14 +35,14 @@ public class ManageUserServiceImpl implements ManageUserService {
 
     @Override
     public ApiResponse<?> updateUser(UpdateUserRequest request, String traceId) {
-        var command = HelperMap.INSTANCE.toUpdateUser(request, request.getId());
+        var command = HelperMap.INSTANCE.toUpdateUser(request,   jwtCurrentUserProvider.getCurrentUserId());
         var result = commandBus.send(command);
         return ApiResponse.success(result, null);
     }
 
     @Override
     public ApiResponse<?> updateImage(UUID id, MultipartFile file, String traceId) {
-        var command = HelperMap.INSTANCE.toUpdateImage(id, file);
+        var command = HelperMap.INSTANCE.toUpdateImage(  jwtCurrentUserProvider.getCurrentUserId(), file);
         var result = commandBus.send(command);
         return ApiResponse.success(result, null);
     }

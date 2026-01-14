@@ -24,7 +24,7 @@ notification:
 
 media:
   service:
-    url: ${MEDIA_SERVICE_URL:http://meida-service/api/v1/assets}
+    url: ${UPLOADFILE_SERVICE_URL:http://meida-service/api/v1/assets}
 
 logging:
   level:

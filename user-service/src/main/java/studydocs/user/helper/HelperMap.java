@@ -25,7 +25,7 @@ public enum HelperMap {
                 .username(entity.getUsername())
                 .email(entity.getEmail())
                 .phoneNumber(entity.getPhoneNumber())
-                .avatarUrl(entity.getAvatarUrl())
+                .avatarUrl(entity.getAvatarID())
                 .gender(entity.getGender())
                 .dateOfBirth(entity.getDateOfBirth())
                 .address(entity.getAddress())

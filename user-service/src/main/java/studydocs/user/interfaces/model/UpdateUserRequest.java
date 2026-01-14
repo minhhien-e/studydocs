@@ -18,8 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class UpdateUserRequest {
 
-    @NotBlank(message = "ID người dùng không được để trống")
-    private UUID id;
+
 
     @NotBlank(message = "Họ và tên không được để trống")
     @Size(max = 100, message = "Họ và tên không được dài quá 100 ký tự")
