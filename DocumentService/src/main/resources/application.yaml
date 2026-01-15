@@ -1,0 +1,39 @@
+server:
+  port: ${SERVER_PORT}
+
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 30000
+      initialization-fail-timeout: -1
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+#  rabbitmq:
+#    host: ${RABBIT_HOST:localhost}
+#    port: ${RABBIT_PORT:5672}
+#    username: ${RABBIT_USER:guest}
+#    password: ${RABBIT_PASS:guest}
+
+upload:
+  service:
+    url: ${UPLOAD_SERVICE_URL}
+
+notification:
+  service:
+    url: ${NOTIFICATION_SERVICE_URL}
+
+security:
+  oauth2:
+    resourceserver:
+      jwt:
+        issuer-uri: ${SECURITY_OAUTH2_JWT_ISSUER_URI}
+        jwk-set-uri: ${AUTH_SERVICE_JWKS_URL}

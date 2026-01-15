@@ -1,0 +1,467 @@
+{
+    "info": {
+        "_postman_id": "review-service-id",
+        "name": "Review Service API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "",
+                "type": "string"
+            }
+        ]
+    },
+    "item": [
+        {
+            "name": "Create Review",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"documentId\": \"<UUID>\",\n  \"comment\": \"Great document!\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "http://localhost:9051/api/v1/reviews",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "9051",
+                    "path": [
+                        "api",
+                        "v1",
+                        "reviews"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get Review By ID",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:9051/api/v1/reviews/:id",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "9051",
+                    "path": [
+                        "api",
+                        "v1",
+                        "reviews",
+                        ":id"
+                    ],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": ""
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get All Reviews",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:9051/api/v1/reviews?page=0&size=10",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "9051",
+                    "path": [
+                        "api",
+                        "v1",
+                        "reviews"
+                    ],
+                    "query": [
+                        {
+                            "key": "page",
+                            "value": "0"
+                        },
+                        {
+                            "key": "size",
+                            "value": "10"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get Reviews By Document",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:9051/api/v1/reviews/document/:docId?page=0&size=10",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "9051",
+                    "path": [
+                        "api",
+                        "v1",
+                        "reviews",
+                        "document",
+                        ":docId"
+                    ],
+                    "query": [
+                        {
+                            "key": "page",
+                            "value": "0"
+                        },
+                        {
+                            "key": "size",
+                            "value": "10"
+                        }
+                    ],
+                    "variable": [
+                        {
+                            "key": "docId",
+                            "value": ""
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get Reviews By User",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:9051/api/v1/reviews/user/:userId?page=0&size=10",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "9051",
+                    "path": [
+                        "api",
+                        "v1",
+                        "reviews",
+                        "user",
+                        ":userId"
+                    ],
+                    "query": [
+                        {
+                            "key": "page",
+                            "value": "0"
+                        },
+                        {
+                            "key": "size",
+                            "value": "10"
+                        }
+                    ],
+                    "variable": [
+                        {
+                            "key": "userId",
+                            "value": ""
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Update Review",
+            "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"comment\": \"Updated comment\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "http://localhost:9051/api/v1/reviews/:id",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "9051",
+                    "path": [
+                        "api",
+                        "v1",
+                        "reviews",
+                        ":id"
+                    ],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": ""
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Delete Review",
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:9051/api/v1/reviews/:id",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "9051",
+                    "path": [
+                        "api",
+                        "v1",
+                        "reviews",
+                        ":id"
+                    ],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": ""
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "React to Review",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:9051/api/v1/reviews/:id/react?type=like",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "9051",
+                    "path": [
+                        "api",
+                        "v1",
+                        "reviews",
+                        ":id",
+                        "react"
+                    ],
+                    "query": [
+                        {
+                            "key": "type",
+                            "value": "like",
+                            "description": "like or dislike"
+                        }
+                    ],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": ""
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "React to Document",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:9051/api/v1/reviews/document/:docId/react?type=like",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "9051",
+                    "path": [
+                        "api",
+                        "v1",
+                        "reviews",
+                        "document",
+                        ":docId",
+                        "react"
+                    ],
+                    "query": [
+                        {
+                            "key": "type",
+                            "value": "like",
+                            "description": "like or dislike"
+                        }
+                    ],
+                    "variable": [
+                        {
+                            "key": "docId",
+                            "value": ""
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get Document Stats",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:9051/api/v1/reviews/document/:docId/stats",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "9051",
+                    "path": [
+                        "api",
+                        "v1",
+                        "reviews",
+                        "document",
+                        ":docId",
+                        "stats"
+                    ],
+                    "variable": [
+                        {
+                            "key": "docId",
+                            "value": ""
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get User Document Reaction",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:9051/api/v1/reviews/document/:docId/reaction",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "9051",
+                    "path": [
+                        "api",
+                        "v1",
+                        "reviews",
+                        "document",
+                        ":docId",
+                        "reaction"
+                    ],
+                    "variable": [
+                        {
+                            "key": "docId",
+                            "value": ""
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Toggle Hidden",
+            "request": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:9051/api/v1/reviews/:id/hidden?hidden=true",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "9051",
+                    "path": [
+                        "api",
+                        "v1",
+                        "reviews",
+                        ":id",
+                        "hidden"
+                    ],
+                    "query": [
+                        {
+                            "key": "hidden",
+                            "value": "true"
+                        }
+                    ],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": ""
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "[Admin] Total Reviews",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:9051/api/v1/admin/stats/reviews/total",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "9051",
+                    "path": [
+                        "api",
+                        "v1",
+                        "admin",
+                        "stats",
+                        "reviews",
+                        "total"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "[Admin] Total Document Likes",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:9051/api/v1/admin/stats/reactions/total-likes",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "9051",
+                    "path": [
+                        "api",
+                        "v1",
+                        "admin",
+                        "stats",
+                        "reactions",
+                        "total-likes"
+                    ]
+                }
+            },
+            "response": []
+        }
+    ]
+}

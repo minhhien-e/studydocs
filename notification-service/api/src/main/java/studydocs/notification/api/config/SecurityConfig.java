@@ -1,0 +1,30 @@
+package studydocs.notification.api.config;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+
+@Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
+public class SecurityConfig {
+    private final CorsConfiguration corsConfiguration;
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // Authorize endpoint
+        http.
+                authorizeHttpRequests(authorizeRequests ->
+                        authorizeRequests.anyRequest().permitAll());
+        // Cors
+        http.cors(cors -> cors.configurationSource(request -> corsConfiguration));
+        //CSRF
+        http.csrf(AbstractHttpConfigurer::disable);
+        return http.build();
+    }
+}
