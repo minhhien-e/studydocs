@@ -34,7 +34,11 @@ public class DeleteAssetByIdService implements DeleteAssetByIdUseCase {
                         e.getMessage()));
             }
         }
-        assetWriter.delete(asset);
+        try {
+            assetWriter.delete(asset);
+        } catch (Exception e) {
+            throw new studydocs.media.domain.exception.asset.DeleteFailedException("Failed to delete asset metadata: " + e.getMessage());
+        }
         return null;
     }
 }

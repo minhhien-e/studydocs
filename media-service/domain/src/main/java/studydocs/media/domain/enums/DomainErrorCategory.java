@@ -5,6 +5,7 @@ public enum DomainErrorCategory {
     BUSINESS_RULE,
     NOT_FOUND,
     ACCESS_DENIED,
-    CONFLICT
+    CONFLICT,
+    SYSTEM
 }
 

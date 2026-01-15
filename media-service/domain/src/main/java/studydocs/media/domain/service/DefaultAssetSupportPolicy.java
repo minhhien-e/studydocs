@@ -2,8 +2,9 @@ package studydocs.media.domain.service;
 
 import io.github.ddd.core.annotation.DomainService;
 import studydocs.media.domain.enums.FileExtension;
-import studydocs.media.domain.policy.AssetSupportPolicy;
+import studydocs.media.domain.exception.asset.FileEmptyException;
 import studydocs.media.domain.exception.asset.InvalidAssetFormatException;
+import studydocs.media.domain.policy.AssetSupportPolicy;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +19,11 @@ public class DefaultAssetSupportPolicy implements AssetSupportPolicy {
         try (InputStream is = contentProvider.get()) {
             byte[] header = is.readNBytes(8);
 
-            if (header.length > 0 && !extension.validateSignature(header)) {
+            if (header.length == 0) {
+                throw new FileEmptyException();
+            }
+
+            if (!extension.validateSignature(header)) {
                 throw new InvalidAssetFormatException();
             }
         } catch (IOException e) {

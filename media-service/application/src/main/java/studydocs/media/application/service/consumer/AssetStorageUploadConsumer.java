@@ -7,6 +7,8 @@ import studydocs.media.application.dto.payload.AssetAnalysisCompletedPayload;
 import studydocs.media.application.helper.AssetProcessingHelper;
 import studydocs.media.application.port.out.storage.AssetStoragePort;
 import studydocs.media.domain.aggregate.Asset;
+import studydocs.media.domain.exception.asset.UploadFailedException;
+import studydocs.media.domain.exception.base.DomainException;
 import studydocs.media.domain.repository.AssetWriter;
 
 import java.nio.file.Path;
@@ -53,6 +55,9 @@ public class AssetStorageUploadConsumer {
                 assetWriter.save(finalAsset);
 
             } catch (Exception e) {
+                if (!(e instanceof DomainException)) {
+                    throw new UploadFailedException(e.getMessage());
+                }
                 assetProcessingHelper.handleFailure(assetId, e);
             }
 

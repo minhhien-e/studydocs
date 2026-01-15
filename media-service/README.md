@@ -128,7 +128,32 @@ LOGGING_LEVEL_STUDYDOCS_MEDIA_INFRASTRUCTURE=DEBUG
 
 ---
 
-## 6. Danh sách Sự kiện (Events)
+## 6. Chạy với Docker
+
+### Yêu cầu
+- Docker
+- Docker Compose
+
+### Các bước
+1. Build file JAR:
+   ```bash
+   ./gradlew clean build -x test
+   ```
+2. Chạy Docker Compose
+   ```bash
+   docker-compose up -d
+   ```
+   
+Service sẽ khởi động tại `http://localhost:8084`.
+
+---
+
+## 7. Mã lỗi (Error Codes)
+Danh sách các mã lỗi chi tiết được định nghĩa tại file [ERROR_CODES.md](ERROR_CODES.md).
+
+---
+
+## 8. Danh sách Sự kiện (Events)
 
 ### Topology (RabbitMQ)
 
@@ -194,7 +219,7 @@ graph TD
     Q4 -.-> MediaService
 ```
 
-### 8. Luồng nghiệp vụ chính (Main Flow: Upload Asset)
+### 9. Luồng nghiệp vụ chính (Main Flow: Upload Asset)
 Dưới đây là sơ đồ luồng xử lý chi tiết cho nghiệp vụ Upload Asset, bao gồm cả xử lý đồng bộ và bất đồng bộ (Async).
 
 ```mermaid
@@ -256,7 +281,7 @@ sequenceDiagram
 
 ---
 
-## 7. Định dạng Response (Standard API Response)
+## 10. Định dạng Response (Standard API Response)
 
 Service áp dụng cơ chế **Global Response Wrapping** (thông qua `GlobalResponseBodyAdvice`). Mọi API thành công sẽ tự động trả về định dạng chuẩn `ApiResponse`:
 

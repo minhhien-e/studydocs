@@ -10,6 +10,9 @@ public enum DomainErrorCode {
     TOTAL_PAGES_INVALID(5, DomainErrorCategory.BUSINESS_RULE),
     FILE_CREATION_TIME_INVALID(6, DomainErrorCategory.BUSINESS_RULE),
     STORAGE_LOCATION_INVALID(7, DomainErrorCategory.BUSINESS_RULE),
+    FILE_EMPTY(8, DomainErrorCategory.BUSINESS_RULE),
+    UPLOAD_FAILED(9, DomainErrorCategory.SYSTEM),
+    DELETE_FAILED(10, DomainErrorCategory.SYSTEM),
     CONCURRENT_UPDATE(99, DomainErrorCategory.BUSINESS_RULE);
 
     private final Integer value;

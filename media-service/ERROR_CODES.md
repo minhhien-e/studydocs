@@ -14,4 +14,8 @@ Tài liệu này mô tả các mã lỗi hệ thống, giá trị được quy �
 | `TOTAL_PAGES_INVALID` | 305 | Tổng số trang không hợp lệ. |
 | `FILE_CREATION_TIME_INVALID` | 306 | Thời gian tạo tệp tin không hợp lệ. |
 | `STORAGE_LOCATION_INVALID` | 307 | Storage Location không hợp lệ. |
+| `FILE_EMPTY` | 308 | Tệp tin rỗng. |
+| **SYSTEM ERROR** | | |
+| `UPLOAD_FAILED` | 309 | Upload tệp tin thất bại. |
+| `DELETE_FAILED` | 310 | Xóa tệp tin thất bại. |
 | `CONCURRENT_UPDATE` | 399 | Dữ liệu đã bị thay đổi bởi người khác (Optimistic Locking). |
