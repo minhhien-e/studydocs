@@ -19,6 +19,10 @@ RUN ./gradlew :launcher:bootJar -x test
 FROM eclipse-temurin:17-jre
 WORKDIR /app
 
+# Install LibreOffice
+RUN apt-get update && apt-get install -y libreoffice && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+
 # Copy the built jar from the launcher module
 COPY --from=build /app/launcher/build/libs/*.jar app.jar
 
