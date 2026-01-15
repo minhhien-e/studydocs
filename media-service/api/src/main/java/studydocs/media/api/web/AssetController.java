@@ -13,6 +13,7 @@ import studydocs.media.api.dto.request.UploadAssetRequest;
 import studydocs.media.api.helper.RequestExecutor;
 import studydocs.media.api.mapper.AssetMapper;
 import studydocs.media.application.dto.projection.AssetProjection;
+import studydocs.media.shared.dto.Unit;
 
 import java.util.UUID;
 
@@ -37,7 +38,6 @@ public class AssetController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("permitAll()")
     public Object getFile(@PathVariable("id") UUID id) {
         var request = GetAssetByIdRequest.builder().id(id).build();
         return requestExecutor.executeAndMapView(
@@ -48,12 +48,13 @@ public class AssetController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('SCOPE_READ_USER')")
-    public Object deleteFile(@PathVariable("id") UUID id) {
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+    public Unit deleteFile(@PathVariable("id") UUID id) {
         var request = DeleteAssetByIdRequest.builder().id(id).build();
-        return requestExecutor.executeWithCurrentUser(
+        requestExecutor.executeWithCurrentUser(
                 AssetMapper::toCommand,
                 request);
+        return Unit.instance();
     }
 
 }

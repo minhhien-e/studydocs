@@ -11,6 +11,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import studydocs.media.application.port.in.provider.CurrentTraceIdProvider;
+import studydocs.media.shared.dto.Unit;
 import studydocs.media.shared.web.ApiResponse;
 
 @RestControllerAdvice(basePackages = "studydocs.media.api.web")
@@ -37,6 +38,9 @@ public class GlobalResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             return body;
         }
 
+        if (body instanceof Unit) {
+            body = null;
+        }
         return ApiResponse.success(body, currentTraceIdProvider.getCurrentTraceId());
     }
 }

@@ -7,8 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import studydocs.media.application.port.out.storage.AssetStoragePort;
 import studydocs.media.domain.vo.StorageLocation;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 @Component
@@ -20,16 +23,18 @@ public class CloudinaryStorageAdapter implements AssetStoragePort {
 
     @Override
     @SuppressWarnings("unchecked")
-    public StorageLocation upload(java.io.File file, String fileName, long totalBytes,
-            Consumer<Integer> progressCallback) {
+    public StorageLocation upload(File file, String fileName, long totalBytes,
+                                  Consumer<Integer> progressCallback) {
         try {
             log.info("Starting upload to Cloudinary for file: {}", fileName);
 
+            String resourceType =
+                    fileName.toLowerCase().endsWith(".pdf") ? "image" : "auto";
             var uploadMapping = (Map<String, Object>) cloudinary.uploader().upload(
                     file,
                     ObjectUtils.asMap(
-                            "resource_type", "auto",
-                            "public_id", fileName));
+                            "resource_type", resourceType,
+                            "public_id", UUID.randomUUID().toString()));
 
             log.info("Upload to Cloudinary successful. Public ID: {}", uploadMapping.get("public_id"));
 

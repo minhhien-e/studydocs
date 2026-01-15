@@ -38,6 +38,3 @@ app:
     schedule:
       fixed-delay: ${SCHEDULE_DELAY}
     batch-size: ${BATCH_SIZE}
-logging:
-  level:
-    org.springframework.security: debug

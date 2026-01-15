@@ -22,15 +22,17 @@ public class DeleteAssetByIdService implements DeleteAssetByIdUseCase {
     @Override
     public Void execute(DeleteAssetByIdCommand params) {
         var asset = assetWriter.getById(params.assetId());
-        try {
-            assetStoragePort.delete(asset.getStorageLocation().key(), asset.getStorageLocation().namespace());
-        } catch (Exception e) {
-            log.warn("Failed to delete asset storage file for assetId: {}. Proceeding to delete metadata. Error: {}",
-                    params.assetId(), e.getMessage());
-            publishAssetEventPort.publish(new AssetDeletionFailedPayload(
-                    asset.getStorageLocation().key(),
-                    asset.getStorageLocation().namespace(),
-                    e.getMessage()));
+        if (asset.getStorageLocation() != null) {
+            try {
+                assetStoragePort.delete(asset.getStorageLocation().key(), asset.getStorageLocation().namespace());
+            } catch (Exception e) {
+                log.warn("Failed to delete asset storage file for assetId: {}. Proceeding to delete metadata. Error: {}",
+                        params.assetId(), e.getMessage());
+                publishAssetEventPort.publish(new AssetDeletionFailedPayload(
+                        asset.getStorageLocation().key(),
+                        asset.getStorageLocation().namespace(),
+                        e.getMessage()));
+            }
         }
         assetWriter.delete(asset);
         return null;

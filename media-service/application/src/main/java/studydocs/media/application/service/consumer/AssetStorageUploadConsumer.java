@@ -4,17 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import studydocs.media.application.dto.payload.AssetAnalysisCompletedPayload;
+import studydocs.media.application.helper.AssetProcessingHelper;
 import studydocs.media.application.port.out.storage.AssetStoragePort;
 import studydocs.media.domain.aggregate.Asset;
 import studydocs.media.domain.repository.AssetWriter;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +21,7 @@ public class AssetStorageUploadConsumer {
 
     private final AssetWriter assetWriter;
     private final AssetStoragePort assetStoragePort;
+    private final AssetProcessingHelper assetProcessingHelper;
 
     public void handleAnalysisCompleted(AssetAnalysisCompletedPayload event) {
         Path tempFile = Path.of(event.tempFilePath());
@@ -30,7 +29,7 @@ public class AssetStorageUploadConsumer {
 
         try {
             Asset assetInitial = assetWriter.getById(assetId);
-            java.util.concurrent.atomic.AtomicReference<Asset> assetRef = new java.util.concurrent.atomic.AtomicReference<>(
+            AtomicReference<Asset> assetRef = new AtomicReference<>(
                     assetInitial);
             AtomicInteger lastSavedProgress = new AtomicInteger(0);
 
@@ -51,22 +50,16 @@ public class AssetStorageUploadConsumer {
 
                 Asset finalAsset = assetRef.get();
                 finalAsset.completeUpload(storageLocation);
-                assetWriter.saveAndReturn(finalAsset);
+                assetWriter.save(finalAsset);
 
             } catch (Exception e) {
-                Asset failedAsset = assetRef.get();
-                failedAsset.failUpload();
-                assetWriter.saveAndReturn(failedAsset);
+                assetProcessingHelper.handleFailure(assetId, e);
             }
 
         } catch (Exception e) {
             log.error("Error processing storage upload event: {}", e.getMessage());
         } finally {
-            try {
-                Files.deleteIfExists(tempFile);
-            } catch (IOException e) {
-                log.warn("Failed to delete temp file: {}", tempFile);
-            }
+            assetProcessingHelper.cleanup(tempFile);
         }
     }
 }

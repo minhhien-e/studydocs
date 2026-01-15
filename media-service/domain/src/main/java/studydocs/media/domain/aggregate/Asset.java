@@ -68,6 +68,12 @@ public class Asset extends AggregateRoot<UUID> {
         this.totalPages = totalPages;
     }
 
+    public void transformTo(AssetName newName, AssetSize newSize, AssetContentType newType) {
+        this.assetName = newName;
+        this.size = newSize;
+        this.contentType = newType;
+    }
+
     public void completeUpload(StorageLocation location) {
         this.status = AssetStatus.UPLOADED;
         this.uploadProgress = 100;

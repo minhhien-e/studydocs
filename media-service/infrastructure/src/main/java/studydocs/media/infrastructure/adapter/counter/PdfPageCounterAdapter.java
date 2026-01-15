@@ -21,6 +21,15 @@ public class PdfPageCounterAdapter implements PageCounterPort {
             throw new RuntimeException("Failed to process PDF file", e);
         }
     }
+
+    @Override
+    public int countPages(java.nio.file.Path path) {
+        try (PDDocument document = PDDocument.load(path.toFile())) {
+            return document.getNumberOfPages();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to process PDF file", e);
+        }
+    }
     @Override
     public boolean supports(FileExtension ext) {
         return FileExtension.PDF.equals(ext);

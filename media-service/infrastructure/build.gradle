@@ -27,5 +27,13 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.apache.pdfbox:pdfbox:2.0.30'
     implementation 'org.apache.poi:poi-ooxml:5.2.5'
+    implementation 'org.jodconverter:jodconverter-local:4.4.7'
+}
 
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
 }

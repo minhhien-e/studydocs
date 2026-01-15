@@ -11,6 +11,8 @@ import studydocs.media.application.port.out.messaging.PublishAssetEventPort;
 import studydocs.media.application.dto.payload.AssetUploadRequestedPayload;
 import studydocs.media.infrastructure.config.RabbitMQConfig;
 
+import studydocs.media.application.dto.payload.AssetTransformationCompletedPayload;
+
 @Component
 @RequiredArgsConstructor
 public class AssetEventProducer implements PublishAssetEventPort {
@@ -48,6 +50,14 @@ public class AssetEventProducer implements PublishAssetEventPort {
         eventPublisherPort.publish(
                 RabbitMQConfig.MEDIA_EXCHANGE,
                 RabbitMQConfig.ASSET_DELETION_FAILED_ROUTING_KEY,
+                payload);
+    }
+
+    @Override
+    public void publish(AssetTransformationCompletedPayload payload) {
+        eventPublisherPort.publish(
+                RabbitMQConfig.MEDIA_EXCHANGE,
+                RabbitMQConfig.ASSET_TRANSFORMATION_COMPLETED_ROUTING_KEY,
                 payload);
     }
 

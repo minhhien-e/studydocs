@@ -7,6 +7,7 @@ import studydocs.media.domain.enums.FileExtension;
 import studydocs.media.domain.exception.asset.AssetNotSupportedException;
 
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.List;
 
 @Component
@@ -14,11 +15,11 @@ import java.util.List;
 public class PageCounterResolver {
     private final List<PageCounterPort> pageCounters;
 
-    public int countPages(FileExtension fileExtension, InputStream fileContent) {
+    public int countPages(FileExtension fileExtension, Path path) {
         return pageCounters.stream()
                 .filter(counter -> counter.supports(fileExtension))
                 .findFirst()
-                .map(counter -> counter.countPages(fileContent))
+                .map(counter -> counter.countPages(path))
                 .orElseThrow(() -> new AssetNotSupportedException(fileExtension.name()));
     }
 }

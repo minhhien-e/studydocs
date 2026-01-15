@@ -3,6 +3,7 @@ package studydocs.media.application.port.out.messaging;
 import studydocs.media.application.dto.payload.AssetUploadFailedPayload;
 import studydocs.media.application.dto.payload.AssetUploadedPayload;
 import studydocs.media.application.dto.payload.AssetAnalysisCompletedPayload;
+import studydocs.media.application.dto.payload.AssetTransformationCompletedPayload;
 import studydocs.media.application.dto.payload.AssetUploadRequestedPayload;
 import studydocs.media.application.dto.payload.AssetDeletionFailedPayload;
 
@@ -16,4 +17,6 @@ public interface PublishAssetEventPort {
     void publish(AssetAnalysisCompletedPayload event);
 
     void publish(AssetDeletionFailedPayload event);
+
+    void publish(AssetTransformationCompletedPayload event);
 }

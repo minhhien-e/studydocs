@@ -38,21 +38,22 @@ public class CloudinaryGenerateAssetUrl implements GenerateAssetUrlPort {
             return null;
         }
 
+        // Use a safe placeholder for page number
+        String pagePlaceholder = "PAGE_NUMBER_PLACEHOLDER";
+        
         String url = cloudinary.url()
-                .resourceType("image")
+                .resourceType(entity.getResourceType())
                 .publicId(entity.getPublicId())
                 .secure(true)
                 .transformation(
                         new Transformation()
-                                .page(1)
-                                .fetchFormat("jpg"))
+                                .rawTransformation("pg_" + pagePlaceholder))
                 .generate();
 
         if (url == null) {
             return null;
         }
 
-        var previewUrl = url.replace("pg_1", "pg_$pageNumber");
-        return new PreviewData(previewUrl, "$pageNumber");
+        return new PreviewData(url, pagePlaceholder);
     }
 }

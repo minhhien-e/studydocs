@@ -11,13 +11,15 @@ import studydocs.media.domain.vo.OutboxMessage;
 import studydocs.media.infrastructure.persistence.entity.OutboxEntity;
 import studydocs.media.infrastructure.persistence.repository.MongoOutboxRepository;
 
+import studydocs.media.domain.repository.OutboxWriter;
+
 import java.util.List;
 import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class OutboxWriterAdapter implements studydocs.media.domain.repository.OutboxWriter {
+public class OutboxWriterAdapter implements OutboxWriter {
     private final MongoOutboxRepository mongoOutboxRepository;
     private final ObjectMapper objectMapper;
 
@@ -51,7 +53,7 @@ public class OutboxWriterAdapter implements studydocs.media.domain.repository.Ou
     }
 
     @Override
-    public List<studydocs.media.domain.vo.OutboxMessage> findPendingEvents(int limit) {
+    public List<OutboxMessage> findPendingEvents(int limit) {
         return mongoOutboxRepository
                 .findByStatus(OutboxStatus.PENDING.name(), PageRequest.of(0, limit))
                 .getContent()

@@ -101,4 +101,18 @@ public class RabbitMQConfig {
         return new Jackson2JsonMessageConverter();
     }
 
+    public static final String ASSET_TRANSFORMATION_COMPLETED_QUEUE = "asset.transformation.completed.queue";
+    public static final String ASSET_TRANSFORMATION_COMPLETED_ROUTING_KEY = "asset.transformation.completed";
+
+    @Bean
+    public Queue assetTransformationCompletedQueue() {
+        return new Queue(ASSET_TRANSFORMATION_COMPLETED_QUEUE);
+    }
+
+    @Bean
+    public Binding bindAssetTransformationCompleted(@Qualifier("assetTransformationCompletedQueue") Queue queue,
+            @Qualifier("mediaExchange") TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(ASSET_TRANSFORMATION_COMPLETED_ROUTING_KEY);
+    }
+
 }
