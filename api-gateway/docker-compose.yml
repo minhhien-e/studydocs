@@ -1,19 +1,18 @@
 version: '3.8'
 
 services:
-#  api-gateway:
-#    build: .
-#    image: api-gateway:latest
-#    container_name: api-gateway
-#    ports:
-#      - "8080:8080"
-#    env_file:
-#      - .env
-#    depends_on:
-#      - redis
-#      - zipkin
-#    networks:
-#      - microservices-network
+  api-gateway:
+    image: minhhien6634/studydocs:gateway-2026-01-15
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - zipkin
+    networks:
+      - microservices-network
 
   redis:
     image: redis:alpine
@@ -21,17 +20,17 @@ services:
     restart: always
     ports:
       - "6379:6379"
-#    networks:
-#      - microservices-network
+    networks:
+      - microservices-network
 
   zipkin:
     image: openzipkin/zipkin
     container_name: zipkin
     ports:
       - "9411:9411"
-#    networks:
-#      - microservices-network
+    networks:
+      - microservices-network
 
-#networks:
-#  microservices-network:
-#    external: true
+networks:
+  microservices-network:
+    driver: bridge
