@@ -38,7 +38,5 @@ out/
 
 ### VS Code ###
 .vscode/
-
-# Environment Variables
-.env
-*.env
+**/.env
+**/firebase-adminsdk.json

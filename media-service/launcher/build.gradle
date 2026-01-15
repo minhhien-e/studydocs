@@ -1,0 +1,13 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+}
+
+dependencies {
+    implementation project(':api')
+    implementation project(':infrastructure')
+    implementation project(':application')
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation("me.paulschwarz:spring-dotenv:4.0.0")
+}
+

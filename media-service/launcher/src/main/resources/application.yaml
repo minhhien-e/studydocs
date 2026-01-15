@@ -1,0 +1,40 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: media-service
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE}
+      max-request-size: ${MAX_REQUEST_SIZE}
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+      uuid-representation: standard
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    port: ${RABBIT_PORT}
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
+    virtual-host: ${RABBIT_VIRTUAL_HOST}
+    ssl:
+      enabled: ${RABBIT_SSL}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${ISSUER_URI:http://localhost:8080/api/v1/auth/.well-known/jwks.json}
+          jwk-set-uri: ${JWK_SET_URI:http://localhost:8080/api/v1/auth}
+
+cloudinary:
+  cloud_name: ${CLOUDINARY_CLOUD_NAME}
+  api_key: ${CLOUDINARY_API_KEY}
+  api_secret: ${CLOUDINARY_API_SECRET}
+app:
+  error:
+    code: ${ERROR_CODE}
+  outbox:
+    schedule:
+      fixed-delay: ${SCHEDULE_DELAY}
+    batch-size: ${BATCH_SIZE}
