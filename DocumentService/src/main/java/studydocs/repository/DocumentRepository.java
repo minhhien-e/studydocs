@@ -29,4 +29,6 @@ public interface DocumentRepository extends JpaRepository<Document, UUID> {
                         @org.springframework.data.repository.query.Param("userId") UUID userId);
 
         java.util.Optional<Document> findByIdAndUserId(UUID id, UUID userId);
+
+        List<Document> findAllByUserIdAndIsDeletedFalse(UUID userId);
 }
