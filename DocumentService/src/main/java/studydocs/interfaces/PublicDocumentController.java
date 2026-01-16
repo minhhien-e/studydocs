@@ -29,7 +29,18 @@ public class PublicDocumentController {
         org.springframework.data.domain.Page<Document> docPage = documentService.getAllDocuments(
                 org.springframework.data.domain.PageRequest.of(page, size,
                         org.springframework.data.domain.Sort.by("createdAt").descending()));
-        return ResponseEntity.ok(ApiResponse.success(200, docPage.map(DocumentResponse::new)));
+        List<DocumentResponse> responseList = docPage.stream()
+                .map(DocumentResponse::new)
+                .collect(Collectors.toList());
+        responseList = documentService.enrichDocumentResponses(responseList);
+        return ResponseEntity.ok(ApiResponse.success(200, new org.springframework.data.domain.PageImpl<>(
+                responseList, docPage.getPageable(), docPage.getTotalElements())));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteDocument(@PathVariable UUID id) {
+        documentService.deleteDocumentByAdmin(id);
+        return ResponseEntity.ok(ApiResponse.success(200, "Document deleted by admin: " + id));
     }
 
     @GetMapping("/{id}")
@@ -38,7 +49,12 @@ public class PublicDocumentController {
 
         studydocs.dto.projection.FileProjection fileMeta = null;
         if (document.getFileId() != null) {
-            fileMeta = documentService.getFileMetadata(document.getFileId());
+            try {
+                fileMeta = documentService.getFileMetadata(document.getFileId());
+            } catch (Exception e) {
+                // Log error but proceed to return document metadata without file details
+                System.err.println("Failed to fetch file metadata from UploadService: " + e.getMessage());
+            }
         }
 
         // Try to record view if user is authenticated
@@ -65,6 +81,12 @@ public class PublicDocumentController {
                 fileMeta != null ? fileMeta.downloadUrl() : null,
                 fileMeta != null ? fileMeta.previewDataView() : null);
 
+        // Enrich single document
+        List<DocumentResponse> enrichedList = documentService.enrichDocumentResponses(List.of(response));
+        if (!enrichedList.isEmpty()) {
+            response = enrichedList.get(0);
+        }
+
         return ResponseEntity.ok(ApiResponse.success(200, response));
     }
 
@@ -81,6 +103,7 @@ public class PublicDocumentController {
         List<DocumentResponse> response = page.getContent().stream()
                 .map(DocumentResponse::new)
                 .collect(Collectors.toList());
+        response = documentService.enrichDocumentResponses(response);
         return ResponseEntity.ok(ApiResponse.success(200, response));
     }
 
@@ -91,6 +114,7 @@ public class PublicDocumentController {
         List<DocumentResponse> response = docs.stream()
                 .map(DocumentResponse::new)
                 .collect(Collectors.toList());
+        response = documentService.enrichDocumentResponses(response);
         return ResponseEntity.ok(ApiResponse.success(200, response));
     }
 

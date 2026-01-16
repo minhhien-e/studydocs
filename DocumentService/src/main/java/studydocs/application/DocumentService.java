@@ -180,6 +180,15 @@ public class DocumentService {
         documentRepository.save(document);
     }
 
+    @Transactional
+    public void deleteDocumentByAdmin(UUID id) {
+        Document document = documentRepository.findById(id)
+                .filter(doc -> !doc.getIsDeleted())
+                .orElseThrow(() -> new DocumentNotFoundException(id));
+        document.markAsDeleted();
+        documentRepository.save(document);
+    }
+
     @Scheduled(fixedRate = 60000)
     @Transactional
     public void cleanupStuckUploads() {
@@ -341,5 +350,48 @@ public class DocumentService {
             log.error("Failed to fetch file metadata for fileId: {}", fileId, e);
         }
         return null;
+    }
+
+    public List<studydocs.dto.response.DocumentResponse> enrichDocumentResponses(
+            List<studydocs.dto.response.DocumentResponse> responses) {
+        if (responses == null || responses.isEmpty()) {
+            return responses;
+        }
+
+        return responses.parallelStream().map(doc -> { // Use parallelStream to speed up multiple HTTP calls
+            studydocs.dto.response.DocumentResponse enriched = doc;
+
+            try {
+                // 1. Call Academic Service
+                String academicUrl = academicServiceUrl + "/info-by-document?documentId=" + doc.id();
+                ApiResponse<studydocs.dto.response.AcademicDocumentInfo> academicResp = remoteApiCaller.get(
+                        academicUrl,
+                        new ParameterizedTypeReference<ApiResponse<studydocs.dto.response.AcademicDocumentInfo>>() {
+                        });
+
+                if (academicResp != null && academicResp.data() != null) {
+                    studydocs.dto.response.AcademicDocumentInfo info = academicResp.data();
+                    enriched = new studydocs.dto.response.DocumentResponse(enriched, info.subjectId(),
+                            info.universityId());
+                }
+            } catch (Exception e) {
+                log.warn("Failed to enrich document {} with academic info: {}", doc.id(), e.getMessage());
+            }
+
+            try {
+                // 2. Call Upload Service for File Metadata (to get Cloudinary URL & Preview)
+                if (doc.fileId() != null) {
+                    FileProjection fileMeta = getFileMetadata(doc.fileId());
+                    if (fileMeta != null) {
+                        enriched = new studydocs.dto.response.DocumentResponse(enriched, fileMeta.downloadUrl(),
+                                fileMeta.previewDataView(), fileMeta.totalPages());
+                    }
+                }
+            } catch (Exception e) {
+                log.warn("Failed to enrich document {} with file metadata: {}", doc.id(), e.getMessage());
+            }
+
+            return enriched;
+        }).collect(java.util.stream.Collectors.toList());
     }
 }
