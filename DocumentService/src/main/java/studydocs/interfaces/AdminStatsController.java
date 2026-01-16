@@ -12,7 +12,8 @@ import studydocs.dto.response.ApiResponse;
 import java.util.Map;
 
 @RestController
-@PreAuthorize("hasRole('ADMIN')")
+// @PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAuthority('SCOPE_READ_USER')")
 @RequestMapping("/api/v1/documents/admin/stats")
 @RequiredArgsConstructor
 public class AdminStatsController {

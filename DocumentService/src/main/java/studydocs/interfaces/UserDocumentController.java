@@ -31,6 +31,7 @@ public class UserDocumentController {
 
     @PostMapping(consumes = "multipart/form-data")
     // @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public ResponseEntity<ApiResponse<DocumentResponse>> uploadDocument(
             @RequestPart("data") String dataString,
             @RequestPart("file") MultipartFile file) throws JsonProcessingException {
@@ -46,18 +47,20 @@ public class UserDocumentController {
 
     @PutMapping("/{id}")
     // @PreAuthorize("hasAuthority('SCOPE_WRITE_USER')")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public ResponseEntity<ApiResponse<DocumentResponse>> updateDocument(
             @PathVariable UUID id,
             @RequestParam String title,
             @RequestParam String description) {
-        Document document = documentService.updateDocument(id, title, description);
+        Document document = documentService.updateDocument(id, getUserIdFromAuth(), title, description);
         return ResponseEntity.ok(ApiResponse.success(200, new DocumentResponse(document)));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER')")
+    // @PreAuthorize("hasAuthority('SCOPE_WRITE_USER')")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public ResponseEntity<ApiResponse<String>> deleteDocument(@PathVariable UUID id) {
-        documentService.deleteDocument(id);
+        documentService.deleteDocument(id, getUserIdFromAuth());
         return ResponseEntity.ok(ApiResponse.success(200, "Document deleted: " + id));
     }
 
@@ -97,9 +100,14 @@ public class UserDocumentController {
     // Helper to get userId from Auth
     private UUID getUserIdFromAuth() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null)
-            throw new RuntimeException("Unauthorized");
-        // Assuming name is UUID
-        return UUID.fromString(auth.getName());
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getName())) {
+            throw new org.springframework.security.access.AccessDeniedException("User is not authenticated");
+        }
+        try {
+            return UUID.fromString(auth.getName());
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid User ID format in Auth Principal: {}", auth.getName());
+            throw new org.springframework.security.access.AccessDeniedException("Invalid User ID in Token");
+        }
     }
 }

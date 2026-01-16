@@ -13,7 +13,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
@@ -27,20 +27,20 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${SECURITY_OAUTH2_JWT_ISSUER_URI:http://192.168.1.33:8081}
-          jwk-set-uri: ${AUTH_SERVICE_JWKS_URL:http://192.168.1.33:8081/.well-known/jwks.json}
+          issuer-uri: ${SECURITY_OAUTH2_JWT_ISSUER_URI:http://172.16.17.80:8080/api/v1/auth/}
+          jwk-set-uri: ${AUTH_SERVICE_JWKS_URL:http://172.16.17.80:8080/api/v1/auth/.well-known/jwks.json}
 
 upload:
   service:
-    url: ${UPLOAD_SERVICE_URL:http://10.0.0.170:8084/api/v1/files}
+    url: ${UPLOAD_SERVICE_URL:http://172.16.17.80:8080/api/v1/assets}
 
 notification:
   service:
-    url: ${NOTIFICATION_SERVICE_URL:http://10.0.0.170:8087/api/v1/notifications}
+    url: ${NOTIFICATION_SERVICE_URL:http://172.16.17.80:8087/api/v1/notifications}
 
 academic:
   service:
-    url: ${ACADEMIC_SERVICE_URL:http://192.168.1.33:8083/api/v1/academics/documents}
+    url: ${ACADEMIC_SERVICE_URL:http://172.16.17.99:8083/api/v1/academics/documents}
 
 review:
   service:

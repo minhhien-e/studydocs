@@ -52,97 +52,90 @@ public class DocumentService {
 
     @Transactional
     public Document createAndUploadDocument(UploadDocumentRequest req, MultipartFile file) {
+        Document document = new Document(req.getUserId(), req.getTitle(), req.getDescription(),
+                req.getSchoolYear());
+
+        document.markUploading();
+        document = documentRepository.save(document);
+
+        UUID documentId = document.getId();
+        log.info("DocumentService: Tạo document id={} và đặt trạng thái UPLOADING", documentId);
+
+        // Upload to external service
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        // Wrap the file to ensure filename is preserved
+        org.springframework.core.io.Resource fileResource;
         try {
-            Document document = new Document(req.getUserId(), req.getTitle(), req.getDescription(),
-                    req.getSchoolYear());
-            document.markUploading();
-            document = documentRepository.save(document);
-
-            UUID documentId = document.getId();
-            log.info("DocumentService: Tạo document id={} và đặt trạng thái UPLOADING", documentId);
-
-            // Upload to external service
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-            // Wrap the file to ensure filename is preserved
-            org.springframework.core.io.Resource fileResource = new org.springframework.core.io.ByteArrayResource(
-                    file.getBytes()) {
+            fileResource = new org.springframework.core.io.ByteArrayResource(file.getBytes()) {
                 @Override
                 public String getFilename() {
                     return file.getOriginalFilename();
                 }
             };
-            HttpHeaders fileHeaders = new HttpHeaders();
-            fileHeaders.setContentType(MediaType.parseMediaType(file.getContentType()));
-            HttpEntity<org.springframework.core.io.Resource> filePart = new HttpEntity<>(fileResource, fileHeaders);
-            body.add("file", filePart);
-
-            body.add("documentId", documentId.toString());
-
-            body.add("documentId", documentId.toString());
-
-            ApiResponse<FileProjection> responseEntity = remoteApiCaller.post(
-                    uploadServiceUrl,
-                    body,
-                    MediaType.MULTIPART_FORM_DATA,
-                    new ParameterizedTypeReference<>() {
-                    });
-
-            if (responseEntity.statusCode() != 200) {
-                document.markFailed("UploadService returned non-2xx: " +
-                        responseEntity.statusCode());
-                documentRepository.save(document);
-                sendNotification(req.getUserId(), "Document upload failed: " +
-                        responseEntity.statusCode());
-                throw new DocumentProcessingException("UploadService trả về lỗi: " +
-                        responseEntity.statusCode());
-            }
-
-            // Construct and save File Metadata
-            if (responseEntity.data() != null) {
-                FileProjection proj = responseEntity.data();
-
-                // Save File ID purely
-                document.setFileId(proj.id());
-            } // Success case
-            document.markUploaded();
-            documentRepository.save(document);
-            sendNotification(req.getUserId(), "Tải lên tài liệu thành công: " + req.getTitle());
-
-            // Call Academic Service
-            try {
-                if (req.getUniversityId() != null && req.getSubjectId() != null) {
-                    Map<String, Object> academicBody = new HashMap<>();
-                    academicBody.put("documentId", documentId);
-                    academicBody.put("universityId", req.getUniversityId());
-                    academicBody.put("subjectId", req.getSubjectId());
-                    log.info("Preparing to call Academic Service. URL: {}, Body: {}", academicServiceUrl, academicBody);
-                    var responseLink = remoteApiCaller.post(
-                            academicServiceUrl,
-                            academicBody,
-                            MediaType.APPLICATION_JSON,
-                            new ParameterizedTypeReference<ApiResponse<Object>>() {
-                            });
-                    log.info("Linked document {} to Academic Service. Response: {}", documentId, responseLink.data());
-                } else {
-                    log.warn("Skipping Academic Service call. UniversityId or MajorId is null. Req: {}", req);
-                }
-            } catch (Exception e) {
-                log.error("Failed to link document to Academic Service", e);
-            }
-
-            return document;
-        } catch (Exception ex) {
-            log.error("Lỗi khi upload tài liệu: " + ex.getMessage(), ex);
-            try {
-                sendNotification(req.getUserId(), "Xử lý tải lên thất bại");
-            } catch (Exception notifyEx) {
-                log.error("Failed to send failure notification", notifyEx);
-            }
-            throw new DocumentProcessingException("Lỗi khi upload tài liệu: " + ex.getMessage(), ex);
+        } catch (java.io.IOException e) {
+            throw new DocumentProcessingException("Failed to read file bytes", e);
         }
+        HttpHeaders fileHeaders = new HttpHeaders();
+        fileHeaders.setContentType(MediaType.parseMediaType(file.getContentType()));
+        HttpEntity<org.springframework.core.io.Resource> filePart = new HttpEntity<>(fileResource, fileHeaders);
+        body.add("file", filePart);
+
+        body.add("documentId", documentId.toString());
+
+        ApiResponse<FileProjection> responseEntity = remoteApiCaller.post(
+                uploadServiceUrl,
+                body,
+                MediaType.MULTIPART_FORM_DATA,
+                new ParameterizedTypeReference<>() {
+                });
+
+        if (responseEntity.statusCode() != 200) {
+            document.markFailed("UploadService returned non-2xx: " +
+                    responseEntity.statusCode());
+            documentRepository.save(document);
+            sendNotification(req.getUserId(), "Document upload failed: " +
+                    responseEntity.statusCode());
+            throw new DocumentProcessingException("UploadService trả về lỗi: " +
+                    responseEntity.statusCode());
+        }
+
+        // Construct and save File Metadata
+        if (responseEntity.data() != null) {
+            FileProjection proj = responseEntity.data();
+
+            // Save File ID purely
+            document.setFileId(proj.id());
+        } // Success case
+        document.markUploaded();
+        documentRepository.save(document);
+        sendNotification(req.getUserId(), "Tải lên tài liệu thành công: " + req.getTitle());
+
+        // Call Academic Service
+        try {
+            if (req.getUniversityId() != null && req.getSubjectId() != null) {
+                Map<String, Object> academicBody = new HashMap<>();
+                academicBody.put("universityId", req.getUniversityId());
+                academicBody.put("subjectId", req.getSubjectId());
+                academicBody.put("documentId", documentId);
+                log.info("Preparing to call Academic Service. URL: {}, Body: {}", academicServiceUrl, academicBody);
+                var responseLink = remoteApiCaller.post(
+                        academicServiceUrl,
+                        academicBody,
+                        MediaType.APPLICATION_JSON,
+                        new ParameterizedTypeReference<ApiResponse<Object>>() {
+                        });
+                log.info("Linked document {} to Academic Service. Response: {}", documentId, responseLink.data());
+            } else {
+                log.warn("Skipping Academic Service call. UniversityId or MajorId is null. Req: {}", req);
+            }
+        } catch (Exception e) {
+            log.error("Failed to link document to Academic Service", e);
+        }
+
+        return document;
     }
 
     @Transactional(readOnly = true)
@@ -170,15 +163,19 @@ public class DocumentService {
     }
 
     @Transactional
-    public Document updateDocument(UUID id, String title, String description) {
-        Document document = getDocumentById(id);
+    public Document updateDocument(UUID id, UUID userId, String title, String description) {
+        Document document = documentRepository.findByIdAndUserId(id, userId)
+                .filter(doc -> !doc.getIsDeleted())
+                .orElseThrow(() -> new DocumentNotFoundException(id));
         document.update(title, description);
         return documentRepository.save(document);
     }
 
     @Transactional
-    public void deleteDocument(UUID id) {
-        Document document = getDocumentById(id);
+    public void deleteDocument(UUID id, UUID userId) {
+        Document document = documentRepository.findByIdAndUserId(id, userId)
+                .filter(doc -> !doc.getIsDeleted())
+                .orElseThrow(() -> new DocumentNotFoundException(id));
         document.markAsDeleted();
         documentRepository.save(document);
     }
@@ -307,5 +304,42 @@ public class DocumentService {
                 .toList();
 
         return new org.springframework.data.domain.PageImpl<>(orderedDocs, pageable, views.getTotalElements());
+    }
+
+    public FileProjection getFileMetadata(UUID fileId) {
+        if (fileId == null)
+            return null;
+        try {
+            // Assuming UploadService has an endpoint GET /api/v1/files/{id} (or internal)
+            // Adjust the URL path if needed. Based on user snippet, response is standard.
+            // Let's assume /files/{id} or similar under uploadServiceUrl base.
+            // If uploadServiceUrl is http://.../api/v1/sub-service, we append /files.
+            // CAUTION: We need to know the exact endpoint for GET file metadata.
+            // Assuming it aligns with upload POST, maybe GET /upload/{id} or /files/{id}.
+            // Common convention: /internal/files/{id} or /files/{id}.
+            // I will use /internal/files/{id} as a safe guess for microservices, or just
+            // /files/{id}.
+            // Let's try /files/{id} first as it is standard REST.
+
+            // Correction: The user didn't specify the GET endpoint, only the upload
+            // response.
+            // In microservices, getting by ID usually matches the resource name.
+            // DocumentService typically doesn't know "upload" resource, maybe "files".
+            String url = uploadServiceUrl + "/" + fileId;
+
+            log.debug("Fetching file metadata from: {}", url);
+
+            ApiResponse<FileProjection> response = remoteApiCaller.get(
+                    url,
+                    new ParameterizedTypeReference<ApiResponse<FileProjection>>() {
+                    });
+
+            if (response != null && response.data() != null) {
+                return response.data();
+            }
+        } catch (Exception e) {
+            log.error("Failed to fetch file metadata for fileId: {}", fileId, e);
+        }
+        return null;
     }
 }

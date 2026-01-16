@@ -30,7 +30,7 @@ public class Document {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false, columnDefinition = "BINARY(16)")
+    @Column(nullable = true, columnDefinition = "BINARY(16)")
     private UUID fileId;
 
     @Column(name = "school_year")

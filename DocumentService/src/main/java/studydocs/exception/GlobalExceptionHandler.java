@@ -34,10 +34,18 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error(502, ex.getErrorCode()));
     }
 
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAccessDenied(
+            org.springframework.security.access.AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ApiResponse.error(403, 505)); // 505 - Access Denied
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleGeneral(Exception ex) {
+    public ResponseEntity<ApiResponse<Object>> handleGeneral(Exception ex) {
         log.error("Internal Server Error: ", ex);
         return ResponseEntity.internalServerError()
-                .body(ApiResponse.error(500, -1));
+                .body(ApiResponse.error(500, -1,
+                        "Internal Error: " + ex.getClass().getSimpleName() + ": " + ex.getMessage()));
     }
 }

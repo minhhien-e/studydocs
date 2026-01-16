@@ -11,11 +11,12 @@ import studydocs.dto.response.ApiResponse;
 import studydocs.dto.response.DocumentResponse;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/documents/public")
+@RequestMapping("/api/v1/internal/documents")
 @RequiredArgsConstructor
 public class PublicDocumentController {
 
@@ -34,6 +35,11 @@ public class PublicDocumentController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<DocumentResponse>> getDocumentById(@PathVariable UUID id) {
         Document document = documentService.getDocumentById(id);
+
+        studydocs.dto.projection.FileProjection fileMeta = null;
+        if (document.getFileId() != null) {
+            fileMeta = documentService.getFileMetadata(document.getFileId());
+        }
 
         // Try to record view if user is authenticated
         try {
@@ -54,7 +60,12 @@ public class PublicDocumentController {
             // Ignore view recording errors
         }
 
-        return ResponseEntity.ok(ApiResponse.success(200, new DocumentResponse(document)));
+        DocumentResponse response = new DocumentResponse(
+                document,
+                fileMeta != null ? fileMeta.downloadUrl() : null,
+                fileMeta != null ? fileMeta.previewDataView() : null);
+
+        return ResponseEntity.ok(ApiResponse.success(200, response));
     }
 
     @GetMapping("/{id}/exists")
@@ -82,4 +93,19 @@ public class PublicDocumentController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(ApiResponse.success(200, response));
     }
+
+    // @GetMapping("/debug")
+    // public ResponseEntity<ApiResponse<Object>> debugAuth() {
+    // Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    // Map<String, Object> debugInfo = new java.util.HashMap<>();
+    // debugInfo.put("name", auth.getName());
+    // debugInfo.put("authorities",
+    // auth.getAuthorities().stream().map(Object::toString).collect(Collectors.toList()));
+    // debugInfo.put("principal", auth.getPrincipal().toString());
+    // if (auth.getPrincipal() instanceof
+    // org.springframework.security.oauth2.jwt.Jwt jwt) {
+    // debugInfo.put("claims", jwt.getClaims());
+    // }
+    // return ResponseEntity.ok(ApiResponse.success(200, debugInfo));
+    // }
 }

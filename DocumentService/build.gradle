@@ -15,11 +15,9 @@ java {
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
-ext {
-    set('springCloudVersion', "2025.0.0")
-}
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -33,10 +31,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-mysql'
+    //hiển
+    implementation 'com.github.minhhien-e:studydocs:1.0.0'
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    }
-}

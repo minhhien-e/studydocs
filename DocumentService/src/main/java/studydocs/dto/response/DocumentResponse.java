@@ -15,7 +15,9 @@ public record DocumentResponse(
         boolean isDeleted,
         String schoolYear,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt) {
+        LocalDateTime updatedAt,
+        String downloadUrl,
+        Object previewDataView) {
     public DocumentResponse(Document doc) {
         this(
                 doc.getId(),
@@ -27,6 +29,24 @@ public record DocumentResponse(
                 doc.getIsDeleted(),
                 doc.getSchoolYear(),
                 doc.getCreatedAt(),
-                doc.getUpdatedAt());
+                doc.getUpdatedAt(),
+                null,
+                null);
+    }
+
+    public DocumentResponse(Document doc, String downloadUrl, Object previewDataView) {
+        this(
+                doc.getId(),
+                doc.getUserId(),
+                doc.getTitle(),
+                doc.getDescription(),
+                doc.getFileId(),
+                doc.getStatus().name(),
+                doc.getIsDeleted(),
+                doc.getSchoolYear(),
+                doc.getCreatedAt(),
+                doc.getUpdatedAt(),
+                downloadUrl,
+                previewDataView);
     }
 }

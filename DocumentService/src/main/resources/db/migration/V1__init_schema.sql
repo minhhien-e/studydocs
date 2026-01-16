@@ -3,6 +3,7 @@ CREATE TABLE documents (
     user_id BINARY(16) NOT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT,
+    file_id BINARY(16),
     school_year VARCHAR(255),
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     status VARCHAR(50) NOT NULL,
