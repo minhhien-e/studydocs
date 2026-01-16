@@ -10,8 +10,27 @@ public class SecurityUtils {
     public static UUID getCurrentUserId() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
-            return UUID.fromString(jwt.getSubject());
+        if (authentication == null || !authentication.isAuthenticated()
+                || "anonymousUser".equals(authentication.getName())) {
+            throw new org.springframework.security.access.AccessDeniedException(
+                    "User is not authenticated (Anonymous)");
+        }
+
+        if (authentication.getPrincipal() instanceof Jwt jwt) {
+            String subject = jwt.getSubject();
+            try {
+                return UUID.fromString(subject);
+            } catch (IllegalArgumentException e) {
+                // Try fallback if subject is not UUID (rare)
+                System.out.println("WARN: JWT Subject is not UUID: " + subject);
+            }
+        }
+
+        // Fallback or Try parsing Name if explicit UUID
+        try {
+            return UUID.fromString(authentication.getName());
+        } catch (IllegalArgumentException e) {
+            // Check fallback header logic
         }
 
         // Fallback: Try to parse from Authorization header (Bypass Mode)
@@ -28,27 +47,21 @@ public class SecurityUtils {
                     if (chunks.length > 1) {
                         java.util.Base64.Decoder decoder = java.util.Base64.getUrlDecoder();
                         String payload = new String(decoder.decode(chunks[1]));
-                        System.out.println("DEBUG SecurityUtils: Payload: " + payload); // DEBUG LOG
+                        // System.out.println("DEBUG SecurityUtils: Payload: " + payload);
 
                         // Simple regex to find "sub":"..."
                         java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\"sub\":\"([^\"]+)\"");
                         java.util.regex.Matcher matcher = pattern.matcher(payload);
                         if (matcher.find()) {
-                            System.out.println("DEBUG SecurityUtils: Found UserID: " + matcher.group(1)); // DEBUG LOG
                             return UUID.fromString(matcher.group(1));
-                        } else {
-                            System.out.println("DEBUG SecurityUtils: Regex did not match 'sub' in payload");
                         }
                     }
                 }
-            } else {
-                System.out.println("DEBUG SecurityUtils: RequestAttributes is null");
             }
         } catch (Exception e) {
             System.out.println("DEBUG SecurityUtils: Exception parsing token: " + e.getMessage());
-            e.printStackTrace();
         }
 
-        throw new RuntimeException("User not authenticated");
+        throw new org.springframework.security.access.AccessDeniedException("User not authenticated or Invalid Token");
     }
 }

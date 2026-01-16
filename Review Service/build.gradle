@@ -16,6 +16,7 @@ java {
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -30,6 +31,9 @@ dependencies {
 
     // Spring Security OAuth2 Resource Server for JWT
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+
+    //hiển
+    implementation 'com.github.minhhien-e:studydocs:1.0.0'
 
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

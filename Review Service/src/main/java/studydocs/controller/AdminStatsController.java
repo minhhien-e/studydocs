@@ -12,7 +12,8 @@ import studydocs.service.AdminStatsService;
 import java.util.Map;
 
 @RestController
-@PreAuthorize("hasRole('ADMIN')")
+// @PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAuthority('SCOPE_READ_USER')")
 @RequestMapping("/api/v1/reviews/admin/stats")
 @RequiredArgsConstructor
 public class AdminStatsController {

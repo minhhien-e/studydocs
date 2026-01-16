@@ -38,18 +38,21 @@ public class ReviewController {
 
     @PostMapping
     // @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public ResponseEntity<ApiResponse<ReviewResponse>> createReview(@Valid @RequestBody CreateReviewRequest req) {
         return ResponseEntity.ok(ApiResponse.success(200, commandService.createReview(req)));
     }
 
     @GetMapping("/{id}")
     // @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public ResponseEntity<ApiResponse<ReviewResponse>> getReview(@PathVariable UUID id) {
         return ResponseEntity.ok(ApiResponse.success(200, queryService.getReviewById(id)));
     }
 
     @GetMapping
     // @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public ResponseEntity<ApiResponse<Page<ReviewResponse>>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
@@ -58,6 +61,7 @@ public class ReviewController {
 
     @GetMapping("/document/{docId}")
     // @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public ResponseEntity<ApiResponse<Page<ReviewResponse>>> getByDocument(
             @PathVariable UUID docId,
             @RequestParam(defaultValue = "0") int page,
@@ -68,6 +72,7 @@ public class ReviewController {
 
     @GetMapping("/user/{userId}")
     // @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public ResponseEntity<ApiResponse<Page<ReviewResponse>>> getByUser(
             @PathVariable UUID userId,
             @RequestParam(defaultValue = "0") int page,
@@ -78,6 +83,7 @@ public class ReviewController {
 
     @PutMapping("/{id}")
     // @PreAuthorize("hasAuthority('SCOPE_WRITE_USER')")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public ResponseEntity<ApiResponse<ReviewResponse>> update(
             @PathVariable UUID id,
             @Valid @RequestBody UpdateReviewRequest req) {
@@ -86,13 +92,34 @@ public class ReviewController {
 
     @DeleteMapping("/{id}")
     // @PreAuthorize("hasAuthority('SCOPE_WRITE_USER')")
-    public ResponseEntity<ApiResponse<String>> delete(@PathVariable UUID id) {
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+    public ResponseEntity<ApiResponse<String>> deleteReview(@PathVariable UUID id) {
         commandService.deleteReview(id);
-        return ResponseEntity.ok(ApiResponse.success(200, "Deleted review: " + id));
+        return ResponseEntity.ok(ApiResponse.success(200, "Review deleted: " + id));
+    }
+
+    @GetMapping("/debug")
+    public ResponseEntity<ApiResponse<Object>> debugAuth() {
+        org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder
+                .getContext().getAuthentication();
+        java.util.Map<String, Object> debugInfo = new java.util.HashMap<>();
+        if (auth != null) {
+            debugInfo.put("name", auth.getName());
+            debugInfo.put("authorities",
+                    auth.getAuthorities().stream().map(Object::toString).collect(java.util.stream.Collectors.toList()));
+            debugInfo.put("principal", auth.getPrincipal().toString());
+            if (auth.getPrincipal() instanceof org.springframework.security.oauth2.jwt.Jwt jwt) {
+                debugInfo.put("claims", jwt.getClaims());
+            }
+        } else {
+            debugInfo.put("error", "Authentication is null");
+        }
+        return ResponseEntity.ok(ApiResponse.success(200, debugInfo));
     }
 
     @PostMapping("/{id}/react")
     // @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public ResponseEntity<ApiResponse<String>> react(
             @PathVariable UUID id,
             @RequestParam String type) { // "like" hoặc "dislike"
@@ -105,6 +132,7 @@ public class ReviewController {
 
     @PostMapping("/document/{docId}/react")
     // @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public ResponseEntity<ApiResponse<String>> reactToDocument(
             @PathVariable UUID docId,
             @RequestParam String type) { // "like" or "dislike"
@@ -116,6 +144,7 @@ public class ReviewController {
     }
 
     @GetMapping("/document/{docId}/stats")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public ResponseEntity<ApiResponse<studydocs.model.DocumentStats>> getDocumentStats(@PathVariable UUID docId) {
         return ResponseEntity.ok(ApiResponse.success(200,
                 docStatsRepo.findById(docId).orElse(new studydocs.model.DocumentStats(docId, 0, 0))));
@@ -123,6 +152,7 @@ public class ReviewController {
 
     @GetMapping("/document/{docId}/reaction")
     // @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public ResponseEntity<ApiResponse<studydocs.model.ReviewReaction.ReactionType>> getUserDocumentReaction(
             @PathVariable UUID docId) {
 
@@ -135,6 +165,7 @@ public class ReviewController {
 
     @PutMapping("/{id}/hidden")
     // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public ResponseEntity<ApiResponse<String>> toggleHidden(
             @PathVariable UUID id,
             @RequestParam boolean hidden) {
@@ -150,6 +181,7 @@ public class ReviewController {
 
     @GetMapping("/user/{userId}/count")
     // @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public ResponseEntity<ApiResponse<Long>> getReviewCountByUser(@PathVariable UUID userId) {
         return ResponseEntity.ok(ApiResponse.success(200, queryService.countReviewsByUser(userId)));
     }

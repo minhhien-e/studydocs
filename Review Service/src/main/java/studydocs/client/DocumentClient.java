@@ -20,7 +20,7 @@ public class DocumentClient {
     private String documentServiceUrl;
 
     public void validateDocumentId(UUID documentId) {
-        String url = documentServiceUrl + "/public/" + documentId + "/exists";
+        String url = documentServiceUrl + "/internal/documents/" + documentId + "/exists";
         ParameterizedTypeReference<ApiResponse<Boolean>> type = new ParameterizedTypeReference<>() {
         };
 
