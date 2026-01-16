@@ -15,12 +15,12 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: ${AUTH_SERVICE_JWKS_URL:http://localhost:8080/api/v1/auth/.well-known/jwks.json}
-          issuer-uri: ${AUTH_SERVICE_ISSUER:http://localhost:8080/api/v1/auth}
+          jwk-set-uri: ${AUTH_SERVICE_JWKS_URL:http://host.docker.internal:8080/api/v1/auth/.well-known/jwks.json}
+          issuer-uri: ${AUTH_SERVICE_ISSUER:http://host.docker.internal:8080/api/v1/auth}
 
 notification:
   service:
-    url: ${NOTIFICATION_SERVICE_URL:http://localhost:8080/api/v1/notifications/user-profiles}
+    url: ${NOTIFICATION_SERVICE_URL:http://host.docker.internal:8080/api/v1/notifications/user-profiles}
 
 media:
   service:

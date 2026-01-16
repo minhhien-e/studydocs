@@ -34,7 +34,7 @@ public enum ErrorCode {
     // --- System ---
     NO_HANDLER(HttpStatus.NO_CONTENT, 150),
 //    Http
-    HTTPFAIL(HttpStatus.EXPECTATION_FAILED, 160);
+    HTTP_FAIL(HttpStatus.EXPECTATION_FAILED, 160);
     private final HttpStatus status;
     private final Integer code;
 

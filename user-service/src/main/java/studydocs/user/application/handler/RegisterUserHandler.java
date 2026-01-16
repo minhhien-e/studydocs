@@ -3,6 +3,8 @@ package studydocs.user.application.handler;
 import studydocs.user.domain.command.RegisterUser;
 import studydocs.user.domain.dto.UserDTO;
 import studydocs.user.domain.service.UserDomainService;
+import studydocs.user.error.ErrorCode;
+import studydocs.user.error.exception.HttpException;
 import studydocs.user.helper.HelperMap;
 import studydocs.user.infrastructure.restemplate.notification.NotificationClient;
 import studydocs.user.interfaces.model.NotifyRegisterSuccessRequest;
@@ -36,7 +38,7 @@ public class RegisterUserHandler implements CommandHandler<RegisterUser,UserDTO>
                 );
             } catch (Exception e) {
                 log.error("Notify failed", e);
-                throw new RuntimeException(e);
+                throw new HttpException(ErrorCode.HTTP_FAIL.getStatus().value(),ErrorCode.HTTP_FAIL.getCode());
             }
         }
 

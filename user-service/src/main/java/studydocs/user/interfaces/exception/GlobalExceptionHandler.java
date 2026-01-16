@@ -84,4 +84,5 @@ public class GlobalExceptionHandler {
                 traceId
         );
     }
+
 }
