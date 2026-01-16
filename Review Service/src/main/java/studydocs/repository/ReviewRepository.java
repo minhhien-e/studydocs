@@ -26,4 +26,6 @@ public interface ReviewRepository extends MongoRepository<Review, UUID> {
     Page<Review> findByDocumentIdAndIsDeletedFalse(UUID documentId, Pageable pageable);
 
     long countByUserIdAndIsDeletedFalseAndIsHiddenFalse(UUID userId);
+
+    java.util.List<Review> findAllByUserIdAndIsDeletedFalse(UUID userId);
 }
