@@ -24,7 +24,7 @@ public class FollowController {
      * Body: { "followerId": 1, "followingId": 2 }
      */
     @PostMapping
-    @PreAuthorize("hasAuthority('SCOPE_FOLLOWS_WRITE'))")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER')")
     @ResponseStatus(HttpStatus.CREATED)
     public FollowResponse follow(@Valid @RequestBody FollowRequest request) {
         return followService.follow(request);
@@ -36,7 +36,7 @@ public class FollowController {
      * @param followingId ID của người được follow
      */
     @DeleteMapping
-    @PreAuthorize("hasAuthority('SCOPE_FOLLOWS_DELETE')")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFollow(@RequestParam UUID followerId, @RequestParam UUID followingId) {
         followService.deleteFollow(followerId, followingId);
@@ -46,7 +46,7 @@ public class FollowController {
      * Lấy danh sách Followers (người theo dõi) của userID
      */
     @GetMapping("/followers/{userId}")
-    @PreAuthorize("hasAuthority('SCOPE_FOLLOWS_READ')")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public List<FollowResponse> getFollowers(@PathVariable UUID userId) {
         return followService.getFollowers(userId);
     }
@@ -55,7 +55,7 @@ public class FollowController {
      * Lấy danh sách Following (người đang được userID theo dõi)
      */
     @GetMapping("/following/{userId}")
-    @PreAuthorize("hasAuthority('SCOPE_FOLLOWS_READ')")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public List<FollowResponse> getFollowing(@PathVariable UUID userId) {
         return followService.getFollowing(userId);
     }
@@ -64,7 +64,7 @@ public class FollowController {
      * Đếm số lượng followers
      */
     @GetMapping("/followers/{userId}/count")
-    @PreAuthorize("hasAuthority('SCOPE_FOLLOWS_READ')")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public long countFollowers(@PathVariable UUID userId) {
         return followService.countFollowers(userId);
     }
@@ -73,7 +73,7 @@ public class FollowController {
      * Đếm số lượng following
      */
     @GetMapping("/following/{userId}/count")
-    @PreAuthorize("hasAuthority('SCOPE_FOLLOWS_READ')")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public long countFollowing(@PathVariable UUID userId) {
         return followService.countFollowing(userId);
     }

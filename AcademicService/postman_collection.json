@@ -1,0 +1,1494 @@
+{
+	"info": {
+		"_postman_id": "b3f07a14-416b-43d9-952b-2be1416b43d9",
+		"name": "Academic Service API",
+		"description": "Collection for testing Academic Service endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Universities",
+			"item": [
+				{
+					"name": "Filter",
+					"item": [
+						{
+							"name": "By Active Status",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/academics/universities/filter?isActive=true",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"academics",
+										"universities",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "isActive",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "By Slug",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/academics/universities/filter?slug={{universitySlug}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"academics",
+										"universities",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "slug",
+											"value": "{{universitySlug}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "By ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/academics/universities/filter?id={{universityId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"academics",
+										"universities",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "{{universityId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get All (Filter)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/universities/filter",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"universities",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "slug",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "isActive",
+									"value": "true",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/universities/id/{{universityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"universities",
+								"id",
+								"{{universityId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create University",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Đại học Công nghệ\",\r\n    \"description\": \"Trường đại học hàng đầu về công nghệ\",\r\n    \"code\": \"UET\",\r\n    \"address\": \"144 Xuân Thủy, Cầu Giấy, Hà Nội\",\r\n    \"phone\": \"02437547461\",\r\n    \"email\": \"uet@vnu.edu.vn\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/universities",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"universities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update By ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Đại học Công nghệ - VNU\",\r\n    \"description\": \"Updated Description\",\r\n    \"code\": \"UET-UPDATED\",\r\n    \"address\": \"Updated Address\",\r\n    \"phone\": \"0987654321\",\r\n    \"email\": \"updated@vnu.edu.vn\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/universities/id/{{universityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"universities",
+								"id",
+								"{{universityId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update By Slug",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Đại học Công nghệ - VNU Slug Updated\",\r\n    \"description\": \"Updated via Slug\",\r\n    \"code\": \"UET-SLUG\",\r\n    \"address\": \"Updated Address Slug\",\r\n    \"phone\": \"0987654321\",\r\n    \"email\": \"slug@vnu.edu.vn\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/universities/slug/{{universitySlug}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"universities",
+								"slug",
+								"{{universitySlug}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete By ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/universities/id/{{universityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"universities",
+								"id",
+								"{{universityId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete By Slug",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/universities/slug/{{universitySlug}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"universities",
+								"slug",
+								"{{universitySlug}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Faculties",
+			"item": [
+				{
+					"name": "Filter",
+					"item": [
+						{
+							"name": "By University ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/academics/faculties/filter?universityId={{universityId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"academics",
+										"faculties",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "universityId",
+											"value": "{{universityId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "By University Slug",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/academics/faculties/filter?universitySlug={{universitySlug}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"academics",
+										"faculties",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "universitySlug",
+											"value": "{{universitySlug}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "By Active Status",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/academics/faculties/filter?isActive=true",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"academics",
+										"faculties",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "isActive",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Filter Faculties",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/faculties/filter?universityId={{universityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"faculties",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "universityId",
+									"value": "{{universityId}}"
+								},
+								{
+									"key": "universitySlug",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "isActive",
+									"value": "true",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/faculties/id/{{facultyId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"faculties",
+								"id",
+								"{{facultyId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Faculty",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"universityId\": \"{{universityId}}\",\r\n    \"name\": \"Khoa Công nghệ thông tin\",\r\n    \"description\": \"Khoa đào tạo CNTT\",\r\n    \"code\": \"FIT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/faculties",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"faculties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update By ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Khoa CNTT Updated\",\r\n    \"description\": \"Updated Description\",\r\n    \"code\": \"FIT-UPDATED\",\r\n    \"isActive\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/faculties/id/{{facultyId}}?universityId={{universityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"faculties",
+								"id",
+								"{{facultyId}}"
+							],
+							"query": [
+								{
+									"key": "universityId",
+									"value": "{{universityId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update By Slug",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Khoa CNTT Slug Updated\",\r\n    \"description\": \"Updated via Slug\",\r\n    \"code\": \"FIT-SLUG\",\r\n    \"isActive\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/faculties/slug/{{facultySlug}}?universityId={{universityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"faculties",
+								"slug",
+								"{{facultySlug}}"
+							],
+							"query": [
+								{
+									"key": "universityId",
+									"value": "{{universityId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete By ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/faculties/id/{{facultyId}}?universityId={{universityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"faculties",
+								"id",
+								"{{facultyId}}"
+							],
+							"query": [
+								{
+									"key": "universityId",
+									"value": "{{universityId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete By Slug",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/faculties/slug/{{facultySlug}}?universityId={{universityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"faculties",
+								"slug",
+								"{{facultySlug}}"
+							],
+							"query": [
+								{
+									"key": "universityId",
+									"value": "{{universityId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Departments",
+			"item": [
+				{
+					"name": "Filter",
+					"item": [
+						{
+							"name": "By University ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/academics/departments/filter?universityId={{universityId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"academics",
+										"departments",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "universityId",
+											"value": "{{universityId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "By Faculty ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/academics/departments/filter?facultyId={{facultyId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"academics",
+										"departments",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "facultyId",
+											"value": "{{facultyId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "By Active Status",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/academics/departments/filter?isActive=true",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"academics",
+										"departments",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "isActive",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Filter Departments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/departments/filter?universityId={{universityId}}&facultyId={{facultyId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"departments",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "universityId",
+									"value": "{{universityId}}"
+								},
+								{
+									"key": "facultyId",
+									"value": "{{facultyId}}"
+								},
+								{
+									"key": "universitySlug",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "facultySlug",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "isActive",
+									"value": "true",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/departments/id/{{departmentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"departments",
+								"id",
+								"{{departmentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Department",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"facultyId\": \"{{facultyId}}\",\r\n    \"name\": \"Bộ môn Công nghệ phần mềm\",\r\n    \"description\": \"Bộ môn CNPM\",\r\n    \"code\": \"SE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/departments",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"departments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update By ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Bộ môn CNPM Updated\",\r\n    \"description\": \"Updated Description\",\r\n    \"code\": \"SE-UPDATED\",\r\n    \"isActive\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/departments/id/{{departmentId}}?universityId={{universityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"departments",
+								"id",
+								"{{departmentId}}"
+							],
+							"query": [
+								{
+									"key": "universityId",
+									"value": "{{universityId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update By Slug",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Bộ môn CNPM Slug Updated\",\r\n    \"description\": \"Updated via Slug\",\r\n    \"code\": \"SE-SLUG\",\r\n    \"isActive\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/departments/slug/{{departmentSlug}}?universityId={{universityId}}&facultyId={{facultyId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"departments",
+								"slug",
+								"{{departmentSlug}}"
+							],
+							"query": [
+								{
+									"key": "universityId",
+									"value": "{{universityId}}"
+								},
+								{
+									"key": "facultyId",
+									"value": "{{facultyId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete By ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/departments/id/{{departmentId}}?universityId={{universityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"departments",
+								"id",
+								"{{departmentId}}"
+							],
+							"query": [
+								{
+									"key": "universityId",
+									"value": "{{universityId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete By Slug",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/departments/slug/{{departmentSlug}}?universityId={{universityId}}&facultyId={{facultyId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"departments",
+								"slug",
+								"{{departmentSlug}}"
+							],
+							"query": [
+								{
+									"key": "universityId",
+									"value": "{{universityId}}"
+								},
+								{
+									"key": "facultyId",
+									"value": "{{facultyId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subjects",
+			"item": [
+				{
+					"name": "Filter",
+					"item": [
+						{
+							"name": "By University ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/academics/subjects/filter?universityId={{universityId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"academics",
+										"subjects",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "universityId",
+											"value": "{{universityId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "By Department ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/academics/subjects/filter?departmentId={{departmentId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"academics",
+										"subjects",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "departmentId",
+											"value": "{{departmentId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "By Active Status",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/academics/subjects/filter?isActive=true",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"academics",
+										"subjects",
+										"filter"
+									],
+									"query": [
+										{
+											"key": "isActive",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Filter Subjects",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/subjects/filter?universityId={{universityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"subjects",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "universityId",
+									"value": "{{universityId}}"
+								},
+								{
+									"key": "facultyId",
+									"value": "{{facultyId}}",
+									"disabled": true
+								},
+								{
+									"key": "departmentId",
+									"value": "{{departmentId}}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/subjects/id/{{subjectId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"subjects",
+								"id",
+								"{{subjectId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Subject",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"departmentId\": \"{{departmentId}}\",\r\n    \"name\": \"Nhập môn Công nghệ phần mềm\",\r\n    \"description\": \"Môn học cơ sở ngành\",\r\n    \"code\": \"INT3301\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/subjects",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"subjects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update By ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Nhập môn CNPM Updated\",\r\n    \"description\": \"Updated Description\",\r\n    \"code\": \"INT3301-UPD\",\r\n    \"isActive\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/subjects/id/{{subjectId}}?universityId={{universityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"subjects",
+								"id",
+								"{{subjectId}}"
+							],
+							"query": [
+								{
+									"key": "universityId",
+									"value": "{{universityId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update By Slug",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Nhập môn CNPM Slug Updated\",\r\n    \"description\": \"Updated via Slug\",\r\n    \"code\": \"INT3301-SLUG\",\r\n    \"isActive\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/subjects/slug/{{subjectSlug}}?universityId={{universityId}}&departmentId={{departmentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"subjects",
+								"slug",
+								"{{subjectSlug}}"
+							],
+							"query": [
+								{
+									"key": "universityId",
+									"value": "{{universityId}}"
+								},
+								{
+									"key": "departmentId",
+									"value": "{{departmentId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete By ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/subjects/id/{{subjectId}}?universityId={{universityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"subjects",
+								"id",
+								"{{subjectId}}"
+							],
+							"query": [
+								{
+									"key": "universityId",
+									"value": "{{universityId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete By Slug",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/subjects/slug/{{subjectSlug}}?universityId={{universityId}}&departmentId={{departmentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"subjects",
+								"slug",
+								"{{subjectSlug}}"
+							],
+							"query": [
+								{
+									"key": "universityId",
+									"value": "{{universityId}}"
+								},
+								{
+									"key": "departmentId",
+									"value": "{{departmentId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Documents",
+			"item": [
+				{
+					"name": "Filter",
+					"item": [
+						{
+							"name": "By Subject ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/academics/documents?subjectId={{subjectId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"academics",
+										"documents"
+									],
+									"query": [
+										{
+											"key": "subjectId",
+											"value": "{{subjectId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "By Department ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/academics/documents?departmentId={{departmentId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"academics",
+										"documents"
+									],
+									"query": [
+										{
+											"key": "departmentId",
+											"value": "{{departmentId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get Documents (Filter)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/documents?universityId={{universityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"documents"
+							],
+							"query": [
+								{
+									"key": "universityId",
+									"value": "{{universityId}}"
+								},
+								{
+									"key": "facultyId",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "departmentId",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "subjectId",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Document to Subject",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subjectId\": \"{{subjectId}}\",\r\n    \"universityId\": \"{{universityId}}\",\r\n    \"documentId\": \"{{documentId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/documents",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"documents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Info By Document ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/academics/documents/info-by-document?documentId={{documentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"academics",
+								"documents",
+								"info-by-document"
+							],
+							"query": [
+								{
+									"key": "documentId",
+									"value": "{{documentId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8083",
+			"type": "string"
+		},
+		{
+			"key": "universityId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "universitySlug",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "facultyId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "facultySlug",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "departmentId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "departmentSlug",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "subjectId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "subjectSlug",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "documentId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "YOUR_JWT_TOKEN",
+			"type": "string"
+		}
+	]
+}

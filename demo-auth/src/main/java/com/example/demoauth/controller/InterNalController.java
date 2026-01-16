@@ -1,21 +1,24 @@
 package com.example.demoauth.controller;
 
+import com.example.demoauth.service.ForgotPasswordService;
 import com.example.demoauth.shared.web.ApiResponse;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
-import java.util.logging.Logger;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/users/internal")
+@RequestMapping("/api/v1/auth/internal")
+@RequiredArgsConstructor
 public class InterNalController {
 
-    @GetMapping("/getUserByID")
-    public ApiResponse<?> getUserByID(
-            @RequestParam UUID id,
-            @RequestHeader(value = "X-Trace-Id", required = false) String traceId) {
+    private final ForgotPasswordService forgotPasswordService;
 
-        return null;
+    // Notification Service gọi API này để lấy mã OTP gửi mail
+    @GetMapping("/get-otp")
+    public ApiResponse<String> getOtpForNotification(@RequestParam String email) {
+        String otp = forgotPasswordService.getOTP(email);
+        return ApiResponse.success(otp != null ? otp : "OTP không tồn tại");
     }
 }

@@ -1,7 +1,9 @@
 package com.example.academicservice.controller;
 
 import com.example.academicservice.dto.request.SubjectDocumentCreateRequest;
+import com.example.academicservice.dto.response.DocumentRelationResponse;
 import com.example.academicservice.dto.response.DocumentResponse;
+import com.example.academicservice.entity.University;
 import com.example.academicservice.service.SubjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,7 +43,7 @@ public class DocumentController {
             @RequestParam(required = false) UUID facultyId,
             @RequestParam(required = false) UUID departmentId,
             @RequestParam(required = false) UUID subjectId) {
-        
+
         return subjectService.filterDocuments(universityId, facultyId, departmentId, subjectId);
     }
 
@@ -52,8 +54,18 @@ public class DocumentController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     // [SEC] Yêu cầu Scope WRITE và Role ADMIN
-    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER')")
+   @PreAuthorize("hasAuthority('SCOPE_WRITE_USER')")
     public DocumentResponse addDocument(@Valid @RequestBody SubjectDocumentCreateRequest request) {
         return subjectService.addDocumentToSubject(request);
+    }
+
+    /*
+     * Api trả về id của truing đại học và môn học dựa trên documentId
+     * */
+    @GetMapping("/info-by-document")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+    public DocumentRelationResponse getUniversityAndSubjectByDocumentId(
+            @RequestParam UUID documentId) {
+        return subjectService.getUniversityAndSubjectByDocumentId(documentId);
     }
 }

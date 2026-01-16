@@ -1,0 +1,65 @@
+services:
+  app:
+    image: soha18/studydocs:auth-2026-01-14
+    container_name: demo-auth-service
+    ports:
+      - "8081:8081"
+    environment:
+      SERVER_PORT: 8081
+      DB_HOST: mysqldb
+      DB_PORT: 3306
+      DB_NAME: authservice_db
+      DB_MYSQL_USERNAME: root
+      DB_MYSQL_PASSWORD: "01252331055"
+      GOOGLE_CLIENT_ID: 336989269103-d060nsigegat7ndskdeh28krr120qaql.apps.googleusercontent.com
+      # GOOGLE_CLIENT_SECRET: "" # Uncomment and fill if needed
+      JWT_KEYSTORE_PASSWORD: changeit
+      JWT_KEY_ALIAS: jwt-key
+      JWT_KEY_PASSWORD: changeit
+      JWT_ISSUER: http://localhost:8080
+      SPRING_PROFILES_ACTIVE: dev
+      USER_URL: http://192.168.1.43:8082/api/v1/users/register
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - demo-auth-network
+    restart: unless-stopped
+
+  mysqldb:
+    image: mysql:8.0
+    container_name: demo-auth-mysql
+    ports:
+      - "3307:3306" # Expose to host on 3307 to avoid conflict if local mysql runs
+    environment:
+      MYSQL_DATABASE: authservice_db
+      MYSQL_ROOT_PASSWORD: "01252331055"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - demo-auth-network
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    restart: unless-stopped
+
+  redis:
+    image: redis:alpine
+    container_name: demo-auth-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - demo-auth-network
+    restart: unless-stopped
+
+networks:
+  demo-auth-network:
+    driver: bridge
+
+volumes:
+  mysql_data:

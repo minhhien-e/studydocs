@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  academic-service:
+    image: soha18/studydocs:academic-2026-14-1
+    container_name: academic-backend
+    ports:
+      - "8083:8080" # Map 8083 (Host) -> 8080 (Container)
+    environment:
+      # App Config
+      SERVER_PORT: 8080
+      SPRING_PROFILES_ACTIVE: dev
+      
+      # Database Config
+      DB_HOST: mysqldb
+      DB_PORT: 3306
+      DB_NAME: academic_service_db
+      DB_MYSQL_USERNAME: root
+      DB_MYSQL_PASSWORD: "01252331055"
+      
+      # Security & JWT
+      JWT_SECRET: dev-jwt-secret-key-for-testing
+      JWT_EXPIRATION: 86400000
+      WEB_CLIENT_SECRET: my-web-client-secret
+      MOBILE_CLIENT_SECRET: my-mobile-secret
+      
+      # OAuth2
+      GOOGLE_CLIENT_ID: your-google-client-id
+      GOOGLE_CLIENT_SECRET: ""
+      
+      # Integration with Auth Service (Host)
+      AUTH_SERVICE_JWKS_URL: http://host.docker.internal:8081/api/v1/auth/.well-known/jwks.json
+      AUTH_SERVICE_ISSUER: http://host.docker.internal:8081
+
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    networks:
+      - academic-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  mysqldb:
+    image: mysql:8.0
+    container_name: academic-mysql
+    ports:
+      - "3308:3306" # Đổi thành 3308 để tránh trùng với 3307 của Auth Service
+    environment:
+      MYSQL_DATABASE: academic_service_db
+      MYSQL_ROOT_PASSWORD: "01252331055"
+    volumes:
+      - mysql_data_academic:/var/lib/mysql
+    networks:
+      - academic-network
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    restart: unless-stopped
+
+networks:
+  academic-network:
+    driver: bridge
+
+volumes:
+  mysql_data_academic:

@@ -15,6 +15,6 @@ public class SubjectDocumentCreateRequest {
     @NotNull(message = "University ID is required")
     private UUID universityId;
 
-    @NotBlank(message = "Document ID is required")
-    private String documentId;
+    @NotNull(message = "Document ID is required")
+    private UUID documentId;
 }

@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -17,9 +18,7 @@ public interface SubjectDocumentRepository extends JpaRepository<SubjectDocument
 
     List<SubjectDocument> findAllBySubject_Id(UUID subjectId);
 
-    void deleteBySubject_Id(UUID subjectId);
-
-    boolean existsBySubject_Id(UUID subjectId);
+    Optional<SubjectDocument> findByDocumentId(String documentId);
 
     boolean existsBySubjectIdAndDocumentId(UUID subjectId, String documentId);
 

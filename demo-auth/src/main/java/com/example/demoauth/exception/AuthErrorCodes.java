@@ -46,6 +46,20 @@ public final class AuthErrorCodes {
     /** Refresh token not found in DB. */
     public static final int REFRESH_TOKEN_NOT_FOUND = 13;
 
+    /* ========== OTP Errors (20-29) ========== */
+    
+    /** OTP request rate limited (gửi quá nhanh). */
+    public static final int OTP_RATE_LIMIT = 20;
+
+    /** OTP expired or not found (hết hạn/không tìm thấy). */
+    public static final int OTP_EXPIRED = 21;
+
+    /** OTP invalid (mã sai). */
+    public static final int OTP_INVALID = 22;
+
+    /** OTP max attempts reached (thử sai quá nhiều lần). */
+    public static final int OTP_MAX_ATTEMPTS = 23;
+
     /** Access token invalid/expired -> 401 (Spring Security). */
     public static final int ACCESS_TOKEN_INVALID_OR_EXPIRED = 90;
 

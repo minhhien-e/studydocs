@@ -7,10 +7,11 @@ Dịch vụ hỗ trợ CRUD operations cho các entity học thuật, filter/sea
 - Port: **8083** 
 - Database: MySQL (cấu hình qua environment variables)
 - API base URLs: 
-  - `http://localhost:8083/api/v1/universities`
-  - `http://localhost:8083/api/v1/faculties`
-  - `http://localhost:8083/api/v1/departments`
-  - `http://localhost:8083/api/v1/majors`
+  - `http://localhost:8083/api/v1/academics/universities`
+  - `http://localhost:8083/api/v1/academics/faculties`
+  - `http://localhost:8083/api/v1/academics/departments`
+    - `http://localhost:8083/api/v1/academics/subjects`
+    - `http://localhost:8083/api/v1/academics/academics/documents`
 
 ## 1. Giới thiệu
 
@@ -52,12 +53,12 @@ Dịch vụ hỗ trợ CRUD operations cho các entity học thuật, filter/sea
 14. **Xóa department** - Theo ID hoặc slug (yêu cầu universityId và facultyId để validate, cascade delete xuống Major).
 15. **Filter departments** - Lọc theo universityId, universitySlug, facultyId, facultySlug, isActive.
 
-### Major Management
-16. **Tạo ngành học** - Tạo mới major thuộc một department, slug tự động.
-17. **Lấy thông tin major** - Theo ID.
-18. **Cập nhật major** - Theo ID hoặc slug (yêu cầu universityId và departmentId để validate).
-19. **Xóa major** - Theo ID hoặc slug (yêu cầu universityId và departmentId để validate).
-20. **Filter majors** - Lọc theo universityId, universitySlug, facultyId, facultySlug, departmentId, departmentSlug, isActive.
+### Subject Management
+16. **Tạo môn học (Subject)** - Tạo mới subject thuộc một department, slug tự động.
+17. **Lấy thông tin subject** - Theo ID.
+18. **Cập nhật subject** - Theo ID hoặc slug (yêu cầu universityId và departmentId để validate).
+19. **Xóa subject** - Theo ID hoặc slug (yêu cầu universityId và departmentId để validate).
+20. **Filter subjects** - Lọc theo universityId, universitySlug, facultyId, facultySlug, departmentId, departmentSlug, isActive.
 
 ### Business Rules & Validation
 21. **Slug uniqueness** - Slug phải unique trong cùng một parent entity (error codes 205-208).
@@ -340,23 +341,23 @@ graph TB
 
 ---
 
-## 6. Error Codes
+### Error Codes
 
 ### Academic Error Codes (200-299)
 - **201**: UNIVERSITY_NOT_FOUND - Không tìm thấy trường đại học
 - **202**: FACULTY_NOT_FOUND - Không tìm thấy khoa
 - **203**: DEPARTMENT_NOT_FOUND - Không tìm thấy bộ môn
-- **204**: MAJOR_NOT_FOUND - Không tìm thấy ngành học
+- **204**: SUBJECT_NOT_FOUND - Không tìm thấy môn học
 - **205**: UNIVERSITY_SLUG_EXISTS - Slug trường đại học đã tồn tại
 - **206**: FACULTY_SLUG_EXISTS - Slug khoa đã tồn tại
 - **207**: DEPARTMENT_SLUG_EXISTS - Slug bộ môn đã tồn tại
-- **208**: MAJOR_SLUG_EXISTS - Slug ngành học đã tồn tại
+- **208**: SUBJECT_SLUG_EXISTS - Slug môn học đã tồn tại
 - **209**: UNIVERSITY_ID_MISMATCH - University ID không khớp
 - **210**: FACULTY_ID_MISMATCH - Faculty ID không khớp
 - **211**: DEPARTMENT_ID_MISMATCH - Department ID không khớp
-- **212**: MAJOR_ID_MISMATCH - Major ID không khớp
+- **212**: SUBJECT_ID_MISMATCH - Subject ID không khớp
 - **213**: INVALID_UUID - UUID format không hợp lệ
-- **299**: UNKNOWN_ACADEMIC_ERROR - Lỗi academic không xác định (fallback)
+- **-1**: UNKNOWN_ACADEMIC_ERROR - Lỗi academic không xác định (fallback)
 
 ### Auth Error Codes (0-99)
 - **90**: ACCESS_TOKEN_INVALID_OR_EXPIRED - JWT token không hợp lệ/hết hạn
@@ -409,17 +410,17 @@ Chi tiết đầy đủ xem file [ERROR_CODES.md](./ERROR_CODES.md)
 | DELETE | `/api/v1/departments/id/{id}?universityId={uuid}` | Xóa department theo ID | ❌ |
 | DELETE | `/api/v1/departments/slug/{slug}?universityId={uuid}&facultyId={uuid}` | Xóa department theo slug | ❌ |
 
-### Majors
+### Subjects
 
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|---------------|
-| GET | `/api/v1/majors/id/{id}` | Lấy major theo ID | ❌ |
-| GET | `/api/v1/majors/filter` | Filter majors | ❌ |
-| POST | `/api/v1/majors` | Tạo mới major | ❌ |
-| PUT | `/api/v1/majors/id/{id}?universityId={uuid}` | Cập nhật major theo ID | ❌ |
-| PUT | `/api/v1/majors/slug/{slug}?universityId={uuid}&departmentId={uuid}` | Cập nhật major theo slug | ❌ |
-| DELETE | `/api/v1/majors/id/{id}?universityId={uuid}` | Xóa major theo ID | ❌ |
-| DELETE | `/api/v1/majors/slug/{slug}?universityId={uuid}&departmentId={uuid}` | Xóa major theo slug | ❌ |
+| GET | `/api/v1/subjects/id/{id}` | Lấy subject theo ID | ❌ |
+| GET | `/api/v1/subjects/filter` | Filter subjects | ❌ |
+| POST | `/api/v1/subjects` | Tạo mới subject | ❌ |
+| PUT | `/api/v1/subjects/id/{id}?universityId={uuid}` | Cập nhật subject theo ID | ❌ |
+| PUT | `/api/v1/subjects/slug/{slug}?universityId={uuid}&departmentId={uuid}` | Cập nhật subject theo slug | ❌ |
+| DELETE | `/api/v1/subjects/id/{id}?universityId={uuid}` | Xóa subject theo ID | ❌ |
+| DELETE | `/api/v1/subjects/slug/{slug}?universityId={uuid}&departmentId={uuid}` | Xóa subject theo slug | ❌ |
 
 ---
 

@@ -2,6 +2,7 @@ package com.example.academicservice.service;
 
 import com.example.academicservice.dto.request.SubjectCreateRequest;
 import com.example.academicservice.dto.request.SubjectUpdateRequest;
+import com.example.academicservice.dto.response.DocumentRelationResponse;
 import com.example.academicservice.dto.response.DocumentResponse;
 import com.example.academicservice.dto.response.SubjectResponse;
 import com.example.academicservice.entity.Department;
@@ -292,14 +293,14 @@ public class SubjectService {
         }
 
         // 3. Validate Duplicate Document
-        if (subjectDocumentRepository.existsBySubjectIdAndDocumentId(request.getSubjectId(), request.getDocumentId())) {
+        if (subjectDocumentRepository.existsBySubjectIdAndDocumentId(request.getSubjectId(), request.getDocumentId().toString())) {
             throw new DuplicateResourceException("Document " + request.getDocumentId() + " đã tồn tại trong môn học này");
         }
 
         // 4. Save
         SubjectDocument subjectDocument = new SubjectDocument();
         subjectDocument.setSubject(subject);
-        subjectDocument.setDocumentId(request.getDocumentId());
+        subjectDocument.setDocumentId(request.getDocumentId().toString());
         // Description removed per requirements
         subjectDocument.setIsActive(true);
 
@@ -308,8 +309,24 @@ public class SubjectService {
 
         // Return updated list or just the single ID
         DocumentResponse response = new DocumentResponse();
-        response.setDocumentIds(java.util.List.of(UUID.fromString(request.getDocumentId())));
+        response.setDocumentIds(java.util.List.of(request.getDocumentId()));
         return response;
     }
 
+    public DocumentRelationResponse getUniversityAndSubjectByDocumentId(UUID documentId) {
+        log.info("Fetching University and Subject by Document ID: {}", documentId);
+
+        SubjectDocument subjectDocument = subjectDocumentRepository.findByDocumentId(documentId.toString())
+                .orElseThrow(() -> new ResourceNotFoundException("SubjectDocument", "documentId", documentId));
+
+        Subject subject = subjectDocument.getSubject();
+        UUID subjectId = subject.getId();
+        UUID universityId = subject.getDepartment().getFaculty().getUniversity().getId();
+
+        DocumentRelationResponse response = new DocumentRelationResponse();
+        response.setUniversityId(universityId);
+        response.setSubjectId(subjectId);
+
+        return response;
+    }
 }

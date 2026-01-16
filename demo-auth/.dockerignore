@@ -1,0 +1,46 @@
+# Git
+.git
+.gitignore
+
+# Gradle
+.gradle
+build/
+app/build/
+gradel-app.setting
+
+# IDEs and Editors
+.vscode
+.idea
+.settings
+.classpath
+.project
+*.iml
+*.ipr
+*.iws
+.nb-gradle/
+
+# Compile output
+bin/
+out/
+
+# Local env files and secrets
+.env
+.env.*
+*.log
+local.properties
+
+# Documentation (optional, to save space)
+*.md
+HELP.md
+ERROR_CODES.MD
+README.md
+doc/
+docs/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+docker-compose.yml
