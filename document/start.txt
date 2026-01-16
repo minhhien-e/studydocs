@@ -1,0 +1,14 @@
+# 1. Stop all running containers and remove volumes (clean slate)
+docker-compose down -v
+
+# 2. Create the external network (ignore error if exists)
+docker network create studydocs-network || true
+
+# 3. Pull the latest images from Docker Hub
+docker-compose pull
+
+# 4. Start all services in the background
+docker-compose up -d
+
+# 5. View logs to verify startup (Press Ctrl+C to exit log view)
+docker-compose logs -f

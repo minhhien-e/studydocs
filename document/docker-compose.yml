@@ -1,0 +1,179 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # API GATEWAY & INFRASTRUCTURE
+  # ==========================================
+  api-gateway:
+    image: minhhien6634/studydocs:gateway-2026-01-15
+    container_name: api-gateway
+    ports:
+      - "8080:8080" # Exposed to LAN
+    env_file:
+      - gateway.env
+    depends_on:
+      - shared-redis
+      - shared-zipkin
+    networks:
+      - studydocs-network
+
+  # ==========================================
+  # SHARED INFRASTRUCTURE
+  # ==========================================
+  shared-redis:
+    image: redis:alpine
+    container_name: shared-redis
+    restart: always
+    ports:
+      - "127.0.0.1:6379:6379" # Localhost only
+    networks:
+      - studydocs-network
+
+  shared-zipkin:
+    image: openzipkin/zipkin
+    container_name: shared-zipkin
+    ports:
+      - "127.0.0.1:9411:9411" # Localhost only
+    networks:
+      - studydocs-network
+
+  # ==========================================
+  # SHARED DATABASES
+  # ==========================================
+  shared-mysql:
+    image: mysql:8.0
+    container_name: shared-mysql
+    ports:
+      - "127.0.0.1:3306:3306" # Localhost only
+    environment:
+      MYSQL_ROOT_PASSWORD: "01252331055"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - studydocs-network
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    restart: unless-stopped
+
+  shared-mongo:
+    image: mongo:6.0
+    container_name: shared-mongo
+    restart: always
+    ports:
+      - "127.0.0.1:27017:27017" # Localhost only
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: user1
+      MONGO_INITDB_ROOT_PASSWORD: 12345
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - studydocs-network
+
+  mongo-init:
+    image: mongo:6.0
+    container_name: mongo-init
+    depends_on:
+      shared-mongo:
+        condition: service_healthy
+    networks:
+      - studydocs-network
+    entrypoint: >
+      /bin/bash -c "
+      mongosh --host shared-mongo:27017 --eval '
+        try {
+          rs.status();
+          print(\"Replica Set already initialized\");
+        } catch (e) {
+          print(\"Initializing Replica Set...\");
+          rs.initiate({
+            _id: \"rs0\",
+            members: [{ _id: 0, host: \"shared-mongo:27017\" }]
+          });
+          print(\"Replica Set initialized successfully\");
+        }
+      '
+      "
+
+  # ==========================================
+  # AUTH SERVICE
+  # ==========================================
+  auth-service:
+    image: soha18/studydocs:auth-2026-01-14
+    container_name: demo-auth-service
+    # No ports exposed
+    env_file:
+      - auth.env
+    depends_on:
+      shared-mysql:
+        condition: service_healthy
+    networks:
+      - studydocs-network
+    restart: unless-stopped
+
+  # ==========================================
+  # ACADEMIC SERVICE
+  # ==========================================
+  academic-service:
+    image: soha18/studydocs:academic-2026-14-1
+    container_name: academic-backend
+    # No ports exposed
+    env_file:
+      - academic.env
+    depends_on:
+      shared-mysql:
+        condition: service_healthy
+    networks:
+      - studydocs-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  # ==========================================
+  # USER SERVICE
+  # ==========================================
+  user-service:
+    image: lambaoduy862/studydocs:user-2026-01-16
+    container_name: user-service
+    # No ports exposed
+    env_file:
+      - user.env
+    depends_on:
+      shared-mongo:
+        condition: service_healthy
+    networks:
+      - studydocs-network
+
+  # ==========================================
+  # MEDIA SERVICE
+  # ==========================================
+  media-service:
+    image: minhhien6634/studydocs:media-2026-01-15
+    container_name: media-service
+    # No ports exposed
+    env_file:
+      - media.env
+    volumes:
+      - ./media/firebase-service-account.json:/app/firebase-service-account.json
+    depends_on:
+      shared-mongo:
+        condition: service_healthy
+    networks:
+      - studydocs-network
+
+networks:
+  studydocs-network:
+    external: true
+
+volumes:
+  mysql_data:
+  mongo_data:
+  redis_data:
