@@ -19,9 +19,9 @@
             String downloadUrl,
             Object previewDataView,
             UUID subjectId,
-            String subjectName,
+//            String subjectName,
             UUID universityId,
-            String universityName,
+//            String universityName,
             String uploaderName,
             Integer totalPages) { // Added totalPages
         public DocumentResponse(Document doc) {
@@ -39,9 +39,9 @@
                     null,
                     null,
                     null,
+//                    null,
                     null,
-                    null,
-                    null,
+//                    null,
                     null,
                     0); // Default 0
         }
@@ -60,9 +60,9 @@
                     doc.getUpdatedAt(),
                     downloadUrl,
                     previewDataView,
+//                    null,
                     null,
-                    null,
-                    null,
+//                    null,
                     null,
                     null,
                     0);
@@ -84,9 +84,9 @@
                     original.downloadUrl(),
                     original.previewDataView(),
                     subjectId,
-                    subjectName,
+//                    subjectName,
                     universityId,
-                    universityName,
+//                    universityName,
                     original.uploaderName(),
                     original.totalPages());
         }
@@ -106,9 +106,9 @@
                     downloadUrl,
                     previewDataView,
                     original.subjectId(),
-                    original.subjectName(),
+//                    original.subjectName(),
                     original.universityId(),
-                    original.universityName(),
+//                    original.universityName(),
                     original.uploaderName(),
                     totalPages != null ? totalPages : original.totalPages());
         }

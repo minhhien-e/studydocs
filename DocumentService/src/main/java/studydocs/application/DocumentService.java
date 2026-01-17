@@ -386,7 +386,7 @@ public class DocumentService {
             return responses;
         }
 
-        return responses.parallelStream().map(doc -> { // Use parallelStream to speed up multiple HTTP calls
+        return responses.stream().map(doc -> { // Use sequential stream to ensure SecurityContext propagation
             studydocs.dto.response.DocumentResponse enriched = doc;
 
             try {

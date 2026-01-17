@@ -109,9 +109,11 @@ public class UserDocumentController {
             throw new org.springframework.security.access.AccessDeniedException("Invalid User ID in Token");
         }
     }
-//    @GetMapping("/users/{userId}/total")
-//    public ResponseEntity<ApiResponse<Long>> getUserTotalUploads(
-//            @org.springframework.web.bind.annotation.PathVariable java.util.UUID userId) {
-//        return ResponseEntity.ok(ApiResponse.success(200, adminStatsService.getUserTotalUploads(userId)));
-//    }
+    // @GetMapping("/users/{userId}/total")
+    // public ResponseEntity<ApiResponse<Long>> getUserTotalUploads(
+    // @org.springframework.web.bind.annotation.PathVariable java.util.UUID userId)
+    // {
+    // return ResponseEntity.ok(ApiResponse.success(200,
+    // adminStatsService.getUserTotalUploads(userId)));
+    // }
 }
