@@ -37,7 +37,7 @@ public class DocumentClient {
     }
 
     public studydocs.dto.response.DocumentResponse getDocumentById(UUID documentId) {
-        String url = documentServiceUrl + "/public/" + documentId;
+        String url = documentServiceUrl + "/documents/public/" + documentId;
         ParameterizedTypeReference<ApiResponse<studydocs.dto.response.DocumentResponse>> type = new ParameterizedTypeReference<>() {
         };
 

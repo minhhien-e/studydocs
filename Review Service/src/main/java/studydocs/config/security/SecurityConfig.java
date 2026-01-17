@@ -21,28 +21,32 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 @EnableWebSecurity
 @EnableMethodSecurity // Cho phép dùng @PreAuthorize
 public class SecurityConfig {
-    @Bean
-    @ConditionalOnMissingBean(SecurityFilterChain.class)
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http,
-            AuthenticationEntryPoint authenticationEntryPoint,
-            AccessDeniedHandler accessDeniedHandler,
-            JwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF cho REST API
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless
-                // JWT
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/internal/**").permitAll()
-                        // Tất cả endpoints khác cần authentication
-                        .anyRequest().authenticated())
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(authenticationEntryPoint)
-                        .accessDeniedHandler(accessDeniedHandler))
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter)));
+        @Bean
+        @ConditionalOnMissingBean(SecurityFilterChain.class)
+        public SecurityFilterChain securityFilterChain(
+                        HttpSecurity http,
+                        AuthenticationEntryPoint authenticationEntryPoint,
+                        AccessDeniedHandler accessDeniedHandler,
+                        JwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
+                http
+                                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF cho REST API
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless
+                                // JWT
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/api/v1/internal/**", "/api/v1/reviews/public/**",
+                                                                "/api/v1/reviews/internal/**")
+                                                .permitAll()
+                                                // Tất cả endpoints khác cần authentication
+                                                .anyRequest().authenticated())
+                                .exceptionHandling(ex -> ex
+                                                .authenticationEntryPoint(authenticationEntryPoint)
+                                                .accessDeniedHandler(accessDeniedHandler))
+                                .oauth2ResourceServer(oauth2 -> oauth2
+                                                .jwt(jwt -> jwt
+                                                                .jwtAuthenticationConverter(
+                                                                                jwtAuthenticationConverter)));
 
-        return http.build();
-    }
+                return http.build();
+        }
 }
