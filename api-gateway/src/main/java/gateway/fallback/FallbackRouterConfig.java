@@ -24,8 +24,6 @@ public class FallbackRouterConfig {
                         handler::follow)
                 .route(RequestPredicates.path("/fallback/academic"),
                         handler::academic)
-                // .route(RequestPredicates.path("/fallback/search"),
-                // handler::search)
                 .route(RequestPredicates.path("/fallback/document"),
                         handler::document)
                 .route(RequestPredicates.path("/fallback/media"),

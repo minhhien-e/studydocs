@@ -1,36 +1,41 @@
-version: '3.8'
-
 services:
   api-gateway:
-    image: minhhien6634/studydocs:gateway-2026-01-15
+    build:
+    image: minhhien6634/studydocs/api-gateway:2026-01-17
     container_name: api-gateway
+    restart: unless-stopped
     ports:
       - "8080:8080"
     env_file:
-      - .env
-    depends_on:
-      - redis
-      - zipkin
+      - gateway.env
+    environment:
+      - SERVER_PORT=8080
     networks:
-      - microservices-network
+      - studydocs-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
-  redis:
-    image: redis:alpine
-    container_name: redis
-    restart: always
-    ports:
-      - "6379:6379"
-    networks:
-      - microservices-network
+  # redis:
+  #   image: redis:alpine
+  #   container_name: redis
+  #   restart: always
+  #   ports:
+  #     - "6379:6379"
+  #   networks:
+  #     - microservices-network
 
-  zipkin:
-    image: openzipkin/zipkin
-    container_name: zipkin
-    ports:
-      - "9411:9411"
-    networks:
-      - microservices-network
+  # zipkin:
+  #   image: openzipkin/zipkin
+  #   container_name: zipkin
+  #   ports:
+  #     - "9411:9411"
+  #   networks:
+  #     - microservices-network
 
 networks:
-  microservices-network:
-    driver: bridge
+  studydocs-network:
+    external: true

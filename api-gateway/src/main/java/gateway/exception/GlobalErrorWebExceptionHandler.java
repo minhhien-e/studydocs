@@ -20,7 +20,7 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     private static final Logger logger = LoggerFactory.getLogger(GlobalErrorWebExceptionHandler.class);
 
     public GlobalErrorWebExceptionHandler(ErrorAttributes errorAttributes, WebProperties.Resources resources,
-                                          ApplicationContext applicationContext, ServerCodecConfigurer serverCodecConfigurer) {
+            ApplicationContext applicationContext, ServerCodecConfigurer serverCodecConfigurer) {
         super(errorAttributes, resources, applicationContext);
         this.setMessageWriters(serverCodecConfigurer.getWriters());
         this.setMessageReaders(serverCodecConfigurer.getReaders());
@@ -32,15 +32,23 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     }
 
     private Mono<ServerResponse> renderErrorResponse(ServerRequest request) {
-        Map<String, Object> errorPropertiesMap = getErrorAttributes(request,
+        Map<String, Object> errorPropertiesMap = getErrorAttributes(
+                request,
                 org.springframework.boot.web.error.ErrorAttributeOptions.defaults());
 
-        logger.error("Error occurred: path={}, status={}, error={}", request.path(), errorPropertiesMap.get("status"), errorPropertiesMap.get("error"));
-        Throwable error = getError(request);
-        logger.error("Exception stack trace:", error);
+        int status = (int) errorPropertiesMap.getOrDefault("status", 500);
+        String traceId = request.headers().firstHeader("X-Trace-Id");
 
-        return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        Throwable error = getError(request);
+        logger.error("Error occurred: path={}, status={}", request.path(), status, error);
+
+        return ServerResponse.status(HttpStatus.valueOf(status))
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(errorPropertiesMap));
+                .bodyValue(gateway.response.ApiResponse.error(
+                        status,
+                        status,
+                        traceId != null ? traceId : "N/A"
+                ));
     }
+
 }
