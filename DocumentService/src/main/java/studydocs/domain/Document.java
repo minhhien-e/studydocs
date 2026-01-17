@@ -76,9 +76,13 @@ public class Document {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void update(String title, String description) {
-        this.title = title;
-        this.description = description;
+    public void update(String title, String description, String schoolYear) {
+        if (title != null)
+            this.title = title;
+        if (description != null)
+            this.description = description;
+        if (schoolYear != null)
+            this.schoolYear = schoolYear;
         this.updatedAt = LocalDateTime.now();
     }
 

@@ -38,12 +38,6 @@ public class AdminStatsController {
         return ResponseEntity.ok(ApiResponse.success(200, adminStatsService.getUserUploads(userId, period)));
     }
 
-    @GetMapping("/users/{userId}/total")
-    public ResponseEntity<ApiResponse<Long>> getUserTotalUploads(
-            @org.springframework.web.bind.annotation.PathVariable java.util.UUID userId) {
-        return ResponseEntity.ok(ApiResponse.success(200, adminStatsService.getUserTotalUploads(userId)));
-    }
-
     @GetMapping("/documents/total")
     public ResponseEntity<ApiResponse<Long>> getTotalDocuments() {
         return ResponseEntity.ok(ApiResponse.success(200, adminStatsService.getTotalDocuments()));

@@ -17,6 +17,7 @@ import studydocs.client.RemoteApiCaller;
 import studydocs.domain.Document;
 import studydocs.dto.projection.FileProjection;
 import studydocs.dto.request.UploadDocumentRequest;
+import studydocs.dto.request.UpdateDocumentRequest;
 import studydocs.dto.response.ApiResponse;
 import studydocs.exception.DocumentNotFoundException;
 import studydocs.exception.DocumentProcessingException;
@@ -47,7 +48,7 @@ public class DocumentService {
     @Value("${academic.service.url}")
     private String academicServiceUrl;
 
-    @Value("${review.service.url:http://localhost:9051}")
+    @Value("${review.service.url:http://localhost:8086}")
     private String reviewServiceUrl;
 
     @Transactional
@@ -92,7 +93,9 @@ public class DocumentService {
                 new ParameterizedTypeReference<>() {
                 });
 
-        if (responseEntity.statusCode() != 200) {
+        if (responseEntity.statusCode() != 200)
+
+        {
             document.markFailed("UploadService returned non-2xx: " +
                     responseEntity.statusCode());
             documentRepository.save(document);
@@ -111,6 +114,7 @@ public class DocumentService {
         } // Success case
         document.markUploaded();
         documentRepository.save(document);
+
         sendNotification(req.getUserId(), "Tải lên tài liệu thành công: " + req.getTitle());
 
         // Call Academic Service
@@ -131,18 +135,13 @@ public class DocumentService {
             } else {
                 log.warn("Skipping Academic Service call. UniversityId or MajorId is null. Req: {}", req);
             }
+        } catch (org.springframework.web.client.HttpServerErrorException.ServiceUnavailable e) {
+            log.warn("Academic Service unavailable (503). Skipping link for document {}.", documentId);
         } catch (Exception e) {
-            log.error("Failed to link document to Academic Service", e);
+            log.warn("Failed to link document to Academic Service: {}", e.getMessage());
         }
 
         return document;
-    }
-
-    @Transactional(readOnly = true)
-    public Document getDocumentById(UUID id) {
-        return documentRepository.findById(id)
-                .filter(doc -> !doc.getIsDeleted())
-                .orElseThrow(() -> new DocumentNotFoundException(id));
     }
 
     @Transactional(readOnly = true)
@@ -163,11 +162,12 @@ public class DocumentService {
     }
 
     @Transactional
-    public Document updateDocument(UUID id, UUID userId, String title, String description) {
+    public Document updateDocument(UUID id, UUID userId, UpdateDocumentRequest request) {
         Document document = documentRepository.findByIdAndUserId(id, userId)
                 .filter(doc -> !doc.getIsDeleted())
                 .orElseThrow(() -> new DocumentNotFoundException(id));
-        document.update(title, description);
+
+        document.update(request.getTitle(), request.getDescription(), request.getSchoolYear());
         return documentRepository.save(document);
     }
 
@@ -187,6 +187,16 @@ public class DocumentService {
                 .orElseThrow(() -> new DocumentNotFoundException(id));
         document.markAsDeleted();
         documentRepository.save(document);
+    }
+
+    @Transactional
+    public Document adminUpdateDocument(UUID id, UpdateDocumentRequest request) {
+        Document document = documentRepository.findById(id)
+                .filter(doc -> !doc.getIsDeleted())
+                .orElseThrow(() -> new DocumentNotFoundException(id));
+
+        document.update(request.getTitle(), request.getDescription(), request.getSchoolYear());
+        return documentRepository.save(document);
     }
 
     @Scheduled(fixedRate = 60000)
@@ -247,39 +257,57 @@ public class DocumentService {
     }
 
     @Transactional(readOnly = true)
+    public Document getDocumentById(UUID id) {
+        return documentRepository.findById(id)
+                .filter(doc -> !doc.getIsDeleted())
+                .orElseThrow(() -> new DocumentNotFoundException(id));
+    }
+
+    @Transactional(readOnly = true)
     public List<Document> getMostLikedDocuments(int limit) {
         try {
-            String url = reviewServiceUrl + "/internal/reactions/top-liked?limit=" + limit;
-            // ApiResponse<List<Map<String, Object>>> response = remoteApiCaller.get(
-            // url,
-            // new ParameterizedTypeReference<ApiResponse<List<Map<String, Object>>>>() {
-            // });
+            // Correct URL: /api/v1/reviews/internal/reactions/top-liked
+            String url = reviewServiceUrl + "/api/v1/reviews/internal/reactions/top-liked?limit=" + limit;
+            log.info("Fetching most liked documents from: {}", url);
 
-            // Temporary fix if remoteApiCaller.get is problematic with List<Map>:
-            // Use RestTemplate directly or simplified wrapper if available.
-            // But let's assume get works if I use correct type
             ApiResponse<List<Map<String, Object>>> response = remoteApiCaller.get(
                     url,
                     new ParameterizedTypeReference<ApiResponse<List<Map<String, Object>>>>() {
                     });
 
-            // Correction: I cannot use `get` if I am not sure.
-            // But I defined `InternalReviewController` with `@GetMapping("/top-liked")`.
-            // So I MUST use a GET call.
-            // If RemoteApiCaller doesn't have `get`, I am in trouble.
-            // Let's assume it has.
-            // Wait, I can see `remoteApiCaller.post` usages. I haven't seen `get`.
-            // I'll assume `get` signature is `get(url, responseType)`.
-
             // Response parsing
             if (response != null && response.data() != null) {
+                log.info("Received {} top liked documents from ReviewService (Raw Data: {})", response.data().size(),
+                        response.data());
                 List<UUID> docIds = response.data().stream()
-                        .map(m -> UUID.fromString((String) m.get("documentId")))
+                        .map(m -> {
+                            Object id = m.get("documentId");
+                            // Handle possible String or UUID type from JSON
+                            return id instanceof String ? UUID.fromString((String) id) : UUID.fromString(id.toString());
+                        })
                         .collect(java.util.stream.Collectors.toList());
-                return documentRepository.findAllById(docIds);
+
+                if (docIds.isEmpty()) {
+                    return List.of();
+                }
+
+                // Fetch documents keeping order if possible, or just fetch all
+                List<Document> docs = documentRepository.findAllById(docIds);
+
+                // Map found docs
+                java.util.Map<UUID, Document> docMap = docs.stream()
+                        .collect(java.util.stream.Collectors.toMap(Document::getId, d -> d));
+
+                // Return found documents in order
+                return docIds.stream()
+                        .map(docMap::get)
+                        .filter(java.util.Objects::nonNull)
+                        .collect(java.util.stream.Collectors.toList());
+            } else {
+                log.warn("ReviewService returned null response or empty data");
             }
         } catch (Exception e) {
-            log.error("Failed to fetch most liked docs", e);
+            log.error("Failed to get most liked documents: {}", e.getMessage(), e);
         }
         return List.of();
     }
@@ -372,7 +400,7 @@ public class DocumentService {
                 if (academicResp != null && academicResp.data() != null) {
                     studydocs.dto.response.AcademicDocumentInfo info = academicResp.data();
                     enriched = new studydocs.dto.response.DocumentResponse(enriched, info.subjectId(),
-                            info.universityId());
+                            info.universityId(), info.subjectName(), info.universityName());
                 }
             } catch (Exception e) {
                 log.warn("Failed to enrich document {} with academic info: {}", doc.id(), e.getMessage());

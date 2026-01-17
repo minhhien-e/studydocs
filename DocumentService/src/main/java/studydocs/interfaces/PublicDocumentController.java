@@ -16,7 +16,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/internal/documents")
+@RequestMapping("/api/v1/documents/public")
 @RequiredArgsConstructor
 public class PublicDocumentController {
 
@@ -37,13 +37,13 @@ public class PublicDocumentController {
                 responseList, docPage.getPageable(), docPage.getTotalElements())));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id:[0-9a-fA-F-]{36}}")
     public ResponseEntity<ApiResponse<String>> deleteDocument(@PathVariable UUID id) {
         documentService.deleteDocumentByAdmin(id);
         return ResponseEntity.ok(ApiResponse.success(200, "Document deleted by admin: " + id));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id:[0-9a-fA-F-]{36}}")
     public ResponseEntity<ApiResponse<DocumentResponse>> getDocumentById(@PathVariable UUID id) {
         Document document = documentService.getDocumentById(id);
 
@@ -90,7 +90,7 @@ public class PublicDocumentController {
         return ResponseEntity.ok(ApiResponse.success(200, response));
     }
 
-    @GetMapping("/{id}/exists")
+    @GetMapping("/{id:[0-9a-fA-F-]{36}}/exists")
     public ResponseEntity<ApiResponse<Boolean>> exists(@PathVariable UUID id) {
         boolean exists = documentService.existsByIdAndNotDeleted(id);
         return ResponseEntity.ok(ApiResponse.success(200, exists));

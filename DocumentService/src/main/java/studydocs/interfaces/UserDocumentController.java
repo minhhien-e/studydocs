@@ -50,9 +50,8 @@ public class UserDocumentController {
     @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
     public ResponseEntity<ApiResponse<DocumentResponse>> updateDocument(
             @PathVariable UUID id,
-            @RequestParam String title,
-            @RequestParam String description) {
-        Document document = documentService.updateDocument(id, getUserIdFromAuth(), title, description);
+            @RequestBody studydocs.dto.request.UpdateDocumentRequest request) {
+        Document document = documentService.updateDocument(id, getUserIdFromAuth(), request);
         return ResponseEntity.ok(ApiResponse.success(200, new DocumentResponse(document)));
     }
 
@@ -110,4 +109,9 @@ public class UserDocumentController {
             throw new org.springframework.security.access.AccessDeniedException("Invalid User ID in Token");
         }
     }
+//    @GetMapping("/users/{userId}/total")
+//    public ResponseEntity<ApiResponse<Long>> getUserTotalUploads(
+//            @org.springframework.web.bind.annotation.PathVariable java.util.UUID userId) {
+//        return ResponseEntity.ok(ApiResponse.success(200, adminStatsService.getUserTotalUploads(userId)));
+//    }
 }
