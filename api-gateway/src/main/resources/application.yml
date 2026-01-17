@@ -9,8 +9,8 @@ spring:
   cloud:
     gateway:
       httpclient:
-        connect-timeout: ${CONNECT_TIMEOUT}     # 60s – thời gian kết nối
-        response-timeout: ${RESPONE_TIMEOUT}
+        connect-timeout: ${CONNECT_TIMEOUT:60000}     # 60s – thời gian kết nối
+        response-timeout: ${RESPONE_TIMEOUT:120s}
       routes:
         # =========================
         # USER SERVICE
