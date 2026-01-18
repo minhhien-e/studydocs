@@ -4,5 +4,6 @@ public enum AssetStatus {
     PENDING,
     UPLOADING,
     UPLOADED,
-    FAILED
+    FAILED,
+    DELETED
 }

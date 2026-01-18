@@ -21,22 +21,17 @@ public class DeleteAssetByIdService implements DeleteAssetByIdUseCase {
 
     @Override
     public Void execute(DeleteAssetByIdCommand params) {
+        log.info("Request to delete asset: {}", params.assetId());
         var asset = assetWriter.getById(params.assetId());
-        if (asset.getStorageLocation() != null) {
-            try {
-                assetStoragePort.delete(asset.getStorageLocation().key(), asset.getStorageLocation().namespace());
-            } catch (Exception e) {
-                log.warn("Failed to delete asset storage file for assetId: {}. Proceeding to delete metadata. Error: {}",
-                        params.assetId(), e.getMessage());
-                publishAssetEventPort.publish(new AssetDeletionFailedPayload(
-                        asset.getStorageLocation().key(),
-                        asset.getStorageLocation().namespace(),
-                        e.getMessage()));
-            }
-        }
+        
+        // Soft delete: Mark as DELETED and save
+        asset.markAsDeleted();
+        
         try {
-            assetWriter.delete(asset);
+            assetWriter.save(asset);
+            log.info("Asset {} marked as DELETED in database.", params.assetId());
         } catch (Exception e) {
+            log.error("Failed to mark asset {} as DELETED: {}", params.assetId(), e.getMessage());
             throw new studydocs.media.domain.exception.asset.DeleteFailedException("Failed to delete asset metadata: " + e.getMessage());
         }
         return null;

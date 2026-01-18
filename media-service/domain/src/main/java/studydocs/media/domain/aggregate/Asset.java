@@ -45,10 +45,6 @@ public class Asset extends AggregateRoot<UUID> {
         asset.status = AssetStatus.PENDING;
         asset.uploadProgress = 0;
         asset.creationTime = AssetCreationTime.now();
-
-        asset.addDomainEvent(new AssetUploadedEvent(
-                asset.getId(),
-                asset.uploaderId));
         return asset;
     }
 
@@ -84,6 +80,10 @@ public class Asset extends AggregateRoot<UUID> {
     public void failUpload() {
         this.status = AssetStatus.FAILED;
         this.uploadProgress = 0;
+    }
+
+    public void markAsDeleted() {
+        this.status = AssetStatus.DELETED;
     }
 
     public static Asset reconstruct(
