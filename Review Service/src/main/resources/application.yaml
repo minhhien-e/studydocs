@@ -11,13 +11,22 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${SECURITY_OAUTH2_JWT_ISSUER_URI:http://10.10.3.165:8080/api/v1/auth/}
-          jwk-set-uri: ${AUTH_SERVICE_JWKS_URL:http://10.10.3.165:8080/api/v1/auth/.well-known/jwks.json}
-
+          issuer-uri: ${SECURITY_OAUTH2_JWT_ISSUER_URI:http://192.168.1.244:8080/api/v1/auth/}
+          jwk-set-uri: ${AUTH_SERVICE_JWKS_URL:http://192.168.1.244:8080/api/v1/auth/.well-known/jwks.json}
+  config:
+    name: notification-service
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    port: ${RABBIT_PORT}
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
+    virtual-host: ${RABBIT_VIRTUAL_HOST}
+    ssl:
+      enabled: true
 
 document:
   service:
-    url: ${DOCUMENT_SERVICE_URL:http://10.10.3.165:8080/api/v1}
+    url: ${DOCUMENT_SERVICE_URL:http://192.168.1.244:8080/api/v1}
 
 notification:
   service:

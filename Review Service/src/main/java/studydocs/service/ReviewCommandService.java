@@ -43,12 +43,11 @@ public class ReviewCommandService {
         reviewRepository.save(review);
 
         // Send Notification
-        notificationService.send(
-                userId, // Recipient
-                userId, // Sender
-                "Đánh giá mới",
-                "Bạn đã viết một đánh giá cho tài liệu " + req.getDocumentId(),
-                "REVIEW_CREATED");
+        notificationService.sendReviewCreated(new studydocs.config.dto.ReviewCreatedPayload(
+                review.getId(),
+                req.getDocumentId(),
+                userId,
+                req.getComment()));
 
         return new ReviewResponse(review);
     }

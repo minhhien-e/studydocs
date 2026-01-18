@@ -47,12 +47,10 @@ public class DocumentReactionService {
                 try {
                     var doc = documentClient.getDocumentById(documentId);
                     if (doc != null && !doc.getUserId().equals(userId)) {
-                        notificationService.send(
-                                doc.getUserId(),
+                        notificationService.sendDocumentLiked(new studydocs.config.dto.DocumentLikedPayload(
+                                documentId,
                                 userId,
-                                "Tương tác mới",
-                                "Ai đó đã thích tài liệu của bạn",
-                                "DOCUMENT_REACTION");
+                                doc.getUserId()));
                     }
                 } catch (Exception e) {
                     // Ignore if fetch fails

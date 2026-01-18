@@ -38,15 +38,7 @@ public class ReviewReactionService {
             reactionRepo.save(new ReviewReaction(reviewId, userId, type));
             if (type == ReviewReaction.ReactionType.LIKE) {
                 review.incrementLike();
-                // Notify author if not self
-                if (!review.getUserId().equals(userId)) {
-                    notificationService.send(
-                            review.getUserId(),
-                            userId,
-                            "Tương tác mới",
-                            "Ai đó đã thích đánh giá của bạn",
-                            "REVIEW_REACTION");
-                }
+                // Notify author if not self logic removed as per request
             } else
                 review.incrementDislike();
 
