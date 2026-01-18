@@ -21,7 +21,7 @@ spring:
               - DELETE
               - OPTIONS
             allowedHeaders: "*"
-            allowCredentials: true
+            allowCredentials: ${CORS_ALLOW_CREDENTIALS:false}
 
       httpclient:
         connect-timeout: ${RESILIENCE_CONNECT_TIMEOUT:5000}
@@ -74,6 +74,14 @@ spring:
               args:
                 name: authenticationCircuitBreaker
                 fallbackUri: forward:/fallback/authentication
+        - id: authentication-service-internal
+          uri: ${AUTHENTICATION_SERVICE_URI}
+          predicates:
+            - Path=${AUTHENTICATION_SERVICE_INTERNAL_PATH}
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: authenticationCircuitBreaker
 
         # --- NOTIFICATION SERVICE ---
         - id: notification-service
