@@ -1,0 +1,27 @@
+server:
+  address: ${SERVER_ADDRESS:0.0.0.0}
+  port: ${SERVER_PORT:8082}
+
+spring:
+  application:
+    name: user-service
+
+  data:
+    mongodb:
+      uri: ${MONGO_URI}
+      uuid-representation: standard
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${AUTH_SERVICE_JWKS_URL}
+          issuer-uri: ${AUTH_SERVICE_ISSUER}
+
+notification:
+  service:
+    url: ${NOTIFICATION_SERVICE_URL:http://notification-service/api/v1/notifications/user-profiles}
+
+upload-file:
+  service:
+    url: ${UPLOADFILE_SERVICE_URL:http://notification-service/api/v1/notifications/user-profiles}
