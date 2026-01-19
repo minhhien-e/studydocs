@@ -1,0 +1,261 @@
+# =========================
+# SERVER
+# =========================
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: ${APP_NAME:api-gateway}
+
+  # =========================
+  # GLOBAL CORS
+  # =========================
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: ${CORS_ALLOWED_ORIGINS:*}
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: ${CORS_ALLOW_CREDENTIALS:false}
+
+      httpclient:
+        connect-timeout: ${RESILIENCE_CONNECT_TIMEOUT:5000}
+        response-timeout: ${RESILIENCE_RESPONSE_TIMEOUT:5000}
+        pool:
+          type: ${NETTY_POOL_TYPE:FIXED}
+          max-connections: ${NETTY_POOL_MAX_CONNECTIONS:1000}
+          acquire-timeout: ${NETTY_POOL_ACQUIRE_TIMEOUT:45000}
+
+      # =========================
+      # ROUTES
+      # =========================
+      routes:
+        # --- USER SERVICE ---
+        - id: user-service
+          uri: ${USER_SERVICE_URI}
+          predicates:
+            - Path=${USER_SERVICE_PATH}
+          filters:
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: ${RATELIMIT_REPLENISH_RATE:10}
+                redis-rate-limiter.burstCapacity: ${RATELIMIT_BURST_CAPACITY:20}
+            - name: CircuitBreaker
+              args:
+                name: userCircuitBreaker
+                fallbackUri: forward:/fallback/users
+
+        - id: user-service-internal
+          uri: ${USER_SERVICE_URI}
+          predicates:
+            - Path=${USER_SERVICE_INTERNAL_PATH}
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: userCircuitBreaker
+
+        # --- AUTH SERVICE ---
+        - id: authentication-service
+          uri: ${AUTHENTICATION_SERVICE_URI}
+          predicates:
+            - Path=${AUTHENTICATION_SERVICE_PATH}
+          filters:
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: ${RATELIMIT_REPLENISH_RATE:10}
+                redis-rate-limiter.burstCapacity: ${RATELIMIT_BURST_CAPACITY:20}
+            - name: CircuitBreaker
+              args:
+                name: authenticationCircuitBreaker
+                fallbackUri: forward:/fallback/authentication
+
+        - id: authentication-service-internal
+          uri: ${AUTHENTICATION_SERVICE_URI}
+          predicates:
+            - Path=${AUTHENTICATION_SERVICE_INTERNAL_PATH}
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: authenticationCircuitBreaker
+
+        # --- NOTIFICATION SERVICE ---
+        - id: notification-service
+          uri: ${NOTIFICATION_SERVICE_URI}
+          predicates:
+            - Path=${NOTIFICATION_SERVICE_PATH}
+          filters:
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: ${RATELIMIT_REPLENISH_RATE:10}
+                redis-rate-limiter.burstCapacity: ${RATELIMIT_BURST_CAPACITY:20}
+            - name: CircuitBreaker
+              args:
+                name: notificationCircuitBreaker
+                fallbackUri: forward:/fallback/notifications
+
+        # --- REVIEW SERVICE ---
+        - id: review-service
+          uri: ${REVIEW_SERVICE_URI}
+          predicates:
+            - Path=${REVIEW_SERVICE_PATH}
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: reviewCircuitBreaker
+                fallbackUri: forward:/fallback/review
+
+        # --- FOLLOW SERVICE ---
+        - id: follow-service
+          uri: ${FOLLOW_SERVICE_URI}
+          predicates:
+            - Path=${FOLLOW_SERVICE_PATH}
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: followCircuitBreaker
+                fallbackUri: forward:/fallback/follow
+
+        # --- ACADEMIC SERVICE ---
+        - id: academic-service
+          uri: ${ACADEMIC_SERVICE_URI}
+          predicates:
+            - Path=${ACADEMIC_SERVICE_PATH}
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: academicCircuitBreaker
+                fallbackUri: forward:/fallback/academic
+
+        # --- SEARCH SERVICE ---
+        - id: search-service
+          uri: ${SEARCH_SERVICE_URI}
+          predicates:
+            - Path=${SEARCH_SERVICE_PATH}
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: searchCircuitBreaker
+                fallbackUri: forward:/fallback/search
+
+        # --- DOCUMENT SERVICE ---
+        - id: document-service
+          uri: ${DOCUMENT_SERVICE_URI}
+          predicates:
+            - Path=${DOCUMENT_SERVICE_PATH}
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: documentCircuitBreaker
+                fallbackUri: forward:/fallback/document
+
+        - id: document-service-internal
+          uri: ${DOCUMENT_SERVICE_URI}
+          predicates:
+            - Path=${DOCUMENT_SERVICE_INTERNAL_PATH}
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: documentCircuitBreaker
+
+        # --- MEDIA SERVICE ---
+        - id: media-service
+          uri: ${MEDIA_SERVICE_URI}
+          predicates:
+            - Path=${MEDIA_SERVICE_PATH}
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: mediaCircuitBreaker
+                fallbackUri: forward:/fallback/media
+
+        - id: media-service-internal
+          uri: ${MEDIA_SERVICE_URI}
+          predicates:
+            - Path=${MEDIA_SERVICE_INTERNAL_PATH}
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: mediaCircuitBreaker
+
+  # =========================
+  # REDIS (Rate Limiter)
+  # =========================
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  # =========================
+  # SECURITY (JWT Validation)
+  # =========================
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${AUTH_SERVICE_JWKS_URL}
+          issuer-uri: ${AUTH_SERVICE_ISSUER}
+
+gateway:
+  security:
+    public-paths: ${GATEWAY_PUBLIC_PATHS}
+
+# =========================
+# LOGGING
+# =========================
+logging:
+  level:
+    org.springframework.cloud.gateway: ${LOG_GATEWAY:INFO}
+    reactor.netty.http.server: ${LOG_NETTY:INFO}
+    io.github.resilience4j: ${LOG_RESILIENCE4J:INFO}
+    org.springframework.security: ${LOG_SECURITY:INFO}
+    org.springframework.boot.actuate: WARN
+    io.micrometer: WARN
+
+# =========================
+# ACTUATOR & TRACING (FIX)
+# =========================
+management:
+  server:
+    port: ${ACTUATOR_PORT}
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  tracing:
+    enabled: true
+    sampling:
+      probability: ${PROBABILITY}
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_BASE_URL:http://localhost:9411}/api/v2/spans
+
+# =========================
+# RESILIENCE4J
+# =========================
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: ${RESILIENCE_CB_SLIDING_WINDOW_SIZE:10}
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: ${RESILIENCE_CB_PERMITTED_CALLS_HALF_OPEN:3}
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: ${RESILIENCE_CB_WAIT_DURATION_OPEN:5s}
+        failureRateThreshold: ${RESILIENCE_CB_FAILURE_RATE_THRESHOLD:50}
+        eventConsumerBufferSize: 10
+
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: ${RESILIENCE_TIMEOUT_DURATION:5s}
