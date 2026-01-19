@@ -29,21 +29,48 @@ public class UserDocumentController {
 
     private final com.fasterxml.jackson.databind.ObjectMapper objectMapper;
 
-    @PostMapping(consumes = "multipart/form-data")
-    // @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
-    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
-    public ResponseEntity<ApiResponse<DocumentResponse>> uploadDocument(
-            @RequestPart("data") String dataString,
-            @RequestPart("file") MultipartFile file) throws JsonProcessingException {
-        UploadDocumentRequest data = objectMapper.readValue(dataString, UploadDocumentRequest.class);
-        // Force UserID from Auth
-        data.setUserId(getUserIdFromAuth());
+//    @PostMapping(consumes = "multipart/form-data")
+//    // @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+//    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+//    public ResponseEntity<ApiResponse<DocumentResponse>> uploadDocument(
+//            @RequestPart("data") String dataString,
+//            @RequestPart("file") MultipartFile file) throws JsonProcessingException {
+//        UploadDocumentRequest data = objectMapper.readValue(dataString, UploadDocumentRequest.class);
+//        // Force UserID from Auth
+//        data.setUserId(getUserIdFromAuth());
+//
+//        log.info("Received upload request. Data: {}, File: {}", data, file.getOriginalFilename());
+//        Document doc = documentService.createAndUploadDocument(data, file);
+//        return ResponseEntity.accepted()
+//                .body(ApiResponse.success(200, new DocumentResponse(doc)));
+//    }
+@PostMapping(consumes = "multipart/form-data")
+@PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+public ResponseEntity<ApiResponse<DocumentResponse>> uploadDocument(
+        @RequestPart("data") String dataString,
+        @RequestPart("file") MultipartFile file) throws JsonProcessingException {
 
-        log.info("Received upload request. Data: {}, File: {}", data, file.getOriginalFilename());
-        Document doc = documentService.createAndUploadDocument(data, file);
-        return ResponseEntity.accepted()
-                .body(ApiResponse.success(202, new DocumentResponse(doc)));
-    }
+    UploadDocumentRequest data = objectMapper.readValue(dataString, UploadDocumentRequest.class);
+    data.setUserId(getUserIdFromAuth());
+
+    log.info("Received upload request. Data: {}, File: {}", data, file.getOriginalFilename());
+
+    // 1. Upload & lưu DB
+    Document doc = documentService.createAndUploadDocument(data, file);
+
+    // 2. BLOCK chờ media xử lý xong
+    Document completedDoc = documentService.waitUntilUploaded(doc.getId());
+
+    // 3. Enrich
+    var enriched = documentService.enrichDocumentResponses(
+            List.of(new DocumentResponse(completedDoc))
+    );
+
+    return ResponseEntity.ok(
+            ApiResponse.success(200, enriched.get(0))
+    );
+}
+
 
     @PutMapping("/{id}")
     // @PreAuthorize("hasAuthority('SCOPE_WRITE_USER')")

@@ -42,9 +42,6 @@ public class DocumentService {
     @Value("${upload.service.url}")
     private String uploadServiceUrl;
 
-    @Value("${notification.service.url}")
-    private String notificationServiceUrl;
-
     @Value("${academic.service.url}")
     private String academicServiceUrl;
 
@@ -99,8 +96,7 @@ public class DocumentService {
             document.markFailed("UploadService returned non-2xx: " +
                     responseEntity.statusCode());
             documentRepository.save(document);
-            sendNotification(req.getUserId(), "Document upload failed: " +
-                    responseEntity.statusCode());
+
             throw new DocumentProcessingException("UploadService trả về lỗi: " +
                     responseEntity.statusCode());
         }
@@ -115,14 +111,13 @@ public class DocumentService {
         document.markUploaded();
         documentRepository.save(document);
 
-        sendNotification(req.getUserId(), "Tải lên tài liệu thành công: " + req.getTitle());
-
         // Call Academic Service
         try {
             if (req.getUniversityId() != null && req.getSubjectId() != null) {
+                log.warn("------------------------------------" + req.getSubjectId() + "--" + req.getUniversityId());
                 Map<String, Object> academicBody = new HashMap<>();
-                academicBody.put("universityId", req.getUniversityId());
                 academicBody.put("subjectId", req.getSubjectId());
+                academicBody.put("universityId", req.getUniversityId());
                 academicBody.put("documentId", documentId);
                 log.info("Preparing to call Academic Service. URL: {}, Body: {}", academicServiceUrl, academicBody);
                 var responseLink = remoteApiCaller.post(
@@ -214,32 +209,6 @@ public class DocumentService {
 
     public boolean existsByIdAndNotDeleted(UUID id) {
         return documentRepository.existsByIdAndIsDeletedFalse(id);
-    }
-
-    private void sendNotification(UUID userId, String message) {
-        try {
-            studydocs.dto.request.NotificationRequest notificationBody = studydocs.dto.request.NotificationRequest
-                    .builder()
-                    .userId(userId)
-                    .senderId(userId)
-                    .subject("Thông báo từ hệ thống")
-                    .body(message)
-                    .type("UPLOAD_COMPLETED")
-                    .isRead(false)
-                    .build();
-
-            remoteApiCaller.post(
-                    notificationServiceUrl,
-                    notificationBody,
-                    MediaType.APPLICATION_JSON,
-                    new ParameterizedTypeReference<ApiResponse<Object>>() {
-                    });
-            log.info("Sent notification to user {}", userId);
-        } catch (Exception e) {
-            // Log warning but don't fail the transaction since DB update is already
-            // committed/flushed
-            log.warn("Non-blocking error: Could not send notification -> {}", e.getMessage());
-        }
     }
 
     @Transactional(readOnly = true)
@@ -391,7 +360,8 @@ public class DocumentService {
 
             try {
                 // 1. Call Academic Service
-                String academicUrl = academicServiceUrl + "/info-by-document?documentId=" + doc.id();
+                // /api/v1/academics/documents/public/info-by-document?documentId=" + doc.id()
+                String academicUrl = academicServiceUrl + "/public/info-by-document?documentId=" + doc.id();
                 ApiResponse<studydocs.dto.response.AcademicDocumentInfo> academicResp = remoteApiCaller.get(
                         academicUrl,
                         new ParameterizedTypeReference<ApiResponse<studydocs.dto.response.AcademicDocumentInfo>>() {
@@ -400,7 +370,7 @@ public class DocumentService {
                 if (academicResp != null && academicResp.data() != null) {
                     studydocs.dto.response.AcademicDocumentInfo info = academicResp.data();
                     enriched = new studydocs.dto.response.DocumentResponse(enriched, info.subjectId(),
-                            info.universityId(), info.subjectName(), info.universityName());
+                            info.universityId());
                 }
             } catch (Exception e) {
                 log.warn("Failed to enrich document {} with academic info: {}", doc.id(), e.getMessage());
@@ -422,4 +392,37 @@ public class DocumentService {
             return enriched;
         }).collect(java.util.stream.Collectors.toList());
     }
+
+    public Document waitUntilUploaded(UUID docId) {
+
+        int maxRetry = 20; // 20 * 1s = 20s timeout
+        int count = 0;
+
+        while (count < maxRetry) {
+            Document doc = documentRepository.findById(docId)
+                    .orElseThrow(() -> new RuntimeException("Document not found"));
+
+            // THÀNH CÔNG
+            if (doc.getStatus() == Document.Status.UPLOADED) {
+                return doc;
+            }
+
+            // THẤT BẠI
+            if (doc.getStatus() == Document.Status.FAILED) {
+                throw new RuntimeException("Upload failed from Media Service");
+            }
+
+            try {
+                Thread.sleep(1000); // chờ 1s rồi check lại
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Thread interrupted");
+            }
+
+            count++;
+        }
+
+        throw new RuntimeException("Upload timeout - Media service too slow");
+    }
+
 }
