@@ -121,7 +121,7 @@ public class DocumentService {
                 academicBody.put("documentId", documentId);
                 log.info("Preparing to call Academic Service. URL: {}, Body: {}", academicServiceUrl, academicBody);
                 var responseLink = remoteApiCaller.post(
-                        academicServiceUrl,
+                        academicServiceUrl + "/documents",
                         academicBody,
                         MediaType.APPLICATION_JSON,
                         new ParameterizedTypeReference<ApiResponse<Object>>() {
