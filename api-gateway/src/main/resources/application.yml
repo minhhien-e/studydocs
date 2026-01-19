@@ -1,3 +1,6 @@
+# =========================
+# SERVER
+# =========================
 server:
   port: ${SERVER_PORT:8080}
 
@@ -50,6 +53,7 @@ spring:
               args:
                 name: userCircuitBreaker
                 fallbackUri: forward:/fallback/users
+
         - id: user-service-internal
           uri: ${USER_SERVICE_URI}
           predicates:
@@ -74,6 +78,7 @@ spring:
               args:
                 name: authenticationCircuitBreaker
                 fallbackUri: forward:/fallback/authentication
+
         - id: authentication-service-internal
           uri: ${AUTHENTICATION_SERVICE_URI}
           predicates:
@@ -153,6 +158,7 @@ spring:
               args:
                 name: documentCircuitBreaker
                 fallbackUri: forward:/fallback/document
+
         - id: document-service-internal
           uri: ${DOCUMENT_SERVICE_URI}
           predicates:
@@ -172,6 +178,7 @@ spring:
               args:
                 name: mediaCircuitBreaker
                 fallbackUri: forward:/fallback/media
+
         - id: media-service-internal
           uri: ${MEDIA_SERVICE_URI}
           predicates:
@@ -212,18 +219,29 @@ logging:
     reactor.netty.http.server: ${LOG_NETTY:INFO}
     io.github.resilience4j: ${LOG_RESILIENCE4J:INFO}
     org.springframework.security: ${LOG_SECURITY:INFO}
+    org.springframework.boot.actuate: WARN
+    io.micrometer: WARN
 
+# =========================
+# ACTUATOR & TRACING (FIX)
+# =========================
 management:
+  server:
+    port: ${ACTUATOR_PORT}
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
   tracing:
     enabled: true
     sampling:
-      probability: 1.0
+      probability: ${PROBABILITY}
   zipkin:
     tracing:
       endpoint: ${ZIPKIN_BASE_URL:http://localhost:9411}/api/v2/spans
 
 # =========================
-# RESILIENCE4J GLOBAL DEFAULT
+# RESILIENCE4J
 # =========================
 resilience4j:
   circuitbreaker:
@@ -236,6 +254,7 @@ resilience4j:
         waitDurationInOpenState: ${RESILIENCE_CB_WAIT_DURATION_OPEN:5s}
         failureRateThreshold: ${RESILIENCE_CB_FAILURE_RATE_THRESHOLD:50}
         eventConsumerBufferSize: 10
+
   timelimiter:
     configs:
       default:
