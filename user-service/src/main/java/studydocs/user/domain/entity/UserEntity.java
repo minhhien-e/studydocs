@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -27,6 +29,7 @@ public class UserEntity {
     private String address;
     private String school;
     private boolean isPrivate;
+    private List<UUID> savedDocumentIds = new ArrayList<>();
 
     public UserEntity(UUID id, String fullName, String username, String email,
                       String phoneNumber, String avatarUrl, String gender,
@@ -41,7 +44,7 @@ public class UserEntity {
         this.dateOfBirth = dateOfBirth;
         this.address = address;
         this.isPrivate = false;
+        this.savedDocumentIds = new ArrayList<>();
     }
-
 }
 
