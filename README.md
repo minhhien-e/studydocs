@@ -124,22 +124,22 @@ The error codes are defined in the `ErrorCode` enum:
 
 | Code | ID | HTTP Status | Description |
 |------|----|-------------|-------------|
-| INTERNAL_SERVER_ERROR | -1 | 500 | Internal server error |
-| BAD_REQUEST | 101 | 400 | Bad request |
-| UNAUTHORIZED | 102 | 401 | Unauthorized |
-| FORBIDDEN | 103 | 403 | Forbidden |
-| NOT_FOUND | 104 | 404 | Not found |
-| USER_NOT_FOUND | 110 | 404 | User not found |
-| USER_ALREADY_EXISTS | 111 | 409 | User already exists |
-| INVALID_USER_INPUT | 112 | 400 | Invalid user input |
-| TOKEN_EXPIRED | 120 | 401 | Token expired |
-| TOKEN_INVALID | 121 | 401 | Token invalid |
-| OPERATION_NOT_ALLOWED | 130 | 403 | Operation not allowed |
-| INVALID_RANGE | 131 | 400 | Invalid range |
-| SAVE_FAILED | 140 | 500 | Save failed |
-| UPDATE_FAILED | 141 | 500 | Update failed |
-| DELETE_FAILED | 142 | 500 | Delete failed |
-| NO_HANDLER | 150 | 204 | No handler |
-| HTTP_FAIL | 160 | 417 | HTTP fail |
+| INTERNAL_SERVER_ERROR | -1 | 500 | Lỗi nội bộ máy chủ: xảy ra lỗi không mong muốn trong quá trình xử lý yêu cầu. |
+| BAD_REQUEST | 101 | 400 | Yêu cầu không hợp lệ: dữ liệu đầu vào không đúng định dạng hoặc thiếu thông tin. |
+| UNAUTHORIZED | 102 | 401 | Không được xác thực: token không hợp lệ hoặc chưa cung cấp token. |
+| FORBIDDEN | 103 | 403 | Bị từ chối truy cập: người dùng không có quyền thực hiện hành động này. |
+| NOT_FOUND | 104 | 404 | Không tìm thấy tài nguyên: endpoint hoặc dữ liệu yêu cầu không tồn tại. |
+| USER_NOT_FOUND | 110 | 404 | Không tìm thấy người dùng: ID người dùng không tồn tại trong hệ thống. |
+| USER_ALREADY_EXISTS | 111 | 409 | Người dùng đã tồn tại: email hoặc tên người dùng đã được đăng ký. |
+| INVALID_USER_INPUT | 112 | 400 | Dữ liệu người dùng không hợp lệ: các trường nhập không đáp ứng quy tắc xác thực. |
+| TOKEN_EXPIRED | 120 | 401 | Token đã hết hạn: người dùng cần đăng nhập lại để lấy token mới. |
+| TOKEN_INVALID | 121 | 401 | Token không hợp lệ: token bị thay đổi hoặc không đúng định dạng. |
+| OPERATION_NOT_ALLOWED | 130 | 403 | Hoạt động không được phép: hành động vi phạm quy tắc nghiệp vụ. |
+| INVALID_RANGE | 131 | 400 | Khoảng giá trị không hợp lệ: các tham số phạm vi không hợp lý. |
+| SAVE_FAILED | 140 | 500 | Lưu dữ liệu thất bại: lỗi khi ghi thông tin vào cơ sở dữ liệu. |
+| UPDATE_FAILED | 141 | 500 | Cập nhật dữ liệu thất bại: lỗi khi sửa thông tin trong cơ sở dữ liệu. |
+| DELETE_FAILED | 142 | 500 | Xóa dữ liệu thất bại: lỗi khi xóa bản ghi trong cơ sở dữ liệu. |
+| NO_HANDLER | 150 | 204 | Không có handler: không có hành động nào được thực thi cho yêu cầu này. |
+| HTTP_FAIL | 160 | 417 | Yêu cầu HTTP thất bại: máy chủ trả về trạng thái không mong đợi. |
 
 *This README was generated based on the structure and style of the Notification Service documentation, adapted for the User Service.*
