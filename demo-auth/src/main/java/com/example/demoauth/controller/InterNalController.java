@@ -1,5 +1,6 @@
 package com.example.demoauth.controller;
 
+import com.example.demoauth.dto.OtpResponseDto;
 import com.example.demoauth.service.ForgotPasswordService;
 import com.example.demoauth.shared.web.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/auth/internal")
+@RequestMapping("/api/v1/internal/auth")
 @RequiredArgsConstructor
 public class InterNalController {
 
@@ -17,8 +18,8 @@ public class InterNalController {
 
     // Notification Service gọi API này để lấy mã OTP gửi mail
     @GetMapping("/get-otp")
-    public ApiResponse<String> getOtpForNotification(@RequestParam String email) {
-        String otp = forgotPasswordService.getOTP(email);
-        return ApiResponse.success(otp != null ? otp : "OTP không tồn tại");
+    public ApiResponse<OtpResponseDto> getOtpForNotification(@RequestParam String email) {
+        OtpResponseDto otp = forgotPasswordService.getOTP(email);
+        return ApiResponse.success(otp);
     }
 }

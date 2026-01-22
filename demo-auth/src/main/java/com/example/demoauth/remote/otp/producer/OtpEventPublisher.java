@@ -1,14 +1,15 @@
-package studydocs.notification.publisher.otp.producer;
+package com.example.demoauth.remote.otp.producer;
 
+import com.example.demoauth.remote.PublishNotificationEventPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
-import studydocs.notification.publisher.otp.config.OtpRabbitConfig;
-import studydocs.notification.publisher.otp.dto.OtpSentPayload;
+import com.example.demoauth.remote.otp.config.OtpRabbitConfig;
+import com.example.demoauth.remote.otp.dto.OtpSentPayload;
 
 @Component
 @RequiredArgsConstructor
-public class OtpEventPublisher {
+public class OtpEventPublisher  implements PublishNotificationEventPort {
 
     private final RabbitTemplate rabbitTemplate;
 

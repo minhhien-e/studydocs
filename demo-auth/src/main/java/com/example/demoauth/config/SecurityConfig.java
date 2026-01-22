@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .securityMatcher("/api/**") // chỉ áp dụng cho /api/*
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll() // login, v.v.
+                        .requestMatchers("/api/v1/internal/auth/**").permitAll() // internal endpoints
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

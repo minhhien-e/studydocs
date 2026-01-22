@@ -35,7 +35,7 @@ public class FacultyController {
      * Tạo mới khoa
      */
     @PostMapping
-    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') ")
     public FacultyResponse createFaculty(@Valid @RequestBody FacultyCreateRequest request) {
         return facultyService.createFaculty(request);
     }

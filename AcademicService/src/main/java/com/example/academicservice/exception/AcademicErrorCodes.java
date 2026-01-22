@@ -52,6 +52,6 @@ public final class AcademicErrorCodes {
     public static final int INVALID_UUID = 213;
 
     /** Unknown academic error (fallback). */
-    public static final int UNKNOWN_ACADEMIC_ERROR = -1;
+    public static final int UNKNOWN_ACADEMIC_ERROR = 299;
 }
 

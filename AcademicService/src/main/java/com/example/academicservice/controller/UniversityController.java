@@ -34,7 +34,7 @@ public class UniversityController {
      * Tạo mới trường đại học
      */
     @PostMapping
-    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') ")
     public UniversityResponse createUniversity(@Valid @RequestBody UniversityCreateRequest request) {
         return universityService.createUniversity(request);
     }
@@ -63,7 +63,7 @@ public class UniversityController {
      * Xóa trường đại học theo ID
      */
     @DeleteMapping("/id/{id}")
-    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ROLE_ADMIN')")
     public void deleteUniversityById(@PathVariable UUID id) {
         universityService.deleteUniversityById(id);
     }
@@ -72,7 +72,7 @@ public class UniversityController {
      * Xóa trường đại học theo slug
      */
     @DeleteMapping("/slug/{slug}")
-    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ROLE_ADMIN')")
     public void deleteUniversityBySlug(@PathVariable String slug) {
         universityService.deleteUniversityBySlug(slug);
     }

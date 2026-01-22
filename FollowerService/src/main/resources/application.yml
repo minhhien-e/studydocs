@@ -9,6 +9,15 @@ spring:
     password: ${DB_MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    port: ${RABBIT_PORT}
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
+    virtual-host: ${RABBIT_VIRTUAL_HOST}
+    ssl:
+      enabled: true
+
   flyway:
     enabled: true
     locations: classpath:db/migration

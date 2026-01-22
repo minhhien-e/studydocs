@@ -13,4 +13,7 @@ public interface UniversityRepository extends JpaRepository<University, UUID>, J
 
     //Tìm kiếm theo slug
     Optional<University> findBySlug(String slug);
+
+    //Tìm kiếm theo code
+    Optional<University> findByCode(String code);
 }

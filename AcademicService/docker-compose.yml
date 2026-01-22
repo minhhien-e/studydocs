@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   academic-service:
-    image: soha18/studydocs:academic-2026-14-1
+    image: soha18/studydocs:academic-2026-01-21
     container_name: academic-backend
     ports:
       - "8083:8080" # Map 8083 (Host) -> 8080 (Container)

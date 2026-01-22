@@ -70,25 +70,27 @@ public class UniversityService {
     public UniversityResponse createUniversity(UniversityCreateRequest request) {
         log.info("Creating university with name: {}", request.getName());
 
-        // Kiểm tra slug đã tồn tại chưa
+        // ✅ Sinh slug từ name
         String slug = StringUtil.toSlug(request.getName());
+
+        // Check slug trùng
         if (universityRepository.findBySlug(slug).isPresent()) {
             throw new DuplicateResourceException("Trường đại học với slug: " + slug + " đã tồn tại");
         }
 
-        // Note: Kiểm tra code đã tồn tại có thể bổ sung thêm repository method nếu cần
+        // Check code trùng
+        if (universityRepository.findByCode(request.getCode()).isPresent()) {
+            throw new DuplicateResourceException("Trường đại học với code: " + request.getCode() + " đã tồn tại");
+        }
 
-        // Convert request sang entity
         University university = universityMapper.toEntity(request);
         university.setSlug(slug);
         university.setIsActive(true);
 
-        // Lưu vào database
-        University savedUniversity = universityRepository.save(university);
-        log.info("University created successfully with id: {}", savedUniversity.getId());
-
-        return universityMapper.toResponse(savedUniversity);
+        University saved = universityRepository.save(university);
+        return universityMapper.toResponse(saved);
     }
+
 
     /**
      * Cập nhật thông tin trường đại học theo ID

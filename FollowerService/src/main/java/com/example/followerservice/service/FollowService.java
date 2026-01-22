@@ -6,6 +6,8 @@ import com.example.followerservice.entity.Follow;
 import com.example.followerservice.exception.ApiException;
 import com.example.followerservice.exception.FollowErrorCodes;
 import com.example.followerservice.mapper.FollowMapper;
+import com.example.followerservice.remote.follow.PublishNotificationFollowed;
+import com.example.followerservice.remote.follow.dto.UserFollowedPayload;
 import com.example.followerservice.repository.FollowRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,28 +27,35 @@ public class FollowService {
 
     private final FollowRepository followRepository;
     private final FollowMapper followMapper;
+    private final PublishNotificationFollowed publishNotificationFollowed;
 
     /**
      * Thực hiện follow user khác
      */
     public FollowResponse follow(FollowRequest request) {
         log.info("Request to follow: followerId={} -> followingId={}", request.getFollowerId(), request.getFollowingId());
-        
+
         // Check self-follow
         if (request.getFollowerId().equals(request.getFollowingId())) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, FollowErrorCodes.CANNOT_FOLLOW_SELF, 
-                "Cannot follow yourself");
+            throw new ApiException(HttpStatus.BAD_REQUEST, FollowErrorCodes.CANNOT_FOLLOW_SELF,
+                    "Cannot follow yourself");
         }
 
         // Check duplicate
         if (followRepository.existsByFollowerIdAndFollowingId(request.getFollowerId(), request.getFollowingId())) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, FollowErrorCodes.ALREADY_FOLLOWING, 
-                "Already following this user");
+            throw new ApiException(HttpStatus.BAD_REQUEST, FollowErrorCodes.ALREADY_FOLLOWING,
+                    "Already following this user");
         }
 
         Follow follow = followMapper.toEntity(request);
         Follow savedFollow = followRepository.save(follow);
-        
+
+        // Publish event to notify the followed user
+        publishNotificationFollowed.publishUserFollowed( new UserFollowedPayload(
+                request.getFollowerId(),
+                request.getFollowingId()
+        ));
+
         return followMapper.toResponse(savedFollow);
     }
 
@@ -59,7 +68,7 @@ public class FollowService {
 
         Follow follow = followRepository.findByFollowerIdAndFollowingId(followerId, followingId)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, FollowErrorCodes.FOLLOW_NOT_FOUND,
-                    "Follow relationship not found"));
+                        "Follow relationship not found"));
 
         followRepository.delete(follow);
     }
@@ -100,5 +109,14 @@ public class FollowService {
     @Transactional(readOnly = true)
     public long countFollowing(UUID userId) {
         return followRepository.countByFollowerId(userId);
+    }
+
+    /*
+     * kiểm tra có đang follow hay không
+     * */
+
+    @Transactional(readOnly = true)
+    public boolean isFollowing(UUID followerId, UUID followingId) {
+        return followRepository.existsByFollowerIdAndFollowingId(followerId, followingId);
     }
 }

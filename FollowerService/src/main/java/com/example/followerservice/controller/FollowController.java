@@ -77,4 +77,11 @@ public class FollowController {
     public long countFollowing(@PathVariable UUID userId) {
         return followService.countFollowing(userId);
     }
+
+    @GetMapping("/is-following")
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+    public boolean isFollowing(@RequestParam UUID followerId, @RequestParam UUID followingId) {
+        return followService.isFollowing(followerId, followingId);
+    }
+
 }

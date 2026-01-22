@@ -1,4 +1,4 @@
-package studydocs.notification.publisher.follow.dto;
+package com.example.followerservice.remote.follow.dto;
 
 import java.util.UUID;
 

@@ -7,6 +7,8 @@ import com.example.demoauth.domain.User;
 import com.example.demoauth.domain.UserIdentity;
 import com.example.demoauth.dto.LoginProviderRequestDto;
 import com.example.demoauth.dto.TokenResponseDto;
+import com.example.demoauth.dto.UserRequestAPI;
+import com.example.demoauth.remote.RemoteUserService;
 import com.example.demoauth.exception.AuthErrorCodes;
 import com.example.demoauth.exception.AuthException;
 import com.example.demoauth.repository.RoleRepository;
@@ -33,16 +35,19 @@ public class GoogleOAuthProviderService implements OAuthProviderService {
     private final JwtDecoder googleJwtDecoder;
     private final TokenService tokenService;
     private final RoleRepository roleRepository;
+    private final RemoteUserService remoteUserService;
 
     public GoogleOAuthProviderService(UserRepository userRepository,
             UserIdentityRepository userIdentityRepository,
             TokenService tokenService,
             RoleRepository roleRepository,
+            RemoteUserService remoteUserService,
             @Value("${spring.security.oauth2.client.registration.google.client-id}") String googleClientId) {
         this.userRepository = userRepository;
         this.userIdentityRepository = userIdentityRepository;
         this.tokenService = tokenService;
         this.roleRepository = roleRepository;
+        this.remoteUserService = remoteUserService;
         this.googleJwtDecoder = buildGoogleJwtDecoder(googleClientId);
     }
 
@@ -104,10 +109,12 @@ public class GoogleOAuthProviderService implements OAuthProviderService {
                 .findByProviderAndProviderUserId(PROVIDER_NAME, providerUserId);
 
         User user;
+        boolean isNewUser = false;
         if (existingIdentityOpt.isPresent()) {
             // Đã có người dùng gắn với provider + providerUserId này
             user = existingIdentityOpt.get().getUser();
         } else {
+            isNewUser = true;
             // 2. Nếu chưa có, tạo mới User + UserIdentity
             user = User.builder()
                     .email(email)
@@ -135,6 +142,18 @@ public class GoogleOAuthProviderService implements OAuthProviderService {
         }
 
         // 3. Sinh access/refresh token nội bộ
-        return tokenService.generateTokens(user);
+        TokenResponseDto tokenResponse = tokenService.generateTokens(user);
+
+        // 4. Nếu là user mới, gọi service remote để tạo user bên đó
+        if (isNewUser) {
+            UserRequestAPI requestAPI = UserRequestAPI.builder()
+                    .fullName(user.getDisplayName())
+                    .username(user.getUsername())
+                    .email(user.getEmail())
+                    .build();
+            remoteUserService.call(requestAPI, tokenResponse.getAccessToken());
+        }
+
+        return tokenResponse;
     }
 }

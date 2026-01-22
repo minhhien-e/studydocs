@@ -1,4 +1,4 @@
-package studydocs.notification.publisher.otp.config;
+package com.example.demoauth.remote.otp.config;
 
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;

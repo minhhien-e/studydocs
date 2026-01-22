@@ -58,14 +58,4 @@ public class DocumentController {
     public DocumentResponse addDocument(@Valid @RequestBody SubjectDocumentCreateRequest request) {
         return subjectService.addDocumentToSubject(request);
     }
-
-    /*
-     * Api trả về id của truing đại học và môn học dựa trên documentId
-     * */
-    @GetMapping("/info-by-document")
-    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
-    public DocumentRelationResponse getUniversityAndSubjectByDocumentId(
-            @RequestParam UUID documentId) {
-        return subjectService.getUniversityAndSubjectByDocumentId(documentId);
-    }
 }

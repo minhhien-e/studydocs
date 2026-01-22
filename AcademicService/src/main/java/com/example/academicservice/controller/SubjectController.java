@@ -35,7 +35,7 @@ public class SubjectController {
      * Tạo mới môn học
      */
     @PostMapping
-    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') ")
     public SubjectResponse createSubject(@Valid @RequestBody SubjectCreateRequest request) {
         return subjectService.createSubject(request);
     }

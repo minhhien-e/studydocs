@@ -22,7 +22,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: soha18/studydocs:follow-2026-01-16
+    image: soha18/studydocs:follow-2026-01-18
     container_name: follower_service
     ports:
       - "8089:8089"

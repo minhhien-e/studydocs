@@ -1,8 +1,8 @@
 package com.example.demoauth.remote;
 
-import com.example.demoauth.dto.SendOtpMailRequestDto;
+import com.example.demoauth.remote.otp.dto.OtpSentPayload;
 
 public interface PublishNotificationEventPort {
-    void publish(SendOtpMailRequestDto request);
+    void publishOtpSent(OtpSentPayload payload);
 }
 

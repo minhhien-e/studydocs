@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints (không cần authentication) - nếu có
                         // .requestMatchers("/api/v1/universities/filter").permitAll()
-
+                        .requestMatchers("/api/v1/academics/public/**").permitAll()
                         // Tất cả endpoints khác cần authentication
                         .anyRequest().authenticated()
                 )
@@ -106,7 +106,12 @@ public class SecurityConfig {
                 List<GrantedAuthority> roleAuthorities = roleList.stream()
                         .filter(String.class::isInstance)
                         .map(String.class::cast)
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                        .map(role -> {
+                            if (role.startsWith("ROLE_")) {
+                                return new SimpleGrantedAuthority(role);
+                            }
+                            return new SimpleGrantedAuthority("ROLE_" + role);
+                        })
                         .collect(Collectors.toList());
                 authorities.addAll(roleAuthorities);
             }

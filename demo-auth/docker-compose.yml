@@ -1,6 +1,6 @@
 services:
   app:
-    image: soha18/studydocs:auth-2026-01-14
+    image: soha18/studydocs:auth-2026-01-21
     container_name: demo-auth-service
     ports:
       - "8081:8081"

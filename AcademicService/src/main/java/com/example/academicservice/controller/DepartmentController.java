@@ -36,7 +36,7 @@ public class DepartmentController {
      */
 
     @PostMapping
-   @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') and hasRole('ADMIN')")
+   @PreAuthorize("hasAuthority('SCOPE_WRITE_USER') ")
     public DepartmentResponse createDepartment(@Valid @RequestBody DepartmentCreateRequest request) {
         return departmentService.createDepartment(request);
     }

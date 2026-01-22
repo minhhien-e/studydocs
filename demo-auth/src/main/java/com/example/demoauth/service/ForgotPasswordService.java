@@ -1,8 +1,11 @@
 package com.example.demoauth.service;
 
 import com.example.demoauth.domain.User;
+import com.example.demoauth.dto.OtpResponseDto;
 import com.example.demoauth.exception.AuthErrorCodes;
 import com.example.demoauth.exception.AuthException;
+import com.example.demoauth.remote.PublishNotificationEventPort;
+import com.example.demoauth.remote.otp.dto.OtpSentPayload;
 import com.example.demoauth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +28,7 @@ public class ForgotPasswordService {
     private final StringRedisTemplate redisTemplate;
     private final PasswordEncoder passwordEncoder;
     private final SecureRandom secureRandom = new SecureRandom();
+    private final PublishNotificationEventPort publishNotificationEventPort;
 
     @Value("${app.otp.forgot-password.ttl-seconds:300}")
     private long otpTtlSeconds;
@@ -61,12 +65,22 @@ public class ForgotPasswordService {
         // Reset số lần thử sai
         redisTemplate.delete(OTP_ATTEMPT_PREFIX + email);
 
-        log.info("Đã sinh OTP cho email: {} - Chờ notification service gọi lấy mã", email);
+        // 5. Gửi OTP qua notification service (qua RabbitMQ)
+        OtpSentPayload payload = new OtpSentPayload(user.getId(), email);
+        publishNotificationEventPort.publishOtpSent(payload);
+
+        log.info("Đã sinh OTP cho email: {} - Đã bắn event gửi mail", email);
     }
 
-    public String getOTP(String email) {
+    public OtpResponseDto getOTP(String email) {
         String otpKey = OTP_KEY_PREFIX + email;
-        return redisTemplate.opsForValue().get(otpKey);
+        String otp = redisTemplate.opsForValue().get(otpKey);
+        Long ttl = redisTemplate.getExpire(otpKey);
+
+        return OtpResponseDto.builder()
+                .otp(otp)
+                .ttlSeconds(ttl != null ? ttl : 0)
+                .build();
     }
 
     @Transactional
