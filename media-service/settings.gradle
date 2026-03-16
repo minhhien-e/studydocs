@@ -1,14 +1,7 @@
 rootProject.name = 'media-service'
-include 'api'
-include 'application'
-include 'infrastructure'
-include 'domain'
-include 'launcher'
-include 'shared'
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-    }
-}
+include 'media-core'
+include 'media-api'
+include 'media-worker'
+include 'media-infrastructure'
+include 'media-bootstrap'

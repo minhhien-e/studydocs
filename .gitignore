@@ -1,7 +1,7 @@
 HELP.md
 .gradle
 build/
-**/.env
+**/.env**
 **/firebase-adminsdk.json
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/

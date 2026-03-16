@@ -1,55 +1,49 @@
-version: "3.8"
+version: '3.8'
+
 services:
-  mongo:
-    image: mongo:6.0
-    container_name: media-mongo
-    restart: always
-    ports:
-      - "27017:27017"
-    command: ["--replSet", "rs0", "--bind_ip_all"]
-    volumes:
-      - mongo_data:/data/db
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  mongo-init:
-    image: mongo:6.0
-    container_name: media-mongo-init
-    depends_on:
-      mongo:
-        condition: service_healthy
-    entrypoint: >
-      /bin/bash -c "
-      mongosh --host mongo:27017 --eval '
-        try {
-          rs.status();
-          print(\"Replica Set already initialized\");
-        } catch (e) {
-          print(\"Initializing Replica Set...\");
-          rs.initiate({
-            _id: \"rs0\",
-            members: [{ _id: 0, host: \"mongo:27017\" }]
-          });
-          print(\"Replica Set initialized successfully\");
-        }
-      '
-      "
-
   media-service:
-    image: minhhien6634/studydocs:media-2026-01-15
+    build: .
     container_name: media-service
     ports:
-      - "8084:8084"
+      - "8080:8080"
     env_file:
-      - .env
+      - .env.docker
     volumes:
-      - ./firebase-service-account.json:/app/firebase-service-account.json
+      - media_storage:/app/storage
     depends_on:
-      mongo:
-        condition: service_healthy
+      - postgres.media.local
+      - clamav.media.local
+      - redis.media.local
+
+  postgres.media.local:
+    image: postgres:15-alpine
+    container_name: postgres-media
+    environment:
+      - POSTGRES_DB=media_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  clamav.media.local:
+    image: clamav/clamav:latest # Sử dụng bản ClamAV mới nhất
+    container_name: clamav-media
+    ports:
+      - "3310:3310"
+    restart: unless-stopped
+    # Mount DB virus ra ngoài giúp lần sau startup nhanh hơn không bị tải lại dữ liệu từ đầu
+    volumes:
+      - clamav_data:/var/lib/clamav
+
+  redis.media.local:
+    image: redis:7-alpine
+    container_name: redis-media
+    ports:
+      - "6379:6379"
 
 volumes:
-  mongo_data:
+  pgdata:
+  media_storage:
+  clamav_data:

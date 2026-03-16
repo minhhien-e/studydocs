@@ -1,7 +1,8 @@
-.gradle
-build
-out
-.idea
-*.iml
-**/.env
-**/*.class
+.gradle/
+.idea/
+build/
+**/build/
+out/
+.git/
+.gitignore
+*.md

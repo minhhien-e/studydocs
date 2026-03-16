@@ -1,30 +1,18 @@
-# ========================
-# Build
-# ========================
-FROM eclipse-temurin:17-jdk AS build
+FROM eclipse-temurin:17-jdk-alpine AS builder
 WORKDIR /app
-
-# Copy everything
 COPY . .
+# Cấp quyền thực thi cho gradlew
+RUN chmod +x ./gradlew
+# Chạy lệnh build tạo bootJar từ module bootstrap
+RUN ./gradlew :media-bootstrap:bootJar -x test
 
-# Grant execution rights and fix CRLF
-RUN chmod +x gradlew && sed -i 's/\r$//' gradlew
-
-# Build the application (launcher module)
-RUN ./gradlew :launcher:bootJar -x test
-
-# ========================
-# Run
-# ========================
-FROM eclipse-temurin:17-jre
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
+# Copy file JAR từ stage builder sang (dùng wildcard phòng trường hợp tên phiên bản thay đổi)
+COPY --from=builder /app/media-bootstrap/build/libs/media-bootstrap-*.jar app.jar
 
-# Install LibreOffice
-RUN apt-get update && apt-get install -y libreoffice && apt-get clean && rm -rf /var/lib/apt/lists/*
+# Tạo thư mục storage cho local
+RUN mkdir -p /app/storage
 
-
-# Copy the built jar from the launcher module
-COPY --from=build /app/launcher/build/libs/*.jar app.jar
-
-EXPOSE 8084
-ENTRYPOINT ["java","-jar","app.jar"]
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
