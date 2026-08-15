@@ -12,6 +12,12 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
+/**
+ * Tiện ích hỗ trợ khởi tạo, giải mã và xác thực mã JWT Token (Access Token & Refresh Token).
+ *
+ * @author StudyDocs Team
+ * @since 1.0.0
+ */
 @Slf4j
 @Component
 public class JwtTokenProvider {
@@ -29,6 +35,9 @@ public class JwtTokenProvider {
         this.refreshTokenExpirationMs = refreshTokenExpirationMs;
     }
 
+    /**
+     * Tạo JWT Access Token chứa thông tin User ID và Email.
+     */
     public String generateAccessToken(String userId, String email) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + accessTokenExpirationMs);
@@ -42,6 +51,9 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    /**
+     * Tạo JWT Refresh Token chỉ chứa User ID để gia hạn phiên đăng nhập.
+     */
     public String generateRefreshToken(String userId) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + refreshTokenExpirationMs);
@@ -54,6 +66,9 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    /**
+     * Trích xuất User ID từ JWT Token.
+     */
     public String getUserIdFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -64,6 +79,9 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
+    /**
+     * Kiểm tra tính hợp lệ và thời hạn của JWT Token.
+     */
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);

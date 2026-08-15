@@ -32,12 +32,6 @@ jwt:
 file:
   upload-dir: ${UPLOAD_DIR:uploads}
 
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-
 logging:
   level:
     root: INFO

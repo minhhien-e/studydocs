@@ -12,6 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+/**
+ * Controller xử lý các nghiệp vụ hồ sơ người dùng.
+ *
+ * @author StudyDocs Team
+ * @since 1.0.0
+ */
 @RestController
 @RequestMapping("/api/v1/user/users")
 @RequiredArgsConstructor

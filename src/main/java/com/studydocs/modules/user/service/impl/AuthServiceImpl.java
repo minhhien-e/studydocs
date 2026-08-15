@@ -15,6 +15,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Lớp triển khai dịch vụ đăng ký, đăng nhập và gia hạn phiên đăng nhập JWT.
+ *
+ * @author StudyDocs Team
+ * @since 1.0.0
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -31,11 +37,14 @@ public class AuthServiceImpl implements AuthService {
             throw new AppException(ErrorCode.USER_EXISTED, "Email is already registered");
         }
 
+        // Tự động lấy prefix email làm username nếu người dùng không cung cấp
+        String username = request.getUsername() != null ? request.getUsername() : request.getEmail().split("@")[0];
+
         UserEntity user = UserEntity.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .fullName(request.getFullName())
-                .username(request.getUsername() != null ? request.getUsername() : request.getEmail().split("@")[0])
+                .username(username)
                 .universityId(request.getUniversityId())
                 .isPrivate(false)
                 .build();
@@ -59,6 +68,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional(readOnly = true)
     public TokenResponseDto login(LoginRequest.Login request) {
+        // Cho phép tìm kiếm tài khoản linh hoạt theo Email hoặc Username
         UserEntity user = userRepository.findByEmail(request.getEmail())
                 .or(() -> userRepository.findByUsername(request.getEmail()))
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_CREDENTIALS, "Invalid email/username or password"));

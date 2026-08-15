@@ -10,6 +10,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controller xử lý tài liệu học tập (tìm kiếm, công khai, cá nhân, bookmark, download).
+ *
+ * @author StudyDocs Team
+ * @since 1.0.0
+ */
 @RestController
 @RequestMapping("/api/v1/education/documents")
 @RequiredArgsConstructor

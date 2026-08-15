@@ -10,6 +10,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+/**
+ * Controller xử lý các API xác thực tài khoản.
+ *
+ * @author StudyDocs Team
+ * @since 1.0.0
+ */
 @RestController
 @RequestMapping("/api/v1/user/public/auth")
 @RequiredArgsConstructor
