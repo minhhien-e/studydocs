@@ -17,7 +17,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping("/api/v1/education/documents")
+@RequestMapping("/education/documents")
 @RequiredArgsConstructor
 public class DocumentController {
 

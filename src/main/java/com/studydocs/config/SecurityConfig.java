@@ -33,9 +33,11 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/api/v1/user/public/**",
-                                "/api/v1/education/documents/public/**",
-                                "/api/v1/education/academics/public/**",
+                                "/user/public/**",
+                                "/education/documents/public/**",
+                                "/education/documents/search",
+                                "/education/academics/**",
+                                "/user/reviews/document",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/actuator/**"

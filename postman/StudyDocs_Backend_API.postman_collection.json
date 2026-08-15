@@ -1,0 +1,902 @@
+{
+  "info": {
+    "_postman_id": "studydocs-backend-api-v1",
+    "name": "StudyDocs Backend API Collection",
+    "description": "Toàn bộ REST API Endpoints cho ứng dụng StudyDocs Backend (Spring Boot Single Application) có sẵn kịch bản kiểm thử tự động.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8090/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "testEmail",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "testUsername",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "user-student-001",
+      "type": "string"
+    },
+    {
+      "key": "documentId",
+      "value": "doc-sample-001",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register New User",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var timestamp = new Date().getTime();",
+                  "pm.collectionVariables.set('testEmail', 'user_' + timestamp + '@example.com');",
+                  "pm.collectionVariables.set('testUsername', 'user_' + timestamp);"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 or 201', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.accessToken) {",
+                  "    pm.collectionVariables.set('authToken', jsonData.data.accessToken);",
+                  "    pm.collectionVariables.set('userId', jsonData.data.user.id);",
+                  "    pm.collectionVariables.set('refreshToken', jsonData.data.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"123456\",\n  \"fullName\": \"Test Automation User\",\n  \"username\": \"{{testUsername}}\",\n  \"universityId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/public/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "public", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Login returns token', function () {",
+                  "    pm.expect(jsonData.data).to.have.property('accessToken');",
+                  "});",
+                  "if (jsonData.data && jsonData.data.accessToken) {",
+                  "    pm.collectionVariables.set('authToken', jsonData.data.accessToken);",
+                  "    pm.collectionVariables.set('userId', jsonData.data.user.id);",
+                  "    pm.collectionVariables.set('refreshToken', jsonData.data.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/public/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "public", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/public/auth/refresh-token",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "public", "auth", "refresh-token"]
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{testEmail}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/public/auth/forgot-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "public", "auth", "forgot-password"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/user/public/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "public", "auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. User Profile",
+      "item": [
+        {
+          "name": "Get Profile Me",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Returns profile data', function () {",
+                  "    pm.expect(jsonData.data).to.have.property('email');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "users", "me"]
+            }
+          }
+        },
+        {
+          "name": "Get All Users",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "users", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update User Info",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Nguyen Van A Updated\",\n  \"bio\": \"Student at HUST\",\n  \"universityName\": \"HUST\",\n  \"major\": \"Computer Science\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/users/{{userId}}/info",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "users", "{{userId}}", "info"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Academic Catalog",
+      "item": [
+        {
+          "name": "Get Universities",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/education/academics/universities",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "academics", "universities"]
+            }
+          }
+        },
+        {
+          "name": "Filter Universities",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/education/academics/universities/filter?keyword=HUST",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "academics", "universities", "filter"],
+              "query": [{ "key": "keyword", "value": "HUST" }]
+            }
+          }
+        },
+        {
+          "name": "Filter Faculties",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/education/academics/faculties/filter?universityId=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "academics", "faculties", "filter"],
+              "query": [{ "key": "universityId", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Filter Departments",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/education/academics/departments/filter?facultyId=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "academics", "departments", "filter"],
+              "query": [{ "key": "facultyId", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Get Subjects",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/education/academics/subjects",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "academics", "subjects"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Document Service",
+      "item": [
+        {
+          "name": "Get Most Liked Documents",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.length > 0) {",
+                  "    pm.collectionVariables.set('documentId', jsonData.data[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/education/documents/public/most-liked?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "documents", "public", "most-liked"],
+              "query": [{ "key": "limit", "value": "10" }]
+            }
+          }
+        },
+        {
+          "name": "Get Newest Documents",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/education/documents/public/newest?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "documents", "public", "newest"],
+              "query": [{ "key": "limit", "value": "10" }]
+            }
+          }
+        },
+        {
+          "name": "Search Documents",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/education/documents/search?q=math",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "documents", "search"],
+              "query": [{ "key": "q", "value": "math" }]
+            }
+          }
+        },
+        {
+          "name": "Get My Documents",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/education/documents/user/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "documents", "user", "me"]
+            }
+          }
+        },
+        {
+          "name": "Bookmark Document",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/education/documents/{{documentId}}/bookmark",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "documents", "{{documentId}}", "bookmark"]
+            }
+          }
+        },
+        {
+          "name": "Download Document",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/education/documents/{{documentId}}/download",
+              "host": ["{{baseUrl}}"],
+              "path": ["education", "documents", "{{documentId}}", "download"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Review Service",
+      "item": [
+        {
+          "name": "Add/Update Document Review",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documentId\": \"{{documentId}}\",\n  \"rating\": 5,\n  \"comment\": \"Very useful document!\",\n  \"reactionType\": \"LIKE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/reviews/document",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "reviews", "document"]
+            }
+          }
+        },
+        {
+          "name": "Get Document Reviews",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/user/reviews/document?documentId={{documentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "reviews", "document"],
+              "query": [{ "key": "documentId", "value": "{{documentId}}" }]
+            }
+          }
+        },
+        {
+          "name": "Get My Reaction Count",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/reviews/user/me/reactions/count",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "reviews", "user", "me", "reactions", "count"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Follow Service",
+      "item": [
+        {
+          "name": "Follow User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/follows/user-admin-001/follow",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "follows", "user-admin-001", "follow"]
+            }
+          }
+        },
+        {
+          "name": "Get My Followers",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/follows/followers",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "follows", "followers"]
+            }
+          }
+        },
+        {
+          "name": "Get My Following",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/follows/following",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "follows", "following"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. System Service (Media & Notifications)",
+      "item": [
+        {
+          "name": "Init Media Upload",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/media/media/init-upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["media", "media", "init-upload"]
+            }
+          }
+        },
+        {
+          "name": "Get Notifications",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications"]
+            }
+          }
+        },
+        {
+          "name": "Get Unread Notification Count",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/unread-count",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "unread-count"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

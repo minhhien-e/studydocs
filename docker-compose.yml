@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: studydocs-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: '123456'
+      MYSQL_DATABASE: 'studydocs'
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p123456"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  app:
+    build: .
+    container_name: studydocs-backend
+    restart: always
+    ports:
+      - "8090:8090"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:mysql://db:3306/studydocs?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "123456"
+      SPRING_FLYWAY_ENABLED: "false"
+      SPRING_JPA_DEFER_DATASOURCE_INITIALIZATION: "true"
+      SPRING_SQL_INIT_MODE: "always"
+      SPRING_SQL_INIT_DATA_LOCATIONS: "file:seed/seed_data.sql"
+      JWT_SECRET: "studydocsSecretKeySuperLongAndSecureForJwtSigning1234567890"
+      UPLOAD_DIR: "uploads"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8090/api/v1/actuator/health || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+      start_period: 20s
+
+  postman-tests:
+    image: postman/newman:5.3-alpine
+    container_name: studydocs-postman-tests
+    depends_on:
+      app:
+        condition: service_healthy
+    volumes:
+      - ./postman:/etc/newman
+    command: >
+      run /etc/newman/StudyDocs_Backend_API.postman_collection.json
+      --env-var "baseUrl=http://app:8090/api/v1"
+      --reporters cli
+
+volumes:
+  mysql_data:
